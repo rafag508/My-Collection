@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Séries</title>
+  <link rel="icon" href="assets/mc-icon-green.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen flex flex-col bg-gray-950 text-white font-inter">
+  
+  <!-- Navbar -->
+  <header id="navbar"></header>
+
+  <!-- Conteúdo principal -->
+  <main class="flex-1 relative">
+
+    <!-- Container principal EXACTO do OLD -->
+    <div class="max-w-[90rem] mx-auto px-8 py-6">
+
+      <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-bold flex items-center gap-2">📺 My Series</h1>
+
+        <div class="flex items-center gap-4">
+          <!-- Botões de edição / eliminação -->
+          <button id="editSeriesBtn"
+            class="px-3 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 font-semibold flex items-center gap-2 shadow-md transition-all duration-200 z-50">
+            ✏️
+          </button>
+
+          <button id="moveSeriesBtn"
+            class="px-2.5 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 font-semibold flex items-center gap-2 shadow-md transition-all duration-200 z-50 hidden">
+            ↕️
+          </button>
+
+          <button id="deleteSeriesBtn"
+            class="w-10 h-10 rounded-lg bg-red-600 hover:bg-red-700 flex items-center justify-center shadow-md transition-all duration-200 z-50 hidden"
+            title="Eliminar Séries">🚫</button>
+
+          <button id="confirmDeleteBtn"
+            class="w-10 h-10 rounded-lg bg-red-700 hover:bg-red-800 flex items-center justify-center shadow-md transition-all duration-200 z-50 hidden"
+            title="Confirmar Eliminação">🗑️</button>
+
+          <!-- Botão Filter Series -->
+          <button id="filterSeriesBtn" class="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 font-semibold flex items-center gap-2 shadow-md transition-all duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            Filter
+          </button>
+
+          <!-- Botão Add Series -->
+          <button id="addSeriesBtn"
+            class="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 font-semibold flex items-center gap-2 shadow-md transition-all duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Add Series
+          </button>
+        </div>
+      </div>
+
+      <div id="seriesPaginationTop"></div>
+
+
+      <!-- Grelha EXACTA do OLD -->
+      <div id="seriesGrid" class="mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+
+      <!-- Paginação inferior -->
+      <div id="seriesPagination" class="max-w-[90rem] mx-auto px-8"></div>
+
+    </div>
+  </main>
+  
+  <footer id="footer"></footer>
+
+  <!-- POPUP ADICIONAR SÉRIE -->
+  <div id="addSeriesModal"
+    class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex items-center justify-center">
+    <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-[90%] max-w-2xl relative max-h-[90vh] overflow-y-auto">
+      <button id="closeAddModal" class="absolute top-3 right-3 text-gray-400 hover:text-white">✖</button>
+      <h2 class="text-2xl font-bold mb-4 text-center text-green-400">Adicionar Série via TMDB</h2>
+
+      <input id="tmdbSearchInput" type="text" placeholder="Pesquisar série..."
+        class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-green-500 outline-none text-white mb-4" />
+
+      <div id="tmdbResults" class="space-y-2"></div>
+    </div>
+  </div>
+
+  <!-- MODAL REORGANIZAR SÉRIES -->
+  <div id="reorderSeriesModal"
+    class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex items-center justify-center">
+    
+    <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-[90%] max-w-5xl relative max-h-[90vh] flex flex-col overflow-hidden">
+      
+      <button id="closeReorderSeriesModal" class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl z-10">✖</button>
+
+      <h2 class="text-2xl font-bold mb-2 text-center text-green-400 flex-shrink-0">
+        Reorganizar Séries
+      </h2>
+      
+      <p class="text-sm text-gray-400 mb-4 text-center flex-shrink-0">
+        Arraste e solte para reorganizar. Todas as séries estão visíveis abaixo.
+      </p>
+
+      <div id="reorderSeriesGrid" class="overflow-y-auto grid gap-4 p-2 min-h-0" style="grid-template-columns: repeat(6, 1fr);">
+        <!-- Séries serão inseridas aqui -->
+      </div>
+
+      <div class="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-700 flex-shrink-0">
+        <button id="cancelReorderSeriesBtn"
+          class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 font-semibold">
+          Cancelar
+        </button>
+        <button id="saveReorderSeriesBtn"
+          class="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 font-semibold">
+          💾 Guardar Ordem
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL FILTER SERIES -->
+  <div id="filterSeriesModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 items-center justify-center">
+    <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-[90%] max-w-3xl relative max-h-[90vh] overflow-y-auto">
+      <button id="closeFilterSeriesModal" class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl">✖</button>
+      
+      <h2 class="text-2xl font-bold mb-6 text-center text-green-400">Filter Series</h2>
+      
+      <!-- Three buttons aligned horizontally -->
+      <div class="flex gap-4 mb-6 justify-center">
+        <button id="filterTopRatingBtn" class="px-6 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 font-semibold transition-colors">
+          Top Rating
+        </button>
+        <button id="filterGenreBtn" class="px-6 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 font-semibold transition-colors">
+          Genre
+        </button>
+        <button id="filterListBtn" class="px-6 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 font-semibold transition-colors">
+          Lists
+        </button>
+      </div>
+      
+      <!-- Top Rating Section -->
+      <div id="topRatingSection" class="hidden">
+        <div class="mb-4">
+          <p class="text-gray-400 mb-4">Series will be sorted by rating (highest to lowest)</p>
+        </div>
+        <div class="flex justify-end">
+          <button id="applyTopRatingBtn" class="px-6 py-2 rounded-lg bg-green-600 hover:bg-green-700 font-semibold">
+            Apply Top Rating Filter
+          </button>
+        </div>
+      </div>
+      
+      <!-- Genre Section -->
+      <div id="genreSection" class="hidden">
+        <div class="mb-4">
+          <label class="block text-sm font-semibold mb-3">Select Genres</label>
+          <div id="genreTagsContainer" class="flex flex-wrap gap-2 max-h-64 overflow-y-auto p-2 border border-gray-700 rounded-lg bg-gray-800">
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10759">Action & Adventure</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="16">Animation</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="35">Comedy</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="80">Crime</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="99">Documentary</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="18">Drama</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10751">Family</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10762">Kids</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="9648">Mystery</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10763">News</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10764">Reality</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10765">Sci-Fi & Fantasy</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10766">Soap</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10767">Talk</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10768">War & Politics</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="37">Western</button>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button id="applyGenreBtn" class="px-6 py-2 rounded-lg bg-green-600 hover:bg-green-700 font-semibold">
+            Apply Genre Filter
+          </button>
+        </div>
+      </div>
+      
+      <!-- Lists Section -->
+      <div id="listSection" class="hidden">
+        <div class="mb-4">
+          <label class="block text-sm font-semibold mb-3">Select List</label>
+          <div class="flex flex-col gap-2">
+          <button type="button" id="listPorVer" class="list-option-btn px-4 py-3 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm text-left">
+              To Watch
+            </button>
+            <button type="button" id="listEstouAVer" class="list-option-btn px-4 py-3 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm text-left">
+              Watching
+            </button>
+            <button type="button" id="listJaVi" class="list-option-btn px-4 py-3 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm text-left">
+              Watched
+            </button>
+            <button type="button" id="listFavoritesBtn" class="list-option-btn px-4 py-3 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm text-left">
+              Favorites
+            </button>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button id="applyListBtn" class="px-6 py-2 rounded-lg bg-green-600 hover:bg-green-700 font-semibold">
+            Apply List Filter
+          </button>
+        </div>
+      </div>
+      
+      <!-- Clear Filters Button -->
+      <div class="flex justify-end gap-3 pt-4 mt-6 border-t border-gray-700">
+        <button type="button" id="clearFiltersBtn" class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 font-semibold">
+          Clear All Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>  
+</body>
+</html>

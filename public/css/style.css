@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(180deg, #101624 0%, #0b0b0f 80%);
+  color: white;
+}
+
+/* Corta o texto em 1 linha com compatibilidade total */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; /* Safari, Chrome */
+  line-clamp: 1;         /* Propriedade padrão moderna */
+  overflow: hidden;
+}
+
+.episode-btn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding-left: 0.75rem;
+}
+
+/* Esconder scrollbar mas manter funcionalidade de scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

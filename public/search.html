@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results</title>
+  <link rel="icon" href="assets/mc-icon-blue.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex flex-col bg-gray-950 text-white font-inter">
+  <header id="navbar"></header>
+
+  <main class="flex-1">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+      <!-- Query display -->
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-300">
+          Search results for: <span id="searchQuery" class="text-white"></span>
+        </h1>
+      </div>
+
+      <!-- MOVIES Section -->
+      <section class="mb-12">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-red-500 text-xl">🎬</span>
+            <h2 class="text-xl font-bold">MOVIES</h2>
+          </div>
+          <div id="moviesPagination" class="flex items-center gap-2"></div>
+        </div>
+        <div id="moviesGrid" class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+          <p class="text-gray-400">Loading movies...</p>
+        </div>
+      </section>
+
+      <!-- TV SHOWS Section -->
+      <section class="mb-12">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-white text-xl">📺</span>
+            <h2 class="text-xl font-bold">TV SHOWS</h2>
+          </div>
+          <div id="seriesPagination" class="flex items-center gap-2"></div>
+        </div>
+        <div id="seriesGrid" class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+          <p class="text-gray-400">Loading series...</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer id="footer"></footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
+

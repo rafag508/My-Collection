@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Login</title>
+
+<link rel="icon" href="assets/mc-icon-blue.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+  background: linear-gradient(180deg, #101624 0%, #0b0b0f 80%);
+  font-family: "Inter", sans-serif;
+  color: white;
+}
+</style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center px-6">
+
+<div class="w-full max-w-sm bg-gray-900/70 backdrop-blur-xl shadow-xl rounded-2xl p-8 border border-white/10">
+
+  <div class="flex flex-col items-center mb-6">
+    <div class="h-12 w-12 rounded-lg bg-blue-600 grid place-items-center text-xl font-extrabold">
+      MC
+    </div>
+    <h1 class="text-2xl font-extrabold mt-3">My Collection</h1>
+    <p class="text-gray-400 text-sm mt-1">Acesso Privado</p>
+  </div>
+
+  <form id="loginForm" class="space-y-4">
+
+    <!-- Mensagem de erro -->
+    <div id="errorMsg" class="hidden text-red-400 text-sm text-center bg-red-900/20 border border-red-500/30 rounded-lg p-2"></div>
+
+    <div>
+      <label class="text-sm font-semibold">Email</label>
+      <input
+        id="loginEmail"
+        type="email"
+        class="w-full bg-gray-800 mt-1 p-3 rounded-lg border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none"
+        placeholder="email@example.com"
+        required
+      />
+    </div>
+
+    <div>
+      <div class="flex items-center justify-between mb-1">
+        <label class="text-sm font-semibold">Password</label>
+        <button
+          type="button"
+          id="forgotPasswordBtn"
+          class="text-xs text-blue-400 hover:text-blue-300 underline">
+          Forgot Password
+        </button>
+      </div>
+      <div class="relative">
+        <input
+          id="loginPassword"
+          type="password"
+          class="w-full bg-gray-800 mt-1 p-3 pr-10 rounded-lg border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none"
+          placeholder="••••••"
+          required
+        />
+        <button
+          type="button"
+          id="togglePassword"
+          class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 focus:outline-none"
+          aria-label="Mostrar password">
+          <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          </svg>
+          <svg id="eyeOffIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full mt-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold transition-all">
+      Log In
+    </button>
+
+  </form>
+
+  <!-- Botão de criar conta -->
+  <button
+    id="createAccountBtn"
+    type="button"
+    class="w-full mt-3 py-3 bg-green-600 hover:bg-green-700 rounded-xl font-semibold transition-all">
+    Sign up
+  </button>
+
+  <!-- Botão de login anónimo -->
+  <button
+    id="guestBtn"
+    type="button"
+    class="w-full mt-3 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl font-semibold transition-all">
+    Enter as Guest
+  </button>
+
+  <p class="text-center text-xs text-gray-500 mt-6">
+    © <span id="year"></span> My Collection — acesso restrito.
+  </p>
+
+</div>
+
+<!-- Modal de Criar Conta -->
+<div id="createAccountModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+  <div class="w-full max-w-sm bg-gray-900/95 backdrop-blur-xl shadow-xl rounded-2xl p-8 border border-white/10 mx-6">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-extrabold">Criar Conta</h2>
+      <button
+        id="closeModalBtn"
+        type="button"
+        class="text-gray-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <form id="createAccountForm" class="space-y-4">
+      <!-- Mensagem de erro -->
+      <div id="createAccountErrorMsg" class="hidden text-red-400 text-sm text-center bg-red-900/20 border border-red-500/30 rounded-lg p-2"></div>
+
+      <div>
+        <label class="text-sm font-semibold">Email</label>
+        <input
+          id="registerEmail"
+          type="email"
+          class="w-full bg-gray-800 mt-1 p-3 rounded-lg border border-gray-700 focus:ring-2 focus:ring-green-500 outline-none"
+          placeholder="email@example.com"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="text-sm font-semibold">Password</label>
+        <div class="relative">
+          <input
+            id="registerPassword"
+            type="password"
+            class="w-full bg-gray-800 mt-1 p-3 pr-10 rounded-lg border border-gray-700 focus:ring-2 focus:ring-green-500 outline-none"
+            placeholder="••••••"
+            required
+          />
+          <button
+            type="button"
+            id="toggleRegisterPassword"
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 focus:outline-none"
+            aria-label="Mostrar password">
+            <svg id="eyeIconRegister" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            </svg>
+            <svg id="eyeOffIconRegister" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-sm font-semibold">Código Secreto</label>
+        <input
+          id="secretCode"
+          type="text"
+          class="w-full bg-gray-800 mt-1 p-3 rounded-lg border border-gray-700 focus:ring-2 focus:ring-green-500 outline-none"
+          placeholder="Digite o código secreto"
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="w-full mt-4 py-3 bg-green-600 hover:bg-green-700 rounded-xl font-semibold transition-all">
+        Sign up
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal de Código de Acesso ao Modo Convidado -->
+<div id="guestCodeModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+  <div class="w-full max-w-sm bg-gray-900/95 backdrop-blur-xl shadow-xl rounded-2xl p-8 border border-white/10 mx-6">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-extrabold">Guest Mode</h2>
+      <button
+        id="closeGuestCodeModalBtn"
+        type="button"
+        class="text-gray-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="space-y-4">
+      <!-- Mensagem de erro -->
+      <div id="guestCodeErrorMsg" class="hidden text-red-400 text-sm text-center bg-red-900/20 border border-red-500/30 rounded-lg p-2"></div>
+
+      <div>
+        <p class="text-sm text-gray-400 mb-4">
+          Enter the access code to enter guest mode. Progress will not be saved.
+        </p>
+        <label class="text-sm font-semibold">Access Code</label>
+        <input
+          id="guestCodeInput"
+          type="text"
+          class="w-full bg-gray-800 mt-1 p-3 rounded-lg border border-gray-700 focus:ring-2 focus:ring-gray-500 outline-none"
+          placeholder="Enter access code"
+          required
+          autocomplete="off"
+        />
+      </div>
+
+      <button
+        id="guestCodeSubmitBtn"
+        type="button"
+        class="w-full mt-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl font-semibold transition-all">
+        Enter as Guest
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/app.js"></script>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>

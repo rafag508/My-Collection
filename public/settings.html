@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - My Collection</title>
+  <link rel="icon" href="assets/mc-icon-blue.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+  <div id="navbar"></div>
+  
+  <main class="max-w-4xl mx-auto px-6 py-8">
+    <div class="flex items-center gap-6 mb-8">
+      <h1 class="text-3xl font-extrabold" data-i18n="settings">Settings</h1>
+      <div id="languageChangeMsg" class="hidden ml-4"></div>
+    </div>
+    
+    <!-- Language Selector -->
+    <div class="bg-gray-900/70 border border-white/10 rounded-xl p-6 mb-6">
+      <h2 class="text-xl font-bold mb-4" data-i18n="language">Language</h2>
+      
+      <div class="space-y-4">
+        <label class="text-sm font-semibold" data-i18n="selectLanguage">Select Language</label>
+        <select 
+          id="languageSelect"
+          class="w-full bg-gray-800 p-3 rounded-lg border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none text-white">
+          <option value="pt" data-i18n="portuguese">Português</option>
+          <option value="en" data-i18n="english">English</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Profile Customization -->
+    <div class="bg-gray-900/70 border border-white/10 rounded-xl p-6 mb-6">
+      <h2 class="text-xl font-bold mb-4" data-i18n="editProfile">Edit Profile</h2>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="text-sm font-semibold block mb-2" data-i18n="buttonColor">Button Color</label>
+          <select 
+            id="profileColorSelect"
+            class="w-full bg-gray-800 p-3 rounded-lg border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none text-white">
+            <option value="cyan">Cyan</option>
+            <option value="blue">Blue</option>
+            <option value="green">Green</option>
+            <option value="purple">Purple</option>
+            <option value="pink">Pink</option>
+            <option value="red">Red</option>
+            <option value="orange">Orange</option>
+            <option value="yellow">Yellow</option>
+            <option value="indigo">Indigo</option>
+            <option value="teal">Teal</option>
+            <option value="gray">Gray</option>
+          </select>
+        </div>
+        
+        <div>
+          <label class="text-sm font-semibold block mb-2" data-i18n="initialLetter">Initial Letter</label>
+          <input
+            id="profileLetterInput"
+            type="text"
+            maxlength="1"
+            class="w-full bg-gray-800 p-3 rounded-lg border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none text-white text-center text-2xl font-extrabold uppercase"
+            placeholder="R"
+          />
+        </div>
+        
+        <button
+          id="saveProfileBtn"
+          type="button"
+          class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-all"
+          data-i18n="saveProfileSettings">
+          Save Profile Settings
+        </button>
+      </div>
+    </div>
+    
+    <div class="bg-gray-900/70 border border-white/10 rounded-xl p-6">
+      <h2 class="text-xl font-bold mb-4" data-i18n="changePassword">Change Password</h2>
+      
+      <div id="changePasswordMsg" class="hidden mb-4 p-3 rounded-lg"></div>
+      
+      <form id="changePasswordForm" class="space-y-4">
+        <!-- Campo fake para confundir o autofill do browser -->
+        <input type="password" style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" tabindex="-1" autocomplete="off" readonly aria-hidden="true">
+        
+        <div>
+          <label class="text-sm font-semibold" data-i18n="currentPassword">Current Password</label>
+          <div class="relative">
+            <input
+              id="currentPassword"
+              type="password"
+              class="w-full bg-gray-800 mt-1 p-3 pr-10 rounded-lg border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none"
+              data-i18n-placeholder="enterCurrentPassword"
+              placeholder="Enter current password"
+              autocomplete="off"
+              readonly
+              onfocus="this.removeAttribute('readonly'); this.setAttribute('aria-readonly', 'false');"
+              aria-readonly="true"
+              required
+            />
+            <button
+              type="button"
+              id="toggleCurrentPassword"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 focus:outline-none"
+              aria-label="Mostrar password">
+              <svg id="eyeIconCurrent" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+              </svg>
+              <svg id="eyeOffIconCurrent" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <div>
+          <label class="text-sm font-semibold" data-i18n="newPassword">New Password</label>
+          <div class="relative">
+            <input
+              id="newPassword"
+              type="password"
+              class="w-full bg-gray-800 mt-1 p-3 pr-10 rounded-lg border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none"
+              data-i18n-placeholder="enterNewPassword"
+              placeholder="Enter new password"
+              autocomplete="new-password"
+              required
+            />
+            <button
+              type="button"
+              id="toggleNewPassword"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 focus:outline-none"
+              aria-label="Mostrar password">
+              <svg id="eyeIconNew" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+              </svg>
+              <svg id="eyeOffIconNew" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <div>
+          <label class="text-sm font-semibold" data-i18n="confirmPassword">Confirm New Password</label>
+          <div class="relative">
+            <input
+              id="confirmPassword"
+              type="password"
+              class="w-full bg-gray-800 mt-1 p-3 pr-10 rounded-lg border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none"
+              data-i18n-placeholder="confirmNewPassword"
+              placeholder="Confirm new password"
+              autocomplete="new-password"
+              required
+            />
+            <button
+              type="button"
+              id="toggleConfirmPassword"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 focus:outline-none"
+              aria-label="Mostrar password">
+              <svg id="eyeIconConfirm" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+              </svg>
+              <svg id="eyeOffIconConfirm" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <button
+          type="submit"
+          class="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold transition-all"
+          data-i18n="changePasswordBtn">
+          Change Password
+        </button>
+      </form>
+    </div>
+  </main>
+  
+  <div id="footer"></div>
+  
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
+

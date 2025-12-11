@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Movies </title>
+  <link rel="icon" href="assets/mc-icon-blue.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex flex-col bg-gray-950 text-white font-inter">
+  <header id="navbar"></header>
+
+  <main class="flex-1">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-extrabold">All Movies</h1>
+        <button id="filterMoviesBtn" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 font-semibold flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+          </svg>
+          Filter
+        </button>
+      </div>
+      <div id="moviesPaginationTop" class="mb-6 flex justify-center gap-2"></div>
+      <div id="moviesGrid" class="grid auto-rows-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+      <div id="moviesPagination" class="mt-6 flex justify-center gap-2"></div>
+    </div>
+  </main>
+
+  <footer id="footer"></footer>
+
+  <!-- MODAL FILTER -->
+  <div id="filterMoviesModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex items-center justify-center">
+    <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-[90%] max-w-3xl relative max-h-[90vh] overflow-y-auto">
+      <button id="closeFilterMoviesModal" class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl">✖</button>
+      
+      <h2 class="text-2xl font-bold mb-6 text-center text-blue-400">Filter Movies</h2>
+      
+      <!-- Four buttons aligned horizontally -->
+      <div class="flex gap-4 mb-6 justify-center">
+        <button id="filterTopRatingBtn" class="px-6 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 font-semibold transition-colors">
+          Top Rating
+        </button>
+        <button id="filterGenreBtn" class="px-6 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 font-semibold transition-colors">
+          Genre
+        </button>
+        <button id="filterYearBtn" class="px-6 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 font-semibold transition-colors">
+          Year
+        </button>
+        <button id="filterUpcomingBtn" class="px-6 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 font-semibold transition-colors">
+          Upcoming
+        </button>
+      </div>
+      
+      <!-- Top Rating Section -->
+      <div id="topRatingSection" class="hidden">
+        <div class="mb-4">
+          <p class="text-gray-400 mb-4">Movies will be sorted by rating (highest to lowest)</p>
+        </div>
+        <div class="flex justify-end">
+          <button id="applyTopRatingBtn" class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 font-semibold">
+            Apply Top Rating Filter
+          </button>
+        </div>
+      </div>
+      
+      <!-- Year Section -->
+      <div id="yearSection" class="hidden">
+        <div class="mb-4">
+          <label class="block text-sm font-semibold mb-2">Select Year</label>
+          <input type="number" id="yearInput" min="1900" max="2030" 
+                 class="w-full bg-gray-800 p-2 rounded-lg border border-gray-700 text-white"
+                 placeholder="Enter year (e.g., 2020)">
+        </div>
+        <div class="flex justify-end">
+          <button id="applyYearBtn" class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 font-semibold">
+            Apply Year Filter
+          </button>
+        </div>
+      </div>
+      
+      <!-- Genre Section -->
+      <div id="genreSection" class="hidden">
+        <div class="mb-4">
+          <label class="block text-sm font-semibold mb-3">Select Genres</label>
+          <div id="genreTagsContainer" class="flex flex-wrap gap-2 max-h-64 overflow-y-auto p-2 border border-gray-700 rounded-lg bg-gray-800">
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="28">Action</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="12">Adventure</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="16">Animation</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="35">Comedy</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="80">Crime</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="99">Documentary</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="18">Drama</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10751">Family</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="14">Fantasy</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="36">History</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="27">Horror</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10402">Music</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="9648">Mystery</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10749">Romance</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="878">Science Fiction</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10770">TV Movie</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="53">Thriller</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="10752">War</button>
+            <button type="button" class="genre-tag px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-genre-id="37">Western</button>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button id="applyGenreBtn" class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 font-semibold">
+            Apply Genre Filter
+          </button>
+        </div>
+      </div>
+      
+      <!-- Upcoming Section -->
+      <div id="upcomingSection" class="hidden">
+        <!-- Release Type Buttons -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold mb-2">Release Type</label>
+          <div class="flex gap-2">
+            <button type="button" id="releaseTypeLimited" class="release-type-btn px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-release-type="2">Theatrical (Limited)</button>
+            <button type="button" id="releaseTypeTheatrical" class="release-type-btn px-4 py-2 rounded-lg border border-gray-600 bg-blue-600 text-white text-sm" data-release-type="3">Theatrical</button>
+            <button type="button" id="releaseTypePremiere" class="release-type-btn px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white text-sm" data-release-type="1">Premiere</button>
+          </div>
+        </div>
+        
+        <!-- Date Range -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold mb-2">Date Range</label>
+          <div class="flex gap-4 items-center">
+            <div class="flex-1">
+              <label class="block text-xs text-gray-400 mb-1">from</label>
+              <input type="date" id="upcomingDateFrom" class="w-full bg-gray-800 p-2 rounded-lg border border-gray-700 text-white">
+            </div>
+            <div class="flex-1">
+              <label class="block text-xs text-gray-400 mb-1">to</label>
+              <input type="date" id="upcomingDateTo" class="w-full bg-gray-800 p-2 rounded-lg border border-gray-700 text-white">
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex justify-end">
+          <button id="applyUpcomingBtn" class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 font-semibold">
+            Apply Upcoming Filter
+          </button>
+        </div>
+      </div>
+      
+      <!-- Clear Filters Button -->
+      <div class="flex justify-end gap-3 pt-4 mt-6 border-t border-gray-700">
+        <button type="button" id="clearFiltersBtn" class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 font-semibold">
+          Clear All Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
