@@ -2,8 +2,8 @@
 // ✅ Vercel Serverless Function - TMDB API Proxy
 // Protege a API key do TMDB mantendo-a no servidor
 
-// 🔑 SECRET KEY (nunca exposta no cliente)
-const TMDB_API_KEY = "247df79ee01d4f732791bf8c8c448f5e";
+// 🔑 SECRET KEY (lida de variáveis de ambiente do Vercel)
+const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
 export default async function handler(req, res) {
   // Permitir CORS

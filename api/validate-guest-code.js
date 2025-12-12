@@ -2,8 +2,8 @@
 // ✅ Vercel Serverless Function - Validar código de acesso ao modo convidado
 // Protege o código de acesso mantendo-o no servidor
 
-// 🔑 SECRET CODE (nunca exposto no cliente)
-const GUEST_ACCESS_CODE = "DemoVault_73Z!PR";
+// 🔑 SECRET CODE (lido de variáveis de ambiente do Vercel)
+const GUEST_ACCESS_CODE = process.env.GUEST_ACCESS_CODE;
 
 export default async function handler(req, res) {
   // Permitir CORS

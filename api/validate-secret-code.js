@@ -2,8 +2,8 @@
 // ✅ Vercel Serverless Function - Validar código secreto para criação de conta
 // Protege o código secreto mantendo-o no servidor
 
-// 🔑 SECRET CODE (nunca exposto no cliente)
-const SECRET_CODE = "TheCollection_25!";
+// 🔑 SECRET CODE (lido de variáveis de ambiente do Vercel)
+const SECRET_CODE = process.env.SECRET_CODE;
 
 export default async function handler(req, res) {
   // Permitir CORS
