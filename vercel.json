@@ -2,39 +2,9 @@
   "version": 2,
   "outputDirectory": "public",
   "cleanUrls": false,
-  "routes": [
-    {
-      "src": "/favicon.ico",
-      "dest": "/favicon.ico"
-    },
-    {
-      "src": "/favicons/(.*)",
-      "dest": "/favicons/$1"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/css/(.*)",
-      "dest": "/css/$1"
-    },
-    {
-      "src": "/js/(.*)",
-      "dest": "/js/$1"
-    },
-    {
-      "src": "/(.*\\.(ico|png|svg|jpg|jpeg|gif|css|js|json|webmanifest|woff|woff2|ttf|eot))",
-      "dest": "/$1"
-    }
-  ],
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!favicon\\.ico|favicons|api|assets|css|js|.*\\.(ico|png|svg|jpg|jpeg|gif|css|js|json|webmanifest|woff|woff2|ttf|eot)).*)",
       "destination": "/index.html"
     }
   ],
