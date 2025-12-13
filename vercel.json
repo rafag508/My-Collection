@@ -4,7 +4,7 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/((?!favicon\\.ico$|favicons/|api/|assets/|css/|js/|.*\\.(ico|png|svg|jpg|jpeg|gif|css|js|json|webmanifest|woff|woff2|ttf|eot)$).*)",
+      "source": "/((?!favicon\\.ico|favicons|api|assets|css|js|.*\\.(ico|png|svg|jpg|jpeg|gif|css|js|json|webmanifest|woff|woff2|ttf|eot)).*)",
       "destination": "/index.html"
     }
   ],
