@@ -11,79 +11,71 @@ function getPageName() {
   return file.replace(".html", "");
 }
 
-// Garante que o favicon correto está sempre presente
+// Garante que o favicon correto está sempre presente (apenas .ico para máxima compatibilidade)
+// IMPORTANTE: Só altera o favicon em páginas de séries. Para todas as outras páginas, retorna imediatamente
+// sem tocar no DOM, deixando o favicon estático do HTML intacto para o Firefox capturar corretamente
 function setFavicon() {
   if (!document.head) return;
   
   const page = getPageName();
-  let iconPath = "assets/mc-icon-blue.svg";
-  let iconColor = "#2563eb";
+  // Usar apenas .ico - azul para filmes, verde para séries
+  const isSeriesPage = page === "series" || page === "serie" || page === "allseries" || page === "allserie";
   
-  if (page === "series" || page === "serie" || page === "allseries") {
-    iconPath = "assets/mc-icon-green.svg";
-    iconColor = "#16a34a";
+  // Se NÃO for página de séries, retorna imediatamente sem fazer NADA
+  // Isso garante que o favicon estático do HTML fica intacto para o Firefox
+  if (!isSeriesPage) {
+    return;
   }
   
-  // Atualiza favicons existentes em vez de remover
-  let favicon = document.querySelector('link[rel="icon"]');
-  if (!favicon) {
-    favicon = document.createElement("link");
-    favicon.rel = "icon";
-    document.head.appendChild(favicon);
+  // Só chega aqui se for página de séries - mudar para verde
+  const faviconPath = "/favicons/favicon-green.ico";
+  
+  // Encontra o favicon existente no HTML
+  let faviconIco = document.querySelector('link[rel="icon"][href*="favicon"]');
+  
+  // Se o favicon já existe e está correto, não fazer nada
+  if (faviconIco) {
+    const currentHref = faviconIco.getAttribute("href");
+    if (currentHref && (currentHref === faviconPath || currentHref.endsWith(faviconPath))) {
+      // Favicon já está correto, não alterar
+      return;
+    }
   }
   
-  // Cria PNG usando canvas
-  const canvas = document.createElement("canvas");
-  canvas.width = 64;
-  canvas.height = 64;
-  const ctx = canvas.getContext("2d");
-  
-  if (ctx) {
-    const radius = 8;
-    ctx.beginPath();
-    ctx.moveTo(radius, 0);
-    ctx.lineTo(64 - radius, 0);
-    ctx.quadraticCurveTo(64, 0, 64, radius);
-    ctx.lineTo(64, 64 - radius);
-    ctx.quadraticCurveTo(64, 64, 64 - radius, 64);
-    ctx.lineTo(radius, 64);
-    ctx.quadraticCurveTo(0, 64, 0, 64 - radius);
-    ctx.lineTo(0, radius);
-    ctx.quadraticCurveTo(0, 0, radius, 0);
-    ctx.closePath();
-    
-    ctx.fillStyle = iconColor;
-    ctx.fill();
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 36px Arial, sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("MC", 32, 32);
-    
-    // Usa PNG como principal
-    favicon.type = "image/png";
-    favicon.href = canvas.toDataURL("image/png");
-  } else {
-    // Fallback para SVG se canvas não funcionar
-    favicon.type = "image/svg+xml";
-    favicon.href = iconPath + "?v=" + Date.now();
+  // Só altera se não existir ou se estiver incorreto
+  if (!faviconIco) {
+    // Se não existir, cria e adiciona
+    faviconIco = document.createElement("link");
+    faviconIco.rel = "icon";
+    faviconIco.type = "image/x-icon";
+    faviconIco.setAttribute("sizes", "any");
+    document.head.insertBefore(faviconIco, document.head.firstChild);
   }
   
-  // Atualiza shortcut icon também
+  // Atualiza o href apenas se necessário (NÃO mover no DOM)
+  faviconIco.setAttribute("href", faviconPath);
+  
+  // Atualiza shortcut icon
   let shortcut = document.querySelector('link[rel="shortcut icon"]');
   if (!shortcut) {
     shortcut = document.createElement("link");
     shortcut.rel = "shortcut icon";
+    shortcut.type = "image/x-icon";
     document.head.appendChild(shortcut);
   }
-  shortcut.href = favicon.href;
+  shortcut.setAttribute("href", faviconPath);
 }
 
 async function bootstrap() {
   const page = getPageName();
 
-  // Define o favicon correto imediatamente
-  setFavicon();
+  // Só define o favicon se for página de séries (para mudar para verde)
+  // Na página Home e outras páginas de filmes, deixa o HTML estático fazer o trabalho
+  // Isso evita interferir com a captura do favicon pelo Firefox para bookmarks
+  if (page === "series" || page === "serie" || page === "allseries" || page === "allserie") {
+    setFavicon();
+  }
+  // Para todas as outras páginas, NÃO chamar setFavicon() - deixa o HTML estático
 
   // Detecta refresh (F5) - método compatível com browsers modernos
   // Se for refresh, limpar flag de notificações para permitir nova sync
@@ -218,10 +210,10 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-// Atualiza favicon periodicamente (a cada 2 segundos) para garantir que está sempre presente
+// Atualiza favicon dinâmico periodicamente (a cada 2 segundos) para garantir que está sempre presente
 setInterval(() => {
-  const currentFavicon = document.querySelector('link[rel="icon"]');
-  if (!currentFavicon || !currentFavicon.href.includes('data:image')) {
+  const dynamicFavicon = document.querySelector('link[rel="icon"][data-dynamic="true"]');
+  if (!dynamicFavicon || !dynamicFavicon.href.includes('data:image')) {
     setFavicon();
   }
 }, 2000);

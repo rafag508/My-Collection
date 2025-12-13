@@ -1,10 +1,35 @@
 {
   "version": 2,
   "outputDirectory": "public",
+  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!favicon\\.ico$|favicons/|api/|assets/|css/|js/|.*\\.(ico|png|svg|jpg|jpeg|gif|css|js|json|webmanifest|woff|woff2|ttf|eot)$).*)",
       "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/favicon.ico",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "image/x-icon"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/favicons/:file",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ]
 }

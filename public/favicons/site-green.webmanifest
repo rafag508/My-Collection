@@ -1,0 +1,29 @@
+{
+  "name": "My Collection",
+  "short_name": "MC",
+  "icons": [
+    {
+      "src": "/favicons/favicon-green.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/favicons/favicon-16x16-green.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicons/favicon-32x32-green.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicons/apple-touch-icon-green.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#16a34a",
+  "background_color": "#1e293b",
+  "display": "standalone"
+}
