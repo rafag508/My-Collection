@@ -520,6 +520,7 @@ export async function getSeriesDetails(seriesId) {
             seasonNumber: nextEp.season_number || null,
             episodeNumber: nextEp.episode_number || null,
             air_date: nextEp.air_date || null,
+            name: nextEp.name || null,
           }
         : null,
     };

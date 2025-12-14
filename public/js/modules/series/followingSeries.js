@@ -127,8 +127,8 @@ function formatDateYYYYMMDD(date) {
 }
 
 function buildEpisodeKey(nextEpisode) {
-  const s = nextEpisode?.season_number;
-  const e = nextEpisode?.episode_number;
+  const s = nextEpisode?.seasonNumber;
+  const e = nextEpisode?.episodeNumber;
   if (s == null || e == null) return null;
   return `S${String(s).padStart(2, "0")}E${String(e).padStart(2, "0")}`;
 }
@@ -188,8 +188,8 @@ export async function checkSeriesReleases() {
         type: "series_episode_release",
         serieId: serieId.toString(),
         serieName: serie.title,
-        season: nextEpisode.season_number,
-        episode: nextEpisode.episode_number,
+        season: nextEpisode.seasonNumber,
+        episode: nextEpisode.episodeNumber,
         episodeName: nextEpisode.name || null,
         airDate: airDateStr,
         timestamp: Date.now()
