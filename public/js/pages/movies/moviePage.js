@@ -189,7 +189,7 @@ async function renderMovieInfo() {
             <a href="${netflixProvider.netflixUrl}" target="_blank" rel="noopener noreferrer"
                class="bg-black hover:bg-gray-900 p-3 rounded-lg flex items-center justify-center"
                title="Watch on Netflix">
-              <img src="./assets/netflix-logo.png" alt="Netflix" class="w-7 h-7 object-contain" />
+              <img src="/assets/netflix-logo.png" alt="Netflix" class="w-7 h-7 object-contain" />
             </a>
             ` : ""}
             ${movie.rating
