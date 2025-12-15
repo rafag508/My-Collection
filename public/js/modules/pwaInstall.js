@@ -22,6 +22,11 @@ export function isFirefox() {
 
 // Capturar evento beforeinstallprompt (Android/Chrome)
 export function setupInstallPrompt() {
+  console.log('[PWA] Setting up install prompt');
+  console.log('[PWA] isFirefox():', isFirefox());
+  console.log('[PWA] isInstalled():', isInstalled());
+  console.log('[PWA] installButton exists:', !!installButton);
+  
   window.addEventListener('beforeinstallprompt', (e) => {
     console.log('[PWA] beforeinstallprompt event fired');
     e.preventDefault();
@@ -32,11 +37,16 @@ export function setupInstallPrompt() {
   // ✅ Para Firefox, mostrar botão sempre (se não estiver instalado)
   // Firefox não suporta beforeinstallprompt, então mostramos o botão manualmente
   if (isFirefox() && !isInstalled()) {
-    showInstallButton();
+    console.log('[PWA] Firefox detected, showing install button');
+    // Usar setTimeout para garantir que o botão já foi inicializado
+    setTimeout(() => {
+      showInstallButton();
+    }, 100);
   }
 
   // Se já está instalado, esconder botão
   if (isInstalled()) {
+    console.log('[PWA] Already installed, hiding button');
     hideInstallButton();
   }
 }
@@ -44,7 +54,10 @@ export function setupInstallPrompt() {
 // Mostrar botão de instalação
 export function showInstallButton() {
   if (installButton) {
+    console.log('[PWA] Showing install button');
     installButton.style.display = 'flex';
+  } else {
+    console.warn('[PWA] Cannot show button: installButton is null');
   }
 }
 
@@ -164,11 +177,16 @@ export function initInstallButton(buttonElement) {
     return;
   }
 
+  console.log('[PWA] Initializing install button');
+  console.log('[PWA] Button element:', installButton);
+  console.log('[PWA] Current display:', installButton.style.display);
+
   // Esconder inicialmente
   hideInstallButton();
 
   // Adicionar event listener
   installButton.addEventListener('click', async () => {
+    console.log('[PWA] Install button clicked');
     if (isIOS()) {
       showIOSInstructions();
     } else if (isFirefox()) {
@@ -180,6 +198,7 @@ export function initInstallButton(buttonElement) {
 
   // Verificar se já está instalado
   if (isInstalled()) {
+    console.log('[PWA] Already installed, hiding button');
     hideInstallButton();
   }
 }

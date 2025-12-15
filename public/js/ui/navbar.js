@@ -223,16 +223,19 @@ export function renderNavbar() {
   
   // ✅ Inicializar PWA Install Button (só se não for guest mode)
   if (!guestMode && installBtn) {
+    console.log('[PWA] Initializing install button in navbar');
     initInstallButton(installBtn);
-    setupInstallPrompt();
     
-    // Se já está instalado, esconder botão
-    if (isInstalled()) {
-      installBtn.style.display = 'none';
-    }
+    // Usar setTimeout para garantir que o botão foi inicializado antes de setup
+    setTimeout(() => {
+      setupInstallPrompt();
+    }, 50);
   } else if (installBtn) {
     // Esconder botão em modo convidado
+    console.log('[PWA] Guest mode active, hiding install button');
     installBtn.style.display = 'none';
+  } else {
+    console.warn('[PWA] Install button not found in navbar');
   }
   
   // Verificar se o utilizador é anónimo ou está em modo convidado
