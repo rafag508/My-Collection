@@ -36,12 +36,11 @@ export function setupInstallPrompt() {
 
   // ✅ Para Firefox, mostrar botão sempre (se não estiver instalado)
   // Firefox não suporta beforeinstallprompt, então mostramos o botão manualmente
-  if (isFirefox() && !isInstalled()) {
-    console.log('[PWA] Firefox detected, showing install button');
-    // Usar setTimeout para garantir que o botão já foi inicializado
-    setTimeout(() => {
-      showInstallButton();
-    }, 100);
+  // Nota: O botão já deve estar visível se foi inicializado corretamente em initInstallButton
+  if (isFirefox() && !isInstalled() && installButton) {
+    console.log('[PWA] Firefox detected in setupInstallPrompt, ensuring button is visible');
+    // Garantir que está visível (pode ter sido escondido por algum motivo)
+    showInstallButton();
   }
 
   // Se já está instalado, esconder botão
@@ -180,11 +179,10 @@ export function initInstallButton(buttonElement) {
   console.log('[PWA] Initializing install button');
   console.log('[PWA] Button element:', installButton);
   console.log('[PWA] Current display:', installButton.style.display);
+  console.log('[PWA] isFirefox():', isFirefox());
+  console.log('[PWA] isInstalled():', isInstalled());
 
-  // Esconder inicialmente
-  hideInstallButton();
-
-  // Adicionar event listener
+  // Adicionar event listener primeiro
   installButton.addEventListener('click', async () => {
     console.log('[PWA] Install button clicked');
     if (isIOS()) {
@@ -196,9 +194,16 @@ export function initInstallButton(buttonElement) {
     }
   });
 
-  // Verificar se já está instalado
-  if (isInstalled()) {
+  // ✅ Para Firefox, mostrar imediatamente (se não estiver instalado)
+  // Não esconder inicialmente se for Firefox
+  if (isFirefox() && !isInstalled()) {
+    console.log('[PWA] Firefox detected in initInstallButton, showing button');
+    showInstallButton();
+  } else if (isInstalled()) {
     console.log('[PWA] Already installed, hiding button');
+    hideInstallButton();
+  } else {
+    // Para outros browsers, esconder inicialmente (será mostrado por beforeinstallprompt)
     hideInstallButton();
   }
 }
