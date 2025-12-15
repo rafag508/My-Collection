@@ -1,6 +1,9 @@
 // src/modules/pwaInstall.js
 // Gerencia a instalação do PWA
 
+// ✅ LOG IMEDIATO para verificar se o módulo está a carregar
+console.log('[PWA] Module pwaInstall.js loaded');
+
 let deferredPrompt = null;
 let installButton = null;
 

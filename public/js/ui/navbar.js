@@ -222,16 +222,29 @@ export function renderNavbar() {
   const installBtn = container.querySelector("#installAppBtn");
   
   // ✅ Inicializar PWA Install Button (só se não for guest mode)
+  console.log('[PWA] Navbar: Checking install button initialization');
+  console.log('[PWA] Navbar: guestMode =', guestMode);
+  console.log('[PWA] Navbar: installBtn exists =', !!installBtn);
+  console.log('[PWA] Navbar: Functions available:', {
+    initInstallButton: typeof initInstallButton,
+    setupInstallPrompt: typeof setupInstallPrompt,
+    isInstalled: typeof isInstalled
+  });
+  
   if (!guestMode && installBtn) {
     console.log('[PWA] Initializing install button in navbar');
     console.log('[PWA] Guest mode:', guestMode);
     console.log('[PWA] Install button element:', installBtn);
     
-    // Inicializar o botão primeiro
-    initInstallButton(installBtn);
-    
-    // Depois configurar o prompt (que pode tentar mostrar novamente se necessário)
-    setupInstallPrompt();
+    try {
+      // Inicializar o botão primeiro
+      initInstallButton(installBtn);
+      
+      // Depois configurar o prompt (que pode tentar mostrar novamente se necessário)
+      setupInstallPrompt();
+    } catch (error) {
+      console.error('[PWA] Error initializing install button:', error);
+    }
   } else if (installBtn) {
     // Esconder botão em modo convidado
     console.log('[PWA] Guest mode active, hiding install button');
