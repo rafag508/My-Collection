@@ -4,6 +4,7 @@ import { getNotifications } from "../modules/notifications.js";
 import { t as translate } from "../modules/idioma.js";
 import { getUserPreferencesFirestore } from "../firebase/firestore.js";
 import { isGuestMode, disableGuestMode } from "../modules/guestMode.js";
+import { setupInstallPrompt, initInstallButton, isInstalled } from "../modules/pwaInstall.js";
 
 // src/ui/navbar.js
 export function renderNavbar() {
@@ -132,6 +133,18 @@ export function renderNavbar() {
 <!-- BUTTONS: move them outside and fully right-aligned -->
 <div class="hidden md:flex items-center gap-3">
 
+  <!-- Install App Button (PWA) -->
+  <button
+    id="installAppBtn"
+    class="hidden h-8 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
+    title="Instalar App"
+  >
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+    </svg>
+    Instalar
+  </button>
+
   <!-- Bell -->
   <button
     id="notificationsBell"
@@ -206,6 +219,21 @@ export function renderNavbar() {
   const bellBtn = container.querySelector("#notificationsBell");
   const bellBadge = container.querySelector("#notificationsBellBadge");
   const menuBadge = container.querySelector("#notificationsMenuBadge");
+  const installBtn = container.querySelector("#installAppBtn");
+  
+  // ✅ Inicializar PWA Install Button (só se não for guest mode)
+  if (!guestMode && installBtn) {
+    initInstallButton(installBtn);
+    setupInstallPrompt();
+    
+    // Se já está instalado, esconder botão
+    if (isInstalled()) {
+      installBtn.style.display = 'none';
+    }
+  } else if (installBtn) {
+    // Esconder botão em modo convidado
+    installBtn.style.display = 'none';
+  }
   
   // Verificar se o utilizador é anónimo ou está em modo convidado
   const currentUser = getCurrentUser();

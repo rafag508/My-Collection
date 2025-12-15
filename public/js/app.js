@@ -184,6 +184,29 @@ new MutationObserver(() => {
   }
 }).observe(document, { subtree: true, childList: true });
 
+// Registrar Service Worker para PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then((registration) => {
+        console.log('[Service Worker] Registered successfully:', registration.scope);
+        
+        // Verificar atualizações periodicamente
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('[Service Worker] New version available');
+            }
+          });
+        });
+      })
+      .catch((error) => {
+        console.warn('[Service Worker] Registration failed:', error);
+      });
+  });
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   setFavicon();
   bootstrap();

@@ -1,0 +1,99 @@
+// Service Worker para PWA
+// Cacheia apenas assets estáticos, NUNCA dados do Firestore
+
+const CACHE_NAME = 'my-collection-v1';
+const STATIC_ASSETS = [
+  '/',
+  '/index.html',
+  '/css/style.css',
+  '/js/app.js',
+  '/favicon.ico',
+  '/favicons/favicon-32x32.png',
+  '/favicons/favicon-16x16.png'
+];
+
+// Instalar Service Worker e cachear assets estáticos
+self.addEventListener('install', (event) => {
+  console.log('[Service Worker] Installing...');
+  
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('[Service Worker] Caching static assets');
+      return cache.addAll(STATIC_ASSETS).catch((err) => {
+        console.warn('[Service Worker] Some assets failed to cache:', err);
+        // Continua mesmo se alguns assets falharem
+        return Promise.resolve();
+      });
+    })
+  );
+  
+  // Força ativação imediata do novo Service Worker
+  self.skipWaiting();
+});
+
+// Ativar Service Worker e limpar caches antigos
+self.addEventListener('activate', (event) => {
+  console.log('[Service Worker] Activating...');
+  
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('[Service Worker] Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+  
+  // Assume controle imediato de todas as páginas
+  return self.clients.claim();
+});
+
+// Interceptar requests
+self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+  
+  // NUNCA cachear Firestore, Auth, ou outras APIs dinâmicas
+  if (
+    url.hostname.includes('firestore.googleapis.com') ||
+    url.hostname.includes('firebase.googleapis.com') ||
+    url.hostname.includes('identitytoolkit.googleapis.com') ||
+    url.hostname.includes('securetoken.googleapis.com') ||
+    url.pathname.startsWith('/api/') ||
+    event.request.method !== 'GET'
+  ) {
+    // Sempre buscar do servidor, nunca cachear
+    return fetch(event.request);
+  }
+  
+  // Para assets estáticos: cache-first strategy
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      if (response) {
+        // Tem no cache → retorna do cache
+        return response;
+      }
+      
+      // Não tem no cache → busca do servidor
+      return fetch(event.request).then((response) => {
+        // Se a resposta é válida, guarda no cache
+        if (response && response.status === 200 && response.type === 'basic') {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return response;
+      }).catch(() => {
+        // Se falhar e for HTML, retorna index.html (para SPA)
+        if (event.request.headers.get('accept').includes('text/html')) {
+          return caches.match('/index.html');
+        }
+      });
+    })
+  );
+});
+
