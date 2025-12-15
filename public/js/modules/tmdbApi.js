@@ -176,6 +176,86 @@ export async function getSeriesVideos(seriesId) {
 }
 
 // =====================================================
+// 🎬 GET MOVIE WATCH PROVIDERS
+// =====================================================
+export async function getMovieWatchProviders(movieId, movieTitle = null) {
+  try {
+    const data = await callTmdbProxy(`movie/${movieId}/watch/providers`, {});
+    
+    // Verificar se está disponível na Netflix (PT primeiro, depois US)
+    const ptProviders = data.results?.PT;
+    if (ptProviders?.flatrate) {
+      const netflix = ptProviders.flatrate.find(p => p.provider_id === 8);
+      if (netflix) {
+        const searchQuery = movieTitle ? encodeURIComponent(movieTitle) : '';
+        return {
+          hasNetflix: true,
+          netflixUrl: `https://www.netflix.com/search?q=${searchQuery}`
+        };
+      }
+    }
+    
+    // Se não encontrar em PT, tentar US
+    const usProviders = data.results?.US;
+    if (usProviders?.flatrate) {
+      const netflix = usProviders.flatrate.find(p => p.provider_id === 8);
+      if (netflix) {
+        const searchQuery = movieTitle ? encodeURIComponent(movieTitle) : '';
+        return {
+          hasNetflix: true,
+          netflixUrl: `https://www.netflix.com/search?q=${searchQuery}`
+        };
+      }
+    }
+    
+    return { hasNetflix: false };
+  } catch (err) {
+    console.error("❌ Erro ao obter watch providers do filme:", err);
+    return { hasNetflix: false };
+  }
+}
+
+// =====================================================
+// 📺 GET SERIES WATCH PROVIDERS
+// =====================================================
+export async function getSeriesWatchProviders(seriesId, serieTitle = null) {
+  try {
+    const data = await callTmdbProxy(`tv/${seriesId}/watch/providers`, {});
+    
+    // Verificar se está disponível na Netflix (PT primeiro, depois US)
+    const ptProviders = data.results?.PT;
+    if (ptProviders?.flatrate) {
+      const netflix = ptProviders.flatrate.find(p => p.provider_id === 8);
+      if (netflix) {
+        const searchQuery = serieTitle ? encodeURIComponent(serieTitle) : '';
+        return {
+          hasNetflix: true,
+          netflixUrl: `https://www.netflix.com/search?q=${searchQuery}`
+        };
+      }
+    }
+    
+    // Se não encontrar em PT, tentar US
+    const usProviders = data.results?.US;
+    if (usProviders?.flatrate) {
+      const netflix = usProviders.flatrate.find(p => p.provider_id === 8);
+      if (netflix) {
+        const searchQuery = serieTitle ? encodeURIComponent(serieTitle) : '';
+        return {
+          hasNetflix: true,
+          netflixUrl: `https://www.netflix.com/search?q=${searchQuery}`
+        };
+      }
+    }
+    
+    return { hasNetflix: false };
+  } catch (err) {
+    console.error("❌ Erro ao obter watch providers da série:", err);
+    return { hasNetflix: false };
+  }
+}
+
+// =====================================================
 // 📽️ GET POPULAR MOVIES (for allmovies.html)
 // =====================================================
 export async function getPopularMovies(page = 1) {

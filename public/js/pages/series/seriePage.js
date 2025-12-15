@@ -26,6 +26,7 @@ let progress = null;
 let fromAllSeries = false;
 let isFavorite = false;
 let isFollowingSerie = false;
+let netflixProvider = null;
 
 // 🔥 Lista de temporadas abertas (carregada do localStorage)
 let openSeasons = new Set();
@@ -167,7 +168,7 @@ function saveOpenSeasons() {
 /* ============================================================
    HEADER DA SÉRIE
 ============================================================ */
-function renderSerieInfo() {
+async function renderSerieInfo() {
   const container = document.getElementById("serieInfo");
   if (!container) return;
 
@@ -183,6 +184,22 @@ function renderSerieInfo() {
     const watched = Object.values(progress?.watched || {}).filter(Boolean).length;
     const percent = total > 0 ? Math.round((watched / total) * 100) : 0;
     progressText = total > 0 ? `Progress: ${watched}/${total} episodes (${percent}%)` : "No episodes available";
+  }
+
+  // Buscar watch providers (apenas se o proxy estiver disponível)
+  if (serie?.tmdbId) {
+    try {
+      const { getSeriesWatchProviders } = await import("../../modules/tmdbApi.js");
+      netflixProvider = await getSeriesWatchProviders(serie.tmdbId, serie.title);
+    } catch (err) {
+      // Se o proxy não estiver disponível (ex: desenvolvimento local), não mostrar erro
+      if (err.message?.includes("405") || err.message?.includes("Method not allowed")) {
+        console.info("ℹ️ TMDB proxy não disponível localmente. O botão Netflix aparecerá quando deployado no Vercel.");
+      } else {
+        console.warn("Erro ao buscar watch providers:", err);
+      }
+      netflixProvider = { hasNetflix: false };
+    }
   }
 
   container.innerHTML = `
@@ -231,7 +248,7 @@ function renderSerieInfo() {
             : ""}
         </div>
 
-        <div class="mt-4 flex items-center gap-3">
+        <div class="mt-4 flex items-center gap-3 flex-wrap">
           ${!fromAllSeries ? `
           <button id="toggleAllBtn"
             class="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg font-semibold">
@@ -244,6 +261,16 @@ function renderSerieInfo() {
             class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold">
             ${isFollowingSerie ? "Unfollow" : "Follow"}
           </button>
+          ` : ""}
+
+          ${netflixProvider?.hasNetflix ? `
+          <a href="${netflixProvider.netflixUrl}" target="_blank" rel="noopener noreferrer"
+             class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-lg font-semibold flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor">
+              <path d="M5.398 0v.006c3.028 8.556 5.37 15.175 8.348 23.596 2.344.058 4.85.398 4.854.398-2.8-7.924-5.923-16.747-8.487-24zm8.489 0v9.63L18.6 22.951c-.043-7.926-.006-15.71.002-22.95zM5.398.024L5.4 0zm13.203.006v22.949c2.37-6.859 4.583-13.275 6.93-20.949H18.6z"/>
+            </svg>
+            Watch on Netflix
+          </a>
           ` : ""}
 
           ${serie.rating
