@@ -26,7 +26,6 @@ let progress = null;
 let fromAllSeries = false;
 let isFavorite = false;
 let isFollowingSerie = false;
-let netflixProvider = null;
 
 // 🔥 Lista de temporadas abertas (carregada do localStorage)
 let openSeasons = new Set();
@@ -186,22 +185,6 @@ async function renderSerieInfo() {
     progressText = total > 0 ? `Progress: ${watched}/${total} episodes (${percent}%)` : "No episodes available";
   }
 
-  // Buscar watch providers (apenas se o proxy estiver disponível)
-  if (serie?.tmdbId) {
-    try {
-      const { getSeriesWatchProviders } = await import("../../modules/tmdbApi.js");
-      netflixProvider = await getSeriesWatchProviders(serie.tmdbId, serie.title);
-    } catch (err) {
-      // Se o proxy não estiver disponível (ex: desenvolvimento local), não mostrar erro
-      if (err.message?.includes("405") || err.message?.includes("Method not allowed")) {
-        console.info("ℹ️ TMDB proxy não disponível localmente. O botão Netflix aparecerá quando deployado no Vercel.");
-      } else {
-        console.warn("Erro ao buscar watch providers:", err);
-      }
-      netflixProvider = { hasNetflix: false };
-    }
-  }
-
   container.innerHTML = `
     <div class="flex flex-col md:flex-row gap-8">
 
@@ -263,14 +246,6 @@ async function renderSerieInfo() {
           </button>
           ` : ""}
 
-          ${netflixProvider?.hasNetflix ? `
-          <a href="${netflixProvider.netflixUrl}" target="_blank" rel="noopener noreferrer"
-             class="bg-black hover:bg-gray-900 p-3 rounded-lg flex items-center justify-center"
-             title="Watch on Netflix">
-            <img src="/assets/netflix-logo.png" alt="Netflix" class="w-7 h-7 object-contain" />
-          </a>
-          ` : ""}
-
           ${serie.rating
             ? `<span class="w-12 h-12 rounded-full bg-transparent border border-blue-900 flex items-center justify-center text-blue-400 font-bold text-sm">
                 ${serie.rating.toFixed(1)}
@@ -291,21 +266,6 @@ async function renderSerieInfo() {
       this.onerror = null;
       this.src = this.getAttribute('data-placeholder');
     };
-  }
-
-  // DEBUG: Verificar se a imagem da Netflix carrega
-  const netflixImg = container.querySelector('img[alt="Netflix"]');
-  if (netflixImg) {
-    console.log("🔍 Tentando carregar imagem Netflix:", netflixImg.src);
-    netflixImg.onload = () => {
-      console.log("✅ Imagem Netflix carregada com sucesso:", netflixImg.src);
-    };
-    netflixImg.onerror = () => {
-      console.error("❌ Erro ao carregar imagem Netflix:", netflixImg.src);
-      console.log("Caminho completo:", window.location.origin + netflixImg.src);
-    };
-  } else {
-    console.log("ℹ️ Imagem Netflix não encontrada no DOM (pode não estar disponível na Netflix)");
   }
 
   const toggleBtn = document.getElementById("toggleAllBtn");
