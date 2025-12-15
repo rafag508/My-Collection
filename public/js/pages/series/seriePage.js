@@ -267,9 +267,7 @@ async function renderSerieInfo() {
           <a href="${netflixProvider.netflixUrl}" target="_blank" rel="noopener noreferrer"
              class="bg-black hover:bg-gray-900 p-3 rounded-lg flex items-center justify-center"
              title="Watch on Netflix">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7" fill="white">
-              <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="18" font-weight="bold" font-family="Arial, sans-serif">N</text>
-            </svg>
+            <img src="./assets/netflix-logo.png" alt="Netflix" class="w-7 h-7 object-contain" />
           </a>
           ` : ""}
 
