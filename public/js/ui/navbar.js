@@ -116,7 +116,7 @@ export function renderNavbar() {
         <label class="relative w-72">
           <input id="search" type="search" placeholder="${searchPlaceholder}"
             class="w-full rounded-xl bg-white/5 pl-10 pr-3 py-2 outline-none ring-0 focus:bg-white/10 placeholder:text-gray-400 transition-all duration-200" />
-          <svg class="absolute left-3 top-0.4 h-5 w-5 text-gray-400"
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"
             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="7"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
