@@ -15,6 +15,11 @@ export function isIOS() {
   return /iphone|ipad|ipod/i.test(navigator.userAgent);
 }
 
+// Detectar se é Firefox
+export function isFirefox() {
+  return navigator.userAgent.toLowerCase().includes('firefox');
+}
+
 // Capturar evento beforeinstallprompt (Android/Chrome)
 export function setupInstallPrompt() {
   window.addEventListener('beforeinstallprompt', (e) => {
@@ -23,6 +28,12 @@ export function setupInstallPrompt() {
     deferredPrompt = e;
     showInstallButton();
   });
+
+  // ✅ Para Firefox, mostrar botão sempre (se não estiver instalado)
+  // Firefox não suporta beforeinstallprompt, então mostramos o botão manualmente
+  if (isFirefox() && !isInstalled()) {
+    showInstallButton();
+  }
 
   // Se já está instalado, esconder botão
   if (isInstalled()) {
@@ -113,6 +124,37 @@ export function showIOSInstructions() {
   });
 }
 
+// Mostrar instruções para Firefox
+export function showFirefoxInstructions() {
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center';
+  modal.innerHTML = `
+    <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-[90%] max-w-md relative">
+      <button class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl" onclick="this.closest('.fixed').remove()">✖</button>
+      <h2 class="text-2xl font-bold mb-4 text-center text-blue-400">Instalar App</h2>
+      <div class="space-y-4 text-gray-300">
+        <p class="text-center">Para instalar no Firefox:</p>
+        <ol class="list-decimal list-inside space-y-2 ml-4">
+          <li>Clique no ícone de <strong>menu</strong> <span class="text-2xl">☰</span> no canto superior direito</li>
+          <li>Procure por <strong>"Instalar"</strong> ou <strong>"Mais ferramentas"</strong></li>
+          <li>Clique em <strong>"Instalar"</strong> ou use o atalho <kbd class="px-2 py-1 bg-gray-800 rounded">Menu → Instalar</kbd></li>
+        </ol>
+        <p class="text-center text-sm text-gray-400 mt-4">O app aparecerá como uma aplicação instalada!</p>
+        <p class="text-center text-xs text-gray-500 mt-2">Nota: Se não vir a opção "Instalar", o site pode não cumprir todos os requisitos de PWA no Firefox.</p>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Fechar ao clicar fora
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.remove();
+    }
+  });
+}
+
 // Inicializar botão de instalação
 export function initInstallButton(buttonElement) {
   installButton = buttonElement;
@@ -129,6 +171,8 @@ export function initInstallButton(buttonElement) {
   installButton.addEventListener('click', async () => {
     if (isIOS()) {
       showIOSInstructions();
+    } else if (isFirefox()) {
+      showFirefoxInstructions();
     } else {
       await installPWA();
     }
