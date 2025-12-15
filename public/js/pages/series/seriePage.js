@@ -265,11 +265,11 @@ async function renderSerieInfo() {
 
           ${netflixProvider?.hasNetflix ? `
           <a href="${netflixProvider.netflixUrl}" target="_blank" rel="noopener noreferrer"
-             class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-lg font-semibold flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor">
+             class="bg-red-600 hover:bg-red-700 p-3 rounded-lg flex items-center justify-center"
+             title="Watch on Netflix">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor">
               <path d="M5.398 0v.006c3.028 8.556 5.37 15.175 8.348 23.596 2.344.058 4.85.398 4.854.398-2.8-7.924-5.923-16.747-8.487-24zm8.489 0v9.63L18.6 22.951c-.043-7.926-.006-15.71.002-22.95zM5.398.024L5.4 0zm13.203.006v22.949c2.37-6.859 4.583-13.275 6.93-20.949H18.6z"/>
             </svg>
-            Watch on Netflix
           </a>
           ` : ""}
 
