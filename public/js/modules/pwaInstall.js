@@ -57,7 +57,11 @@ export function setupInstallPrompt() {
 export function showInstallButton() {
   if (installButton) {
     console.log('[PWA] Showing install button');
+    // ✅ Remover classe 'hidden' do Tailwind (tem !important)
+    installButton.classList.remove('hidden');
     installButton.style.display = 'flex';
+    console.log('[PWA] Button classes after show:', installButton.className);
+    console.log('[PWA] Button display style:', installButton.style.display);
   } else {
     console.warn('[PWA] Cannot show button: installButton is null');
   }
@@ -211,7 +215,10 @@ export function initInstallButton(buttonElement) {
   } else if (firefoxDetected) {
     console.log('[PWA] Firefox detected in initInstallButton, showing button immediately');
     // Mostrar imediatamente para Firefox
+    // ✅ Remover classe 'hidden' do Tailwind (tem !important)
+    installButton.classList.remove('hidden');
     installButton.style.display = 'flex';
+    console.log('[PWA] Button classes after Firefox init:', installButton.className);
   } else {
     // Para outros browsers, esconder inicialmente (será mostrado por beforeinstallprompt)
     console.log('[PWA] Not Firefox, hiding button (will show on beforeinstallprompt)');

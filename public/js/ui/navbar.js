@@ -12,14 +12,25 @@ let pwaModuleLoaded = false;
 // Carregar módulo PWA dinamicamente
 (async () => {
   try {
+    console.log('[PWA] Navbar: Starting dynamic import...');
     const pwaModule = await import("../modules/pwaInstall.js");
+    console.log('[PWA] Navbar: Module imported successfully:', pwaModule);
     initInstallButton = pwaModule.initInstallButton;
     setupInstallPrompt = pwaModule.setupInstallPrompt;
     isInstalled = pwaModule.isInstalled;
     pwaModuleLoaded = true;
-    console.log('[PWA] Module loaded dynamically in navbar');
+    console.log('[PWA] Navbar: Module loaded dynamically, functions assigned:', {
+      initInstallButton: typeof initInstallButton,
+      setupInstallPrompt: typeof setupInstallPrompt,
+      isInstalled: typeof isInstalled
+    });
   } catch (error) {
-    console.error('[PWA] Failed to load module:', error);
+    console.error('[PWA] Navbar: Failed to load module:', error);
+    console.error('[PWA] Navbar: Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     pwaModuleLoaded = false;
   }
 })();
@@ -252,32 +263,52 @@ export function renderNavbar() {
     
     // Função para inicializar o botão PWA (aguarda carregamento do módulo se necessário)
     const initPWAButton = async () => {
+      console.log('[PWA] initPWAButton called');
+      console.log('[PWA] pwaModuleLoaded:', pwaModuleLoaded);
+      console.log('[PWA] installBtn:', installBtn);
+      
       // Se o módulo ainda não foi carregado, tentar carregar agora
       if (!pwaModuleLoaded) {
         try {
           console.log('[PWA] Module not loaded yet, loading now...');
           const pwaModule = await import("../modules/pwaInstall.js");
+          console.log('[PWA] Module imported:', pwaModule);
           initInstallButton = pwaModule.initInstallButton;
           setupInstallPrompt = pwaModule.setupInstallPrompt;
           isInstalled = pwaModule.isInstalled;
           pwaModuleLoaded = true;
           console.log('[PWA] Module loaded successfully');
+          console.log('[PWA] Functions assigned:', {
+            initInstallButton: typeof initInstallButton,
+            setupInstallPrompt: typeof setupInstallPrompt,
+            isInstalled: typeof isInstalled
+          });
         } catch (error) {
           console.error('[PWA] Failed to load module:', error);
+          console.error('[PWA] Error stack:', error.stack);
           return;
         }
       }
       
       // Verificar se as funções estão disponíveis
+      console.log('[PWA] Checking if functions are available...');
+      console.log('[PWA] initInstallButton type:', typeof initInstallButton);
+      console.log('[PWA] setupInstallPrompt type:', typeof setupInstallPrompt);
+      
       if (typeof initInstallButton === 'function' && typeof setupInstallPrompt === 'function') {
         try {
+          console.log('[PWA] Calling initInstallButton...');
           // Inicializar o botão primeiro
           initInstallButton(installBtn);
           
+          console.log('[PWA] Calling setupInstallPrompt...');
           // Depois configurar o prompt (que pode tentar mostrar novamente se necessário)
           setupInstallPrompt();
+          
+          console.log('[PWA] Button initialization complete');
         } catch (error) {
           console.error('[PWA] Error initializing install button:', error);
+          console.error('[PWA] Error stack:', error.stack);
         }
       } else {
         console.error('[PWA] Functions not available:', {
@@ -289,7 +320,10 @@ export function renderNavbar() {
     };
     
     // Inicializar (pode ser assíncrono)
-    initPWAButton();
+    console.log('[PWA] Starting initPWAButton...');
+    initPWAButton().catch(error => {
+      console.error('[PWA] Unhandled error in initPWAButton:', error);
+    });
   } else if (installBtn) {
     // Esconder botão em modo convidado
     console.log('[PWA] Guest mode active, hiding install button');
