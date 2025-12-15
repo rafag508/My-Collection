@@ -293,6 +293,21 @@ async function renderSerieInfo() {
     };
   }
 
+  // DEBUG: Verificar se a imagem da Netflix carrega
+  const netflixImg = container.querySelector('img[alt="Netflix"]');
+  if (netflixImg) {
+    console.log("🔍 Tentando carregar imagem Netflix:", netflixImg.src);
+    netflixImg.onload = () => {
+      console.log("✅ Imagem Netflix carregada com sucesso:", netflixImg.src);
+    };
+    netflixImg.onerror = () => {
+      console.error("❌ Erro ao carregar imagem Netflix:", netflixImg.src);
+      console.log("Caminho completo:", window.location.origin + netflixImg.src);
+    };
+  } else {
+    console.log("ℹ️ Imagem Netflix não encontrada no DOM (pode não estar disponível na Netflix)");
+  }
+
   const toggleBtn = document.getElementById("toggleAllBtn");
   if (toggleBtn) {
     toggleBtn.addEventListener("click", toggleAllEpisodes);
