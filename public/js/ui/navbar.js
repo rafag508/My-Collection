@@ -224,12 +224,14 @@ export function renderNavbar() {
   // ✅ Inicializar PWA Install Button (só se não for guest mode)
   if (!guestMode && installBtn) {
     console.log('[PWA] Initializing install button in navbar');
+    console.log('[PWA] Guest mode:', guestMode);
+    console.log('[PWA] Install button element:', installBtn);
+    
+    // Inicializar o botão primeiro
     initInstallButton(installBtn);
     
-    // Usar setTimeout para garantir que o botão foi inicializado antes de setup
-    setTimeout(() => {
-      setupInstallPrompt();
-    }, 50);
+    // Depois configurar o prompt (que pode tentar mostrar novamente se necessário)
+    setupInstallPrompt();
   } else if (installBtn) {
     // Esconder botão em modo convidado
     console.log('[PWA] Guest mode active, hiding install button');

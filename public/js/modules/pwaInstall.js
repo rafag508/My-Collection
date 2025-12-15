@@ -196,14 +196,22 @@ export function initInstallButton(buttonElement) {
 
   // ✅ Para Firefox, mostrar imediatamente (se não estiver instalado)
   // Não esconder inicialmente se for Firefox
-  if (isFirefox() && !isInstalled()) {
-    console.log('[PWA] Firefox detected in initInstallButton, showing button');
-    showInstallButton();
-  } else if (isInstalled()) {
+  const firefoxDetected = isFirefox();
+  const alreadyInstalled = isInstalled();
+  
+  console.log('[PWA] Firefox detected:', firefoxDetected);
+  console.log('[PWA] Already installed:', alreadyInstalled);
+  
+  if (alreadyInstalled) {
     console.log('[PWA] Already installed, hiding button');
     hideInstallButton();
+  } else if (firefoxDetected) {
+    console.log('[PWA] Firefox detected in initInstallButton, showing button immediately');
+    // Mostrar imediatamente para Firefox
+    installButton.style.display = 'flex';
   } else {
     // Para outros browsers, esconder inicialmente (será mostrado por beforeinstallprompt)
+    console.log('[PWA] Not Firefox, hiding button (will show on beforeinstallprompt)');
     hideInstallButton();
   }
 }
