@@ -45,6 +45,10 @@ const PAGE_SIZE = 18;
 let isSearchMode = false;
 let filteredSeries = [];
 
+// ✅ Cache de progresso e favoritos (como em movies)
+let seriesProgressCache = {};
+let favoriteSeriesCache = null;
+
 // Filtros
 let isFilterMode = false;
 let currentFilters = {
@@ -191,6 +195,10 @@ export async function initSeriesPage() {
   renderNavbar();
   renderFooter();
 
+  // ✅ CARREGAR CACHE DE PROGRESSO E FAVORITOS no início (para applyFilters síncrono)
+  seriesProgressCache = await getAllSeriesProgress({ syncFromCloud: false });
+  favoriteSeriesCache = await getFavoriteSeries();
+
   // ✅ RESTAURAR ESTADO usando URLStateManager
   const urlPage = urlState.getPageFromURL();
   const cameFromCard = urlState.cameFromCard();
@@ -225,8 +233,9 @@ export async function initSeriesPage() {
     updateURL: (page) => urlState.updateURL(page),
     getTotalItems: () => {
       let seriesToRender = isSearchMode ? filteredSeries : series;
-      // Nota: applyFilters é assíncrono, mas getTotalItems precisa ser síncrono
-      // O tamanho será recalculado corretamente em renderSeries quando os filtros forem aplicados
+      if (isFilterMode && !isSearchMode) {
+        seriesToRender = applyFilters(series);
+      }
       return seriesToRender.length;
     },
     onPageChange: () => {
@@ -303,7 +312,8 @@ export async function initSeriesPage() {
   // Sincronizar progresso de séries (similar a movies)
   getAllSeriesProgress({ syncFromCloud: shouldSyncProgress }).then(async cloudProgress => {
     if (!cloudProgress) return;
-    // O progresso já foi atualizado no cache pela função getAllSeriesProgress
+    // ✅ Atualizar cache de progresso
+    seriesProgressCache = cloudProgress;
     // Apenas precisamos de renderizar novamente se necessário
     renderSeries();
   }).catch(err => {
@@ -417,7 +427,8 @@ export async function initSeriesPage() {
   document.addEventListener("seriesProgressSynced", async (e) => {
     const cloudProgress = e.detail.data;
     if (cloudProgress && Object.keys(cloudProgress).length > 0) {
-      // Progresso já foi atualizado no cache pela função getAllSeriesProgress
+      // ✅ Atualizar cache de progresso
+      seriesProgressCache = cloudProgress;
       // Apenas precisamos de renderizar novamente
       renderSeries();
     }
@@ -473,7 +484,7 @@ async function renderSeries() {
   
   // Aplicar filtros se estiver em modo de filtro
   if (isFilterMode && !isSearchMode) {
-    seriesToRender = await applyFilters(series);
+    seriesToRender = applyFilters(series);
   }
 
   if (!seriesToRender.length) {
@@ -600,6 +611,9 @@ window.toggleWatched = async function (id) {
   } else {
     await markSerieAsViewed(id, serie);
   }
+
+  // ✅ Atualizar cache de progresso após mudança
+  seriesProgressCache = await getAllSeriesProgress({ syncFromCloud: false });
 
   document.dispatchEvent(new CustomEvent("serieProgressUpdated", { detail: { id } }));
   await renderSeries();
@@ -908,9 +922,9 @@ function setupFilter() {
 }
 
 // Função para aplicar filtros
-async function applyFilters(seriesList) {
+function applyFilters(seriesList) {
   let filtered = [...seriesList];
-  const progress = await getAllSeriesProgress({ syncFromCloud: false });
+  const progress = seriesProgressCache; // ✅ Usar cache em vez de await
   let favoriteIds = null;
 
   // Filtro por Top Rating
@@ -945,9 +959,9 @@ async function applyFilters(seriesList) {
   // Filtro por List
   if (currentFilters.list) {
     if (currentFilters.list === 'favorites') {
-      const favList = await getFavoriteSeries();
+      // ✅ Usar cache em vez de await
       favoriteIds = new Set(
-        (favList || []).map(s => (s.tmdbId || s.id || "").toString())
+        (favoriteSeriesCache || []).map(s => (s.tmdbId || s.id || "").toString())
       );
     }
 
