@@ -190,7 +190,8 @@ export function initInstallButton(buttonElement) {
   console.log('[PWA] isInstalled():', isInstalled());
 
   // Adicionar event listener primeiro
-  installButton.addEventListener('click', async () => {
+  installButton.addEventListener('click', async (e) => {
+    e.stopPropagation(); // ✅ Não fechar o dropdown do perfil ao clicar
     console.log('[PWA] Install button clicked');
     if (isIOS()) {
       showIOSInstructions();

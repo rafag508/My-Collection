@@ -162,18 +162,6 @@ export function renderNavbar() {
 <!-- BUTTONS: move them outside and fully right-aligned -->
 <div class="hidden md:flex items-center gap-3">
 
-  <!-- Install App Button (PWA) -->
-  <button
-    id="installAppBtn"
-    class="hidden h-8 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
-    title="Instalar App"
-  >
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-    </svg>
-    Instalar
-  </button>
-
   <!-- Bell -->
   <button
     id="notificationsBell"
@@ -229,6 +217,19 @@ export function renderNavbar() {
     >
       <span>${translate("settings")}</span>
     </button>
+    
+    <!-- Install App Button (PWA) -->
+    <button
+      id="installAppBtn"
+      class="hidden w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-800 text-blue-400"
+      title="Instalar App"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+      </svg>
+      <span>Instalar App</span>
+    </button>
+    
     <button
       class="w-full text-left px-3 py-2 text-red-400 hover:bg-red-900/30"
       data-profile-action="logout"
