@@ -157,7 +157,7 @@ async function renderNotifications(container, notifs) {
 
       // Se for notificação de filme (movie_release), usar layout próprio
       if (n.type === "movie_release") {
-        const FALLBACK_POSTER = "./assets/mc-icon-blue.svg";
+        const FALLBACK_POSTER = "./assets/icons/mc-icon-blue.svg";
         let posterUrl =
           n.moviePoster ||
           movie?.poster ||
@@ -210,7 +210,7 @@ async function renderNotifications(container, notifs) {
           }
         }
 
-        const FALLBACK_POSTER = "./assets/mc-icon-green.svg";
+        const FALLBACK_POSTER = "./assets/icons/mc-icon-green.svg";
         const posterUrl = poster || FALLBACK_POSTER;
         const serieName = n.serieName || serie?.title || "Unknown series";
 
@@ -334,7 +334,7 @@ async function renderNotifications(container, notifs) {
         .join("");
 
       // Usar poster da série, ou um ícone genérico se não existir
-      const FALLBACK_POSTER = "./assets/mc-icon-green.svg";
+      const FALLBACK_POSTER = "./assets/icons/mc-icon-green.svg";
       const posterUrl = poster || FALLBACK_POSTER;
       const serieName = n.serieName || serie?.title || "Unknown series";
 
