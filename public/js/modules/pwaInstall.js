@@ -23,11 +23,18 @@ export function isFirefox() {
 
 // Capturar evento beforeinstallprompt (Android/Chrome)
 export function setupInstallPrompt() {
+  console.log('[PWA] setupInstallPrompt chamado');
+  console.log('[PWA] isInstalled:', isInstalled());
+  console.log('[PWA] deferredPrompt atual:', deferredPrompt ? 'disponível' : 'null');
+  
   window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('[PWA] ✅ beforeinstallprompt event FIRED!');
     e.preventDefault();
     deferredPrompt = e;
+    console.log('[PWA] deferredPrompt guardado:', deferredPrompt ? 'sim' : 'não');
     // Guardar flag em sessionStorage para indicar que o evento disparou
     sessionStorage.setItem('pwa_install_prompt_available', 'true');
+    console.log('[PWA] Flag guardada em sessionStorage');
     showInstallButton();
   });
 
@@ -200,19 +207,28 @@ export function showAndroidInstructions() {
 
 // Instalar PWA (Android/Chrome)
 export async function installPWA() {
+  console.log('[PWA] installPWA() chamado');
+  console.log('[PWA] isInstalled:', isInstalled());
+  console.log('[PWA] deferredPrompt:', deferredPrompt ? '✅ DISPONÍVEL' : '❌ NULL');
+  console.log('[PWA] sessionStorage flag:', sessionStorage.getItem('pwa_install_prompt_available'));
+  
   // ✅ Verificar se já está instalado PRIMEIRO
   if (isInstalled()) {
+    console.log('[PWA] App já está instalado, mostrando mensagem');
     showAlreadyInstalled();
     return false;
   }
   
   if (!deferredPrompt) {
-    console.warn('[PWA] No install prompt available');
+    console.warn('[PWA] ❌ No install prompt available');
+    console.warn('[PWA] deferredPrompt é null - evento não disparou ou foi perdido');
     // O deferredPrompt não está disponível (evento não disparou ou foi perdido)
     // Mostrar instruções para instalação manual
     showAndroidInstructions();
     return false;
   }
+  
+  console.log('[PWA] ✅ deferredPrompt disponível, prosseguindo com instalação');
 
   // Mostrar barra de progresso
   const progressModal = showInstallProgress();
@@ -345,18 +361,28 @@ export function initInstallButton(buttonElement) {
   // Adicionar event listener primeiro
   installButton.addEventListener('click', async (e) => {
     e.stopPropagation(); // Não fechar o dropdown do perfil ao clicar
+    console.log('[PWA] 🔘 Botão "Instalar App" clicado');
+    console.log('[PWA] Estado atual:');
+    console.log('  - isInstalled:', isInstalled());
+    console.log('  - deferredPrompt:', deferredPrompt ? 'disponível' : 'null');
+    console.log('  - isIOS:', isIOS());
+    console.log('  - isFirefox:', isFirefox());
     
     // ✅ Verificar se já está instalado ANTES de processar
     if (isInstalled()) {
+      console.log('[PWA] App já instalado, mostrando mensagem');
       showAlreadyInstalled();
       return;
     }
     
     if (isIOS()) {
+      console.log('[PWA] iOS detectado, mostrando instruções');
       showIOSInstructions();
     } else if (isFirefox()) {
+      console.log('[PWA] Firefox detectado, mostrando instruções');
       showFirefoxInstructions();
     } else {
+      console.log('[PWA] Chrome/Android detectado, chamando installPWA()');
       await installPWA();
     }
   });

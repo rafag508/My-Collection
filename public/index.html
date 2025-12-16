@@ -12,6 +12,14 @@
 <title>Home</title>
 <link rel="stylesheet" href="css/style.css">
 <script src="https://cdn.tailwindcss.com"></script>
+<!-- vConsole para debug no mobile -->
+<script src="https://cdn.jsdelivr.net/npm/vconsole@latest/dist/vconsole.min.js"></script>
+<script>
+  // Inicializar vConsole apenas em dispositivos móveis
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    var vConsole = new VConsole();
+  }
+</script>
 </head>
 
 <body class="min-h-screen flex flex-col bg-gray-950 text-white font-inter">
