@@ -15,10 +15,17 @@
 <!-- vConsole para debug no mobile -->
 <script src="https://cdn.jsdelivr.net/npm/vconsole@latest/dist/vconsole.min.js"></script>
 <script>
-  // Inicializar vConsole apenas em dispositivos móveis
-  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-    var vConsole = new VConsole();
-  }
+  // Inicializar vConsole - sempre, para garantir que funciona
+  window.addEventListener('DOMContentLoaded', function() {
+    if (typeof VConsole !== 'undefined') {
+      var vConsole = new VConsole({
+        theme: 'dark'
+      });
+      console.log('vConsole inicializado');
+    } else {
+      console.error('vConsole não carregou');
+    }
+  });
 </script>
 </head>
 
