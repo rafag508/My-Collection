@@ -1,6 +1,13 @@
 // src/app.js
 // Entry point modular — detecta a página e carrega o módulo correspondente
 
+// ⚡ Capturar beforeinstallprompt o mais cedo possível (antes de qualquer import)
+window.pwaInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  window.pwaInstallPrompt = e;
+});
+
 import { protectPage } from "./firebase/auth.js";
 import { loadUserPreferences } from "./modules/idioma.js";
 import { isGuestMode, isProtectedPage } from "./modules/guestMode.js";

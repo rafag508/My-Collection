@@ -1,7 +1,15 @@
 // src/modules/pwaInstall.js
 // Gerencia a instalação do PWA
 
-let deferredPrompt = null;
+// Usar o prompt global capturado no app.js (mais cedo possível)
+function getDeferredPrompt() {
+  return window.pwaInstallPrompt;
+}
+
+function setDeferredPrompt(value) {
+  window.pwaInstallPrompt = value;
+}
+
 let installButton = null;
 
 // Detectar se já está instalado
@@ -20,13 +28,19 @@ export function isFirefox() {
   return navigator.userAgent.toLowerCase().includes('firefox');
 }
 
-// Capturar evento beforeinstallprompt (Android/Chrome)
+// Configurar listener adicional (caso o evento ainda não tenha disparado)
 export function setupInstallPrompt() {
+  // Listener adicional caso o evento dispare depois
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
-    deferredPrompt = e;
+    setDeferredPrompt(e);
     showInstallButton();
   });
+
+  // Se já foi capturado no app.js, mostrar botão
+  if (getDeferredPrompt() && installButton) {
+    showInstallButton();
+  }
 
   // Para Firefox, mostrar botão sempre (se não estiver instalado)
   if (isFirefox() && !isInstalled() && installButton) {
@@ -97,19 +111,21 @@ export function showAndroidInstructions() {
 
 // Instalar PWA (Android/Chrome)
 export async function installPWA() {
-  if (!deferredPrompt) {
+  const prompt = getDeferredPrompt();
+  
+  if (!prompt) {
     console.warn('[PWA] No install prompt available');
     showAndroidInstructions();
     return false;
   }
 
   try {
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+    prompt.prompt();
+    const { outcome } = await prompt.userChoice;
     
     if (outcome === 'accepted') {
       hideInstallButton();
-      deferredPrompt = null;
+      setDeferredPrompt(null);
       return true;
     } else {
       return false;
@@ -119,7 +135,7 @@ export async function installPWA() {
     showAndroidInstructions();
     return false;
   } finally {
-    deferredPrompt = null;
+    setDeferredPrompt(null);
   }
 }
 
