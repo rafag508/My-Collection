@@ -44,8 +44,24 @@ export function setupInstallPrompt() {
     console.log('[PWA] Firefox detected in setupInstallPrompt, ensuring button is visible');
     // Garantir que está visível (pode ter sido escondido por algum motivo)
     showInstallButton();
+    
+    // ✅ Verificar novamente após um delay para resolver problemas de timing
+    // Isto garante que o botão aparece mesmo após mudanças de página ou refresh normal
+    setTimeout(() => {
+      if (isFirefox() && !isInstalled() && installButton) {
+        console.log('[PWA] Firefox: Double-checking button visibility after delay');
+        showInstallButton();
+      }
+    }, 500); // 500ms delay
   }
-
+  
+  // ✅ Para Chrome/Android: Mostrar botão sempre se não estiver instalado
+  // Mesmo que beforeinstallprompt não tenha disparado (pode ter sido recusado antes)
+  if (!isFirefox() && !isInstalled() && installButton) {
+    console.log('[PWA] Chrome/Android detected, showing button (beforeinstallprompt may fire later)');
+    showInstallButton();
+  }
+ 
   // Se já está instalado, esconder botão
   if (isInstalled()) {
     console.log('[PWA] Already installed, hiding button');
@@ -78,6 +94,7 @@ export function hideInstallButton() {
 export async function installPWA() {
   if (!deferredPrompt) {
     console.warn('[PWA] No install prompt available');
+    alert('A instalação não está disponível no momento. Por favor, use o menu do browser (⋮) → "Instalar My Collection" ou tente novamente mais tarde.');
     return false;
   }
 
@@ -220,10 +237,19 @@ export function initInstallButton(buttonElement) {
     installButton.classList.remove('hidden');
     installButton.style.display = 'flex';
     console.log('[PWA] Button classes after Firefox init:', installButton.className);
+    
+    // ✅ Verificar novamente após um delay para garantir que permanece visível
+    // Isto resolve problemas quando mudas de página ou fazes refresh normal (F5)
+    setTimeout(() => {
+      if (isFirefox() && !isInstalled() && installButton) {
+        console.log('[PWA] Firefox: Ensuring button is still visible after init delay');
+        showInstallButton();
+      }
+    }, 300); // 300ms delay
   } else {
-    // Para outros browsers, esconder inicialmente (será mostrado por beforeinstallprompt)
-    console.log('[PWA] Not Firefox, hiding button (will show on beforeinstallprompt)');
-    hideInstallButton();
+    // Para outros browsers, mostrar botão (será gerido pelo setupInstallPrompt)
+    console.log('[PWA] Not Firefox, button visibility will be managed by setupInstallPrompt');
+    // Não esconder aqui - deixar o setupInstallPrompt decidir
   }
 }
 
