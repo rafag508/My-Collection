@@ -1,6 +1,6 @@
 {
   "name": "My Collection",
-  "short_name": "MC",
+  "short_name": "MyCollection",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
