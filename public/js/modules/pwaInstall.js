@@ -25,6 +25,8 @@ export function setupInstallPrompt() {
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    // Guardar flag em sessionStorage para indicar que o evento disparou
+    sessionStorage.setItem('pwa_install_prompt_available', 'true');
     showInstallButton();
   });
 
@@ -106,7 +108,8 @@ export function showAndroidInstructions() {
 export async function installPWA() {
   if (!deferredPrompt) {
     console.warn('[PWA] No install prompt available');
-    // Em vez de alert, mostrar instruções específicas
+    // O deferredPrompt não está disponível (evento não disparou ou foi perdido)
+    // Mostrar instruções para instalação manual
     showAndroidInstructions();
     return false;
   }
@@ -119,19 +122,31 @@ export async function installPWA() {
     const { outcome } = await deferredPrompt.userChoice;
     
     if (outcome === 'accepted') {
+      // Instalação bem-sucedida - limpar tudo
       hideInstallButton();
+      deferredPrompt = null;
+      sessionStorage.removeItem('pwa_install_prompt_available');
       return true;
     } else {
+      // Utilizador recusou - manter deferredPrompt disponível para tentar novamente
+      // NÃO limpar o deferredPrompt aqui para permitir nova tentativa
       return false;
     }
   } catch (error) {
     console.error('[PWA] Error during installation:', error);
-    // Se der erro, mostrar instruções manuais
+    // Se der erro, pode ser que o deferredPrompt tenha expirado
+    // Tentar novamente pode funcionar, então não limpamos imediatamente
+    // Mas se o erro persistir, mostrar instruções manuais
+    if (error.message && error.message.includes('already been used')) {
+      // O prompt já foi usado - limpar
+      deferredPrompt = null;
+      sessionStorage.removeItem('pwa_install_prompt_available');
+    }
     showAndroidInstructions();
     return false;
-  } finally {
-    deferredPrompt = null;
   }
+  // Removido o finally que limpava o deferredPrompt
+  // Agora só limpamos quando a instalação é aceite ou quando há erro específico
 }
 
 // Mostrar instruções para iOS
