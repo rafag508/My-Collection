@@ -71,11 +71,43 @@ export function hideInstallButton() {
   }
 }
 
+// Mostrar instruções para Android/Chrome (quando deferredPrompt não está disponível)
+export function showAndroidInstructions() {
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center';
+  modal.innerHTML = `
+    <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-[90%] max-w-md relative">
+      <button class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl" onclick="this.closest('.fixed').remove()">✖</button>
+      <h2 class="text-2xl font-bold mb-4 text-center text-blue-400">Instalar App</h2>
+      <div class="space-y-4 text-gray-300">
+        <p class="text-center">Para instalar no Android/Chrome:</p>
+        <ol class="list-decimal list-inside space-y-2 ml-4">
+          <li>Toque no menu do browser <span class="text-2xl">⋮</span> no canto superior direito</li>
+          <li>Procure por <strong>"Instalar app"</strong> ou <strong>"Adicionar ao ecrã inicial"</strong></li>
+          <li>Toque em <strong>"Instalar"</strong> ou <strong>"Adicionar"</strong></li>
+        </ol>
+        <p class="text-center text-sm text-gray-400 mt-4">O app aparecerá no seu ecrã inicial!</p>
+        <p class="text-center text-xs text-gray-500 mt-2">Nota: Se não vir a opção, o site pode não cumprir todos os requisitos de PWA ou já pode estar instalado.</p>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Fechar ao clicar fora
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.remove();
+    }
+  });
+}
+
 // Instalar PWA (Android/Chrome)
 export async function installPWA() {
   if (!deferredPrompt) {
     console.warn('[PWA] No install prompt available');
-    alert('A instalação não está disponível no momento. Por favor, use o menu do browser (⋮) → "Instalar My Collection" ou tente novamente mais tarde.');
+    // Em vez de alert, mostrar instruções específicas
+    showAndroidInstructions();
     return false;
   }
 
@@ -94,6 +126,8 @@ export async function installPWA() {
     }
   } catch (error) {
     console.error('[PWA] Error during installation:', error);
+    // Se der erro, mostrar instruções manuais
+    showAndroidInstructions();
     return false;
   } finally {
     deferredPrompt = null;
