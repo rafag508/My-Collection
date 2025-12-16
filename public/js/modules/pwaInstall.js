@@ -1,6 +1,5 @@
 // src/modules/pwaInstall.js
 // Gerencia a instalação do PWA
-// PWA Install Module
 
 let deferredPrompt = null;
 let installButton = null;
@@ -23,27 +22,15 @@ export function isFirefox() {
 
 // Capturar evento beforeinstallprompt (Android/Chrome)
 export function setupInstallPrompt() {
-  console.log('[PWA] setupInstallPrompt chamado');
-  console.log('[PWA] isInstalled:', isInstalled());
-  console.log('[PWA] deferredPrompt atual:', deferredPrompt ? 'disponível' : 'null');
-  
   window.addEventListener('beforeinstallprompt', (e) => {
-    console.log('[PWA] ✅ beforeinstallprompt event FIRED!');
     e.preventDefault();
     deferredPrompt = e;
-    console.log('[PWA] deferredPrompt guardado:', deferredPrompt ? 'sim' : 'não');
-    // Guardar flag em sessionStorage para indicar que o evento disparou
-    sessionStorage.setItem('pwa_install_prompt_available', 'true');
-    console.log('[PWA] Flag guardada em sessionStorage');
     showInstallButton();
   });
 
-  // ✅ Para Firefox, mostrar botão sempre (se não estiver instalado)
-  // Firefox não suporta beforeinstallprompt, então mostramos o botão manualmente
+  // Para Firefox, mostrar botão sempre (se não estiver instalado)
   if (isFirefox() && !isInstalled() && installButton) {
     showInstallButton();
-    
-    // Verificar novamente após um delay para resolver problemas de timing
     setTimeout(() => {
       if (isFirefox() && !isInstalled() && installButton) {
         showInstallButton();
@@ -51,8 +38,7 @@ export function setupInstallPrompt() {
     }, 500);
   }
   
-  // ✅ Para Chrome/Android: Mostrar botão sempre se não estiver instalado
-  // Mesmo que beforeinstallprompt não tenha disparado (pode ter sido recusado antes)
+  // Para Chrome/Android: Mostrar botão sempre se não estiver instalado
   if (!isFirefox() && !isInstalled() && installButton) {
     showInstallButton();
   }
@@ -66,7 +52,6 @@ export function setupInstallPrompt() {
 // Mostrar botão de instalação
 export function showInstallButton() {
   if (installButton) {
-    // Remover classe 'hidden' do Tailwind (tem !important)
     installButton.classList.remove('hidden');
     installButton.style.display = 'flex';
   } else {
@@ -79,99 +64,6 @@ export function hideInstallButton() {
   if (installButton) {
     installButton.style.display = 'none';
   }
-}
-
-// Mostrar barra de progresso durante instalação
-function showInstallProgress() {
-  const modal = document.createElement('div');
-  modal.id = 'pwa-install-progress';
-  modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center';
-  modal.innerHTML = `
-    <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-[90%] max-w-md relative">
-      <h2 class="text-2xl font-bold mb-4 text-center text-blue-400">A instalar App...</h2>
-      <div class="space-y-4">
-        <div class="w-full bg-gray-800 rounded-full h-2.5">
-          <div id="pwa-progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
-        </div>
-        <p class="text-center text-gray-300 text-sm">Por favor, aguarde...</p>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-  
-  // Simular progresso
-  let progress = 0;
-  const interval = setInterval(() => {
-    progress += 10;
-    const bar = document.getElementById('pwa-progress-bar');
-    if (bar) {
-      bar.style.width = Math.min(progress, 90) + '%';
-    }
-    if (progress >= 90) {
-      clearInterval(interval);
-    }
-  }, 200);
-  
-  return modal;
-}
-
-// Mostrar sucesso após instalação
-function showInstallSuccess() {
-  // Remover modal de progresso se existir
-  const progressModal = document.getElementById('pwa-install-progress');
-  if (progressModal) {
-    progressModal.remove();
-  }
-  
-  const modal = document.createElement('div');
-  modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center';
-  modal.innerHTML = `
-    <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-[90%] max-w-md relative">
-      <button class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl" onclick="this.closest('.fixed').remove()">✖</button>
-      <div class="text-center">
-        <div class="text-6xl mb-4">✅</div>
-        <h2 class="text-2xl font-bold mb-2 text-green-400">App Instalada com Sucesso!</h2>
-        <p class="text-gray-300 text-sm">A app foi instalada no seu dispositivo.</p>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-  
-  // Fechar automaticamente após 3 segundos
-  setTimeout(() => {
-    modal.remove();
-  }, 3000);
-  
-  // Fechar ao clicar fora
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.remove();
-    }
-  });
-}
-
-// Mostrar que já está instalado
-function showAlreadyInstalled() {
-  const modal = document.createElement('div');
-  modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center';
-  modal.innerHTML = `
-    <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-[90%] max-w-md relative">
-      <button class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl" onclick="this.closest('.fixed').remove()">✖</button>
-      <div class="text-center">
-        <div class="text-6xl mb-4">ℹ️</div>
-        <h2 class="text-2xl font-bold mb-2 text-blue-400">App Já Instalada</h2>
-        <p class="text-gray-300 text-sm">A app já está instalada no seu dispositivo.</p>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-  
-  // Fechar ao clicar fora
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.remove();
-    }
-  });
 }
 
 // Mostrar instruções para Android/Chrome (quando deferredPrompt não está disponível)
@@ -190,14 +82,12 @@ export function showAndroidInstructions() {
           <li>Toque em <strong>"Instalar"</strong> ou <strong>"Adicionar"</strong></li>
         </ol>
         <p class="text-center text-sm text-gray-400 mt-4">O app aparecerá no seu ecrã inicial!</p>
-        <p class="text-center text-xs text-gray-500 mt-2">Nota: Se não vir a opção, o site pode não cumprir todos os requisitos de PWA ou já pode estar instalado.</p>
       </div>
     </div>
   `;
   
   document.body.appendChild(modal);
   
-  // Fechar ao clicar fora
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       modal.remove();
@@ -207,77 +97,29 @@ export function showAndroidInstructions() {
 
 // Instalar PWA (Android/Chrome)
 export async function installPWA() {
-  console.log('[PWA] installPWA() chamado');
-  console.log('[PWA] isInstalled:', isInstalled());
-  console.log('[PWA] deferredPrompt:', deferredPrompt ? '✅ DISPONÍVEL' : '❌ NULL');
-  console.log('[PWA] sessionStorage flag:', sessionStorage.getItem('pwa_install_prompt_available'));
-  
-  // ✅ Verificar se já está instalado PRIMEIRO
-  if (isInstalled()) {
-    console.log('[PWA] App já está instalado, mostrando mensagem');
-    showAlreadyInstalled();
-    return false;
-  }
-  
   if (!deferredPrompt) {
-    console.warn('[PWA] ❌ No install prompt available');
-    console.warn('[PWA] deferredPrompt é null - evento não disparou ou foi perdido');
-    // O deferredPrompt não está disponível (evento não disparou ou foi perdido)
-    // Mostrar instruções para instalação manual
+    console.warn('[PWA] No install prompt available');
     showAndroidInstructions();
     return false;
   }
-  
-  console.log('[PWA] ✅ deferredPrompt disponível, prosseguindo com instalação');
-
-  // Mostrar barra de progresso
-  const progressModal = showInstallProgress();
 
   try {
-    // Mostrar prompt de instalação
     deferredPrompt.prompt();
-    
-    // Esperar resposta do utilizador
     const { outcome } = await deferredPrompt.userChoice;
     
-    // Completar barra de progresso
-    const bar = document.getElementById('pwa-progress-bar');
-    if (bar) {
-      bar.style.width = '100%';
-    }
-    
     if (outcome === 'accepted') {
-      // Aguardar um pouco para a animação de progresso
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Instalação bem-sucedida - mostrar sucesso
-      showInstallSuccess();
       hideInstallButton();
       deferredPrompt = null;
-      sessionStorage.removeItem('pwa_install_prompt_available');
       return true;
     } else {
-      // Utilizador recusou - remover modal de progresso
-      if (progressModal) {
-        progressModal.remove();
-      }
-      // Manter deferredPrompt disponível para tentar novamente
       return false;
     }
   } catch (error) {
     console.error('[PWA] Error during installation:', error);
-    // Remover modal de progresso em caso de erro
-    if (progressModal) {
-      progressModal.remove();
-    }
-    // Se der erro, pode ser que o deferredPrompt tenha expirado
-    if (error.message && error.message.includes('already been used')) {
-      // O prompt já foi usado - limpar
-      deferredPrompt = null;
-      sessionStorage.removeItem('pwa_install_prompt_available');
-    }
     showAndroidInstructions();
     return false;
+  } finally {
+    deferredPrompt = null;
   }
 }
 
@@ -286,10 +128,9 @@ export function showIOSInstructions() {
   const isStandalone = window.navigator.standalone === true;
   
   if (isStandalone) {
-    return; // Já está instalado
+    return;
   }
 
-  // Criar modal com instruções
   const modal = document.createElement('div');
   modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center';
   modal.innerHTML = `
@@ -310,7 +151,6 @@ export function showIOSInstructions() {
   
   document.body.appendChild(modal);
   
-  // Fechar ao clicar fora
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       modal.remove();
@@ -331,17 +171,15 @@ export function showFirefoxInstructions() {
         <ol class="list-decimal list-inside space-y-2 ml-4">
           <li>Clique no ícone de <strong>menu</strong> <span class="text-2xl">☰</span> no canto superior direito</li>
           <li>Procure por <strong>"Instalar"</strong> ou <strong>"Mais ferramentas"</strong></li>
-          <li>Clique em <strong>"Instalar"</strong> ou use o atalho <kbd class="px-2 py-1 bg-gray-800 rounded">Menu → Instalar</kbd></li>
+          <li>Clique em <strong>"Instalar"</strong></li>
         </ol>
         <p class="text-center text-sm text-gray-400 mt-4">O app aparecerá como uma aplicação instalada!</p>
-        <p class="text-center text-xs text-gray-500 mt-2">Nota: Se não vir a opção "Instalar", o site pode não cumprir todos os requisitos de PWA no Firefox.</p>
       </div>
     </div>
   `;
   
   document.body.appendChild(modal);
   
-  // Fechar ao clicar fora
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       modal.remove();
@@ -358,54 +196,29 @@ export function initInstallButton(buttonElement) {
     return;
   }
 
-  // Adicionar event listener primeiro
   installButton.addEventListener('click', async (e) => {
-    e.stopPropagation(); // Não fechar o dropdown do perfil ao clicar
-    console.log('[PWA] 🔘 Botão "Instalar App" clicado');
-    console.log('[PWA] Estado atual:');
-    console.log('  - isInstalled:', isInstalled());
-    console.log('  - deferredPrompt:', deferredPrompt ? 'disponível' : 'null');
-    console.log('  - isIOS:', isIOS());
-    console.log('  - isFirefox:', isFirefox());
-    
-    // ✅ Verificar se já está instalado ANTES de processar
-    if (isInstalled()) {
-      console.log('[PWA] App já instalado, mostrando mensagem');
-      showAlreadyInstalled();
-      return;
-    }
-    
+    e.stopPropagation();
     if (isIOS()) {
-      console.log('[PWA] iOS detectado, mostrando instruções');
       showIOSInstructions();
     } else if (isFirefox()) {
-      console.log('[PWA] Firefox detectado, mostrando instruções');
       showFirefoxInstructions();
     } else {
-      console.log('[PWA] Chrome/Android detectado, chamando installPWA()');
       await installPWA();
     }
   });
 
-  // Para Firefox, mostrar imediatamente (se não estiver instalado)
   const firefoxDetected = isFirefox();
   const alreadyInstalled = isInstalled();
   
   if (alreadyInstalled) {
     hideInstallButton();
   } else if (firefoxDetected) {
-    // Mostrar imediatamente para Firefox
-    // Remover classe 'hidden' do Tailwind (tem !important)
     installButton.classList.remove('hidden');
     installButton.style.display = 'flex';
-    
-    // Verificar novamente após um delay para garantir que permanece visível
     setTimeout(() => {
       if (isFirefox() && !isInstalled() && installButton) {
         showInstallButton();
       }
     }, 300);
   }
-  // Para outros browsers, o setupInstallPrompt vai gerir a visibilidade
 }
-
