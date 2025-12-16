@@ -1,9 +1,6 @@
 // src/modules/pwaInstall.js
 // Gerencia a instalação do PWA
 
-// ✅ LOG IMEDIATO para verificar se o módulo está a carregar
-console.log('[PWA] Module pwaInstall.js loaded');
-
 let deferredPrompt = null;
 let installButton = null;
 
@@ -25,13 +22,7 @@ export function isFirefox() {
 
 // Capturar evento beforeinstallprompt (Android/Chrome)
 export function setupInstallPrompt() {
-  console.log('[PWA] Setting up install prompt');
-  console.log('[PWA] isFirefox():', isFirefox());
-  console.log('[PWA] isInstalled():', isInstalled());
-  console.log('[PWA] installButton exists:', !!installButton);
-  
   window.addEventListener('beforeinstallprompt', (e) => {
-    console.log('[PWA] beforeinstallprompt event fired');
     e.preventDefault();
     deferredPrompt = e;
     showInstallButton();
@@ -39,32 +30,25 @@ export function setupInstallPrompt() {
 
   // ✅ Para Firefox, mostrar botão sempre (se não estiver instalado)
   // Firefox não suporta beforeinstallprompt, então mostramos o botão manualmente
-  // Nota: O botão já deve estar visível se foi inicializado corretamente em initInstallButton
   if (isFirefox() && !isInstalled() && installButton) {
-    console.log('[PWA] Firefox detected in setupInstallPrompt, ensuring button is visible');
-    // Garantir que está visível (pode ter sido escondido por algum motivo)
     showInstallButton();
     
-    // ✅ Verificar novamente após um delay para resolver problemas de timing
-    // Isto garante que o botão aparece mesmo após mudanças de página ou refresh normal
+    // Verificar novamente após um delay para resolver problemas de timing
     setTimeout(() => {
       if (isFirefox() && !isInstalled() && installButton) {
-        console.log('[PWA] Firefox: Double-checking button visibility after delay');
         showInstallButton();
       }
-    }, 500); // 500ms delay
+    }, 500);
   }
   
   // ✅ Para Chrome/Android: Mostrar botão sempre se não estiver instalado
   // Mesmo que beforeinstallprompt não tenha disparado (pode ter sido recusado antes)
   if (!isFirefox() && !isInstalled() && installButton) {
-    console.log('[PWA] Chrome/Android detected, showing button (beforeinstallprompt may fire later)');
     showInstallButton();
   }
  
   // Se já está instalado, esconder botão
   if (isInstalled()) {
-    console.log('[PWA] Already installed, hiding button');
     hideInstallButton();
   }
 }
@@ -72,12 +56,9 @@ export function setupInstallPrompt() {
 // Mostrar botão de instalação
 export function showInstallButton() {
   if (installButton) {
-    console.log('[PWA] Showing install button');
-    // ✅ Remover classe 'hidden' do Tailwind (tem !important)
+    // Remover classe 'hidden' do Tailwind (tem !important)
     installButton.classList.remove('hidden');
     installButton.style.display = 'flex';
-    console.log('[PWA] Button classes after show:', installButton.className);
-    console.log('[PWA] Button display style:', installButton.style.display);
   } else {
     console.warn('[PWA] Cannot show button: installButton is null');
   }
@@ -105,14 +86,10 @@ export async function installPWA() {
     // Esperar resposta do utilizador
     const { outcome } = await deferredPrompt.userChoice;
     
-    console.log('[PWA] User choice:', outcome);
-    
     if (outcome === 'accepted') {
-      console.log('[PWA] App installed');
       hideInstallButton();
       return true;
     } else {
-      console.log('[PWA] App installation declined');
       return false;
     }
   } catch (error) {
@@ -200,16 +177,9 @@ export function initInstallButton(buttonElement) {
     return;
   }
 
-  console.log('[PWA] Initializing install button');
-  console.log('[PWA] Button element:', installButton);
-  console.log('[PWA] Current display:', installButton.style.display);
-  console.log('[PWA] isFirefox():', isFirefox());
-  console.log('[PWA] isInstalled():', isInstalled());
-
   // Adicionar event listener primeiro
   installButton.addEventListener('click', async (e) => {
-    e.stopPropagation(); // ✅ Não fechar o dropdown do perfil ao clicar
-    console.log('[PWA] Install button clicked');
+    e.stopPropagation(); // Não fechar o dropdown do perfil ao clicar
     if (isIOS()) {
       showIOSInstructions();
     } else if (isFirefox()) {
@@ -219,37 +189,25 @@ export function initInstallButton(buttonElement) {
     }
   });
 
-  // ✅ Para Firefox, mostrar imediatamente (se não estiver instalado)
-  // Não esconder inicialmente se for Firefox
+  // Para Firefox, mostrar imediatamente (se não estiver instalado)
   const firefoxDetected = isFirefox();
   const alreadyInstalled = isInstalled();
   
-  console.log('[PWA] Firefox detected:', firefoxDetected);
-  console.log('[PWA] Already installed:', alreadyInstalled);
-  
   if (alreadyInstalled) {
-    console.log('[PWA] Already installed, hiding button');
     hideInstallButton();
   } else if (firefoxDetected) {
-    console.log('[PWA] Firefox detected in initInstallButton, showing button immediately');
     // Mostrar imediatamente para Firefox
-    // ✅ Remover classe 'hidden' do Tailwind (tem !important)
+    // Remover classe 'hidden' do Tailwind (tem !important)
     installButton.classList.remove('hidden');
     installButton.style.display = 'flex';
-    console.log('[PWA] Button classes after Firefox init:', installButton.className);
     
-    // ✅ Verificar novamente após um delay para garantir que permanece visível
-    // Isto resolve problemas quando mudas de página ou fazes refresh normal (F5)
+    // Verificar novamente após um delay para garantir que permanece visível
     setTimeout(() => {
       if (isFirefox() && !isInstalled() && installButton) {
-        console.log('[PWA] Firefox: Ensuring button is still visible after init delay');
         showInstallButton();
       }
-    }, 300); // 300ms delay
-  } else {
-    // Para outros browsers, mostrar botão (será gerido pelo setupInstallPrompt)
-    console.log('[PWA] Not Firefox, button visibility will be managed by setupInstallPrompt');
-    // Não esconder aqui - deixar o setupInstallPrompt decidir
+    }, 300);
   }
+  // Para outros browsers, o setupInstallPrompt vai gerir a visibilidade
 }
 
