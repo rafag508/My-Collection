@@ -1,5 +1,6 @@
 // src/modules/pwaInstall.js
 // Gerencia a instalação do PWA
+// PWA Install Module
 
 let deferredPrompt = null;
 let installButton = null;
