@@ -56,17 +56,19 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   
-  // NUNCA cachear Firestore, Auth, ou outras APIs dinâmicas
+  // ✅ NUNCA interceptar Firestore, Auth, ou outras APIs dinâmicas
+  // Retornar imediatamente sem interceptar para evitar interferência
   if (
     url.hostname.includes('firestore.googleapis.com') ||
     url.hostname.includes('firebase.googleapis.com') ||
     url.hostname.includes('identitytoolkit.googleapis.com') ||
     url.hostname.includes('securetoken.googleapis.com') ||
+    url.hostname.includes('googleapis.com') ||
     url.pathname.startsWith('/api/') ||
     event.request.method !== 'GET'
   ) {
-    // Sempre buscar do servidor, nunca cachear
-    return fetch(event.request);
+    // Não interceptar - deixar passar diretamente sem interferência
+    return;
   }
   
   // Para assets estáticos: cache-first strategy
@@ -89,7 +91,8 @@ self.addEventListener('fetch', (event) => {
         return response;
       }).catch(() => {
         // Se falhar e for HTML, retorna index.html (para SPA)
-        if (event.request.headers.get('accept').includes('text/html')) {
+        const acceptHeader = event.request.headers.get('accept');
+        if (acceptHeader && acceptHeader.includes('text/html')) {
           return caches.match('/index.html');
         }
       });

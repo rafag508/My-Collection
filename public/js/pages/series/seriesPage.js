@@ -197,7 +197,14 @@ export async function initSeriesPage() {
 
   // ✅ CARREGAR CACHE DE PROGRESSO E FAVORITOS no início (para applyFilters síncrono)
   seriesProgressCache = await getAllSeriesProgress({ syncFromCloud: false });
-  favoriteSeriesCache = await getFavoriteSeries();
+  
+  // Carregar favoritos em cache (com try-catch para evitar erros)
+  try {
+    favoriteSeriesCache = await getFavoriteSeries();
+  } catch (err) {
+    console.warn("seriesPage: erro ao carregar favoritos:", err);
+    favoriteSeriesCache = [];
+  }
 
   // ✅ RESTAURAR ESTADO usando URLStateManager
   const urlPage = urlState.getPageFromURL();

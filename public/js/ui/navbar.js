@@ -278,10 +278,7 @@ export function renderNavbar() {
     });
   } else if (installBtn) {
     // Esconder botão em modo convidado
-    console.log('[PWA] Guest mode active, hiding install button');
     installBtn.style.display = 'none';
-  } else {
-    console.warn('[PWA] Install button not found in navbar');
   }
   
   // Verificar se o utilizador é anónimo ou está em modo convidado
