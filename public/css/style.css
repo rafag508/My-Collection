@@ -569,7 +569,15 @@ body {
     flex: 1 !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: space-between !important;
+    justify-content: space-evenly !important;
+  }
+
+  /* Seções dentro ocupam espaço igual */
+  #statsRoot section .space-y-4 > div {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
   }
 
   /* Título do card (Series/Movies) */
