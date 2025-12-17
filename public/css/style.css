@@ -307,19 +307,19 @@ body {
   }
 
   .stat-label {
-    font-size: 22px;
-    color: #9ca3af;
+    font-size: 28px;
+    color: #e5e7eb;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    padding: 24px 24px;
+    gap: 14px;
+    padding: 28px 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .stat-label svg {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
   }
 
   .stat-value {
