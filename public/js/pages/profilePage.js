@@ -196,31 +196,38 @@ async function loadStatsPreview() {
     const tvMinutes = episodesWatched * EPISODE_AVG_MIN;
     const movieMinutes = moviesWatched * MOVIE_AVG_MIN;
     
-    // Update UI
-    if (tvTimeEl) tvTimeEl.textContent = formatTime(tvMinutes);
-    if (episodesEl) episodesEl.textContent = episodesWatched.toLocaleString();
-    if (movieTimeEl) movieTimeEl.textContent = formatTime(movieMinutes);
-    if (moviesEl) moviesEl.textContent = moviesWatched.toLocaleString();
+    // Update UI with new format
+    if (tvTimeEl) updateTimeCard(tvTimeEl, tvMinutes);
+    if (episodesEl) {
+      const singleEl = episodesEl.querySelector('.stat-single');
+      if (singleEl) singleEl.textContent = episodesWatched.toLocaleString();
+    }
+    if (movieTimeEl) updateTimeCard(movieTimeEl, movieMinutes);
+    if (moviesEl) {
+      const singleEl = moviesEl.querySelector('.stat-single');
+      if (singleEl) singleEl.textContent = moviesWatched.toLocaleString();
+    }
     
   } catch (err) {
     console.warn('Error loading stats:', err);
   }
 }
 
-function formatTime(minutes) {
-  const hours = Math.floor(minutes / 60);
+function updateTimeCard(container, totalMinutes) {
+  const hours = Math.floor(totalMinutes / 60);
   const days = Math.floor(hours / 24);
   const months = Math.floor(days / 30);
   
-  if (months > 0) {
-    const remainingDays = days % 30;
-    return `${months}m ${remainingDays}d`;
-  } else if (days > 0) {
-    const remainingHours = hours % 24;
-    return `${days}d ${remainingHours}h`;
-  } else {
-    return `${hours}h`;
-  }
+  const remainingDays = days % 30;
+  const remainingHours = hours % 24;
+  
+  const monthsEl = container.querySelector('[data-months]');
+  const daysEl = container.querySelector('[data-days]');
+  const hoursEl = container.querySelector('[data-hours]');
+  
+  if (monthsEl) monthsEl.textContent = months;
+  if (daysEl) daysEl.textContent = remainingDays;
+  if (hoursEl) hoursEl.textContent = remainingHours;
 }
 
 // Auto-init

@@ -269,7 +269,7 @@ body {
 
   .notif-poster {
     width: 100%;
-    height: 200px;
+    height: 380px;
     object-fit: cover;
   }
 
@@ -297,27 +297,65 @@ body {
   /* Stats Cards */
   .stat-card {
     flex-shrink: 0;
-    min-width: 55vw;
-    max-width: 260px;
+    min-width: 40vw;
+    max-width: 200px;
     background: rgba(31, 41, 55, 0.6);
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
-    padding: 32px;
-    text-align: center;
+    border-radius: 20px;
+    overflow: hidden;
     scroll-snap-align: start;
   }
 
   .stat-label {
-    font-size: 18px;
+    font-size: 14px;
     color: #9ca3af;
-    display: block;
-    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .stat-label svg {
+    width: 18px;
+    height: 18px;
   }
 
   .stat-value {
-    font-size: 42px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+
+  .stat-value .stat-numbers {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .stat-value .stat-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-value .stat-number {
+    font-size: 32px;
     font-weight: 700;
-    color: #3b82f6;
+    color: white;
+  }
+
+  .stat-value .stat-unit-label {
+    font-size: 11px;
+    color: #6b7280;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .stat-value .stat-single {
+    font-size: 36px;
+    font-weight: 700;
+    color: white;
   }
 
   /* Slide Menu */
