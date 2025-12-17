@@ -163,6 +163,20 @@ export async function initMoviesPage() {
   renderNavbar();
   renderFooter();
 
+  // Mostrar tabs apenas no modo app
+  const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone === true ||
+                    window.innerWidth <= 768;
+  
+  const tabsElement = document.querySelector('.movies-tabs');
+  if (tabsElement) {
+    if (isAppMode) {
+      tabsElement.classList.remove('hidden');
+    } else {
+      tabsElement.classList.add('hidden');
+    }
+  }
+
   // ✅ RESTAURAR ESTADO usando URLStateManager
   const urlPage = urlState.getPageFromURL();
   const cameFromCard = urlState.cameFromCard();

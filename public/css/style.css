@@ -674,6 +674,136 @@ body {
     margin-bottom: 32px !important;
   }
 
+  /* Movies Page - App Style */
+  body:has(#moviesGrid) main {
+    padding: 0 !important;
+  }
+
+  body:has(#moviesGrid) main .max-w-\\[90rem\\] {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Esconder título "My Movies" */
+  body:has(#moviesGrid) main h1.text-3xl {
+    display: none !important;
+  }
+
+  /* Tabs no topo */
+  .movies-tabs {
+    display: flex !important;
+    width: 100% !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
+    margin-bottom: 24px !important;
+    padding: 0 16px !important;
+    margin-top: 16px !important;
+  }
+
+  .movies-tabs.hidden {
+    display: none !important;
+  }
+
+  .movies-tab {
+    flex: 1 !important;
+    text-align: center !important;
+    padding: 16px 0 !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    text-decoration: none !important;
+    position: relative !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  .movies-tab.active {
+    color: white !important;
+  }
+
+  .movies-tab.active::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -2px !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 2px !important;
+    background: white !important;
+  }
+
+  /* Container dos botões - descer um pouco */
+  body:has(#moviesGrid) main .flex.items-center.justify-between {
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 16px !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* Botões maiores */
+  body:has(#moviesGrid) main button {
+    font-size: 16px !important;
+    padding: 12px 16px !important;
+    min-height: 44px !important;
+  }
+
+  /* Botões de ação específicos */
+  body:has(#moviesGrid) #editMoviesBtn,
+  body:has(#moviesGrid) #moveMoviesBtn,
+  body:has(#moviesGrid) #deleteMoviesBtn,
+  body:has(#moviesGrid) #confirmDeleteMoviesBtn,
+  body:has(#moviesGrid) #filterMoviesBtn,
+  body:has(#moviesGrid) #addMoviesBtn {
+    font-size: 18px !important;
+    padding: 14px 18px !important;
+  }
+
+  /* Grid 2 colunas */
+  #moviesGrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+    padding: 0 16px !important;
+  }
+
+  /* Posters maiores */
+  #moviesGrid .movie-card {
+    border-radius: 12px !important;
+  }
+
+  #moviesGrid .movie-card img {
+    height: 320px !important;
+    object-fit: cover !important;
+  }
+
+  #moviesGrid .movie-card h3 {
+    font-size: 18px !important;
+    padding: 12px 8px !important;
+  }
+
+  #moviesGrid .movie-card p {
+    font-size: 14px !important;
+    padding: 0 8px 8px 8px !important;
+  }
+
+  #moviesGrid .movie-card button {
+    font-size: 14px !important;
+    padding: 10px 16px !important;
+    margin: 8px !important;
+  }
+
+  /* Paginação */
+  #moviesPagination,
+  #moviesPaginationTop {
+    padding: 0 16px !important;
+    margin: 24px 0 !important;
+  }
+
+  #moviesPagination button,
+  #moviesPaginationTop button {
+    font-size: 18px !important;
+    padding: 12px 20px !important;
+    min-width: 44px !important;
+  }
+
   /* Hero - App Style */
   #hero {
     padding: 24px !important;
