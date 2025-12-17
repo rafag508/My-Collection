@@ -9,7 +9,7 @@ import {
 import { isGuestMode } from "./guestMode.js";
 
 const NOTIF_KEY = "notifications";
-const MAX_NOTIFICATIONS = 150;
+const MAX_NOTIFICATIONS = 50;
 const MAX_AGE_DAYS = 30;
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 

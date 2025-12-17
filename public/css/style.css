@@ -474,4 +474,65 @@ body {
     border-radius: 16px !important;
   }
 
+  /* ========================================
+     Stats Page - App Style
+     ======================================== */
+
+  #statsRoot h1 {
+    font-size: 40px !important;
+  }
+
+  #statsRoot h2 {
+    font-size: 32px !important;
+  }
+
+  #statsRoot h3,
+  #statsRoot .text-xl {
+    font-size: 28px !important;
+  }
+
+  #statsRoot p,
+  #statsRoot span,
+  #statsRoot td,
+  #statsRoot th {
+    font-size: 22px !important;
+  }
+
+  #statsRoot .text-4xl,
+  #statsRoot .text-3xl {
+    font-size: 48px !important;
+  }
+
+  #statsRoot .text-2xl {
+    font-size: 36px !important;
+  }
+
+  #statsRoot .text-lg {
+    font-size: 26px !important;
+  }
+
+  #statsRoot .text-sm {
+    font-size: 20px !important;
+  }
+
+  #statsRoot .text-xs {
+    font-size: 18px !important;
+  }
+
+  /* Cards dos stats */
+  #statsRoot > div {
+    padding: 24px !important;
+    border-radius: 20px !important;
+  }
+
+  /* Tabelas */
+  #statsRoot table {
+    font-size: 22px !important;
+  }
+
+  #statsRoot td,
+  #statsRoot th {
+    padding: 16px 12px !important;
+  }
+
 }
