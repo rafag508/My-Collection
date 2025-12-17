@@ -553,44 +553,51 @@ body {
     width: 100% !important;
     min-width: 100% !important;
     max-width: 100% !important;
+    min-height: 75vh !important;
     scroll-snap-align: start !important;
     scroll-snap-stop: always !important;
-    padding: 32px !important;
+    padding: 40px 32px !important;
+    margin-top: 24px !important;
     border-radius: 28px !important;
     box-sizing: border-box !important;
   }
 
   /* Título do card (Series/Movies) */
   #statsRoot section h2 {
-    font-size: 42px !important;
-    margin-bottom: 28px !important;
+    font-size: 48px !important;
+    margin-bottom: 36px !important;
   }
 
   /* Labels (Total added, etc) */
   #statsRoot section .font-semibold {
-    font-size: 28px !important;
+    font-size: 32px !important;
   }
 
   /* Números grandes */
   #statsRoot section .text-2xl {
-    font-size: 56px !important;
+    font-size: 64px !important;
   }
 
   /* Texto secundário */
   #statsRoot section .text-gray-300,
   #statsRoot section .text-gray-400 {
-    font-size: 24px !important;
+    font-size: 26px !important;
   }
 
   /* Time breakdown */
   #statsRoot section .text-lg {
-    font-size: 32px !important;
+    font-size: 36px !important;
   }
 
-  /* Seções dentro do card */
+  /* Seções dentro do card - linhas divisórias */
   #statsRoot section .space-y-4 > div {
-    padding-top: 24px !important;
-    padding-bottom: 12px !important;
+    padding-top: 32px !important;
+    padding-bottom: 20px !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.15) !important;
+  }
+
+  #statsRoot section .space-y-4 > div:last-child {
+    border-bottom: none !important;
   }
 
   /* Tabelas de géneros */
