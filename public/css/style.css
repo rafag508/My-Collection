@@ -519,14 +519,15 @@ body {
     font-size: 18px !important;
   }
 
-  /* Cards dos stats - carousel horizontal */
+  /* Cards dos stats - carousel horizontal full screen */
   #statsRoot {
-    padding: 20px !important;
+    padding: 16px !important;
     overflow: hidden !important;
   }
 
   #statsRoot > h1 {
-    margin-bottom: 20px !important;
+    margin-bottom: 24px !important;
+    font-size: 48px !important;
   }
 
   /* Grid -> horizontal scroll carousel */
@@ -554,20 +555,63 @@ body {
     max-width: 100% !important;
     scroll-snap-align: start !important;
     scroll-snap-stop: always !important;
-    padding: 28px !important;
-    border-radius: 24px !important;
+    padding: 32px !important;
+    border-radius: 28px !important;
     box-sizing: border-box !important;
   }
 
-  /* Tabelas */
+  /* Título do card (Series/Movies) */
+  #statsRoot section h2 {
+    font-size: 42px !important;
+    margin-bottom: 28px !important;
+  }
+
+  /* Labels (Total added, etc) */
+  #statsRoot section .font-semibold {
+    font-size: 28px !important;
+  }
+
+  /* Números grandes */
+  #statsRoot section .text-2xl {
+    font-size: 56px !important;
+  }
+
+  /* Texto secundário */
+  #statsRoot section .text-gray-300,
+  #statsRoot section .text-gray-400 {
+    font-size: 24px !important;
+  }
+
+  /* Time breakdown */
+  #statsRoot section .text-lg {
+    font-size: 32px !important;
+  }
+
+  /* Seções dentro do card */
+  #statsRoot section .space-y-4 > div {
+    padding-top: 24px !important;
+    padding-bottom: 12px !important;
+  }
+
+  /* Tabelas de géneros */
   #statsRoot table {
-    font-size: 22px !important;
+    font-size: 26px !important;
     width: 100% !important;
+    margin-top: 16px !important;
   }
 
   #statsRoot td,
   #statsRoot th {
-    padding: 18px 14px !important;
+    padding: 20px 16px !important;
+  }
+
+  /* Header da tabela */
+  #statsRoot .grid-cols-\\[1fr_auto\\] {
+    font-size: 24px !important;
+  }
+
+  #statsRoot .grid-cols-\\[1fr_auto\\] > div {
+    padding: 16px 0 !important;
   }
 
 }
