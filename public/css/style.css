@@ -707,7 +707,7 @@ body {
     flex: 1 !important;
     text-align: center !important;
     padding: 16px 0 !important;
-    font-size: 18px !important;
+    font-size: 26px !important;
     font-weight: 600 !important;
     color: rgba(255, 255, 255, 0.6) !important;
     text-decoration: none !important;
@@ -754,7 +754,7 @@ body {
   body:has(#moviesGrid) #confirmDeleteMoviesBtn,
   body:has(#moviesGrid) #filterMoviesBtn,
   body:has(#moviesGrid) #addMoviesBtn {
-    font-size: 18px !important;
+    font-size: 24px !important;
     padding: 14px 18px !important;
   }
 
@@ -778,18 +778,18 @@ body {
 
   /* Aumentar tamanho do título e ano */
   #moviesGrid .movie-card h3 {
-    font-size: 20px !important;
+    font-size: 22px !important;
     font-weight: 600 !important;
     margin-bottom: 4px !important;
   }
 
   #moviesGrid .movie-card p.text-xs {
-    font-size: 16px !important;
+    font-size: 20px !important;
   }
 
   /* Aumentar botão */
   #moviesGrid .movie-card button {
-    font-size: 15px !important;
+    font-size: 16px !important;
     padding: 12px 16px !important;
     margin-top: 8px !important;
   }
