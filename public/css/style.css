@@ -779,6 +779,12 @@ body {
     background-color: #b91c1c !important;
   }
 
+  /* SVG do botão eliminar - garantir que seja branco */
+  body:has(.movies-tabs) #deleteMoviesBtn svg {
+    stroke: white !important;
+    fill: none !important;
+  }
+
   /* Checkboxes de seleção (tamanho médio) */
   body:has(.movies-tabs) #moviesGrid .movie-card button[onclick*="toggleDeleteSelect"] {
     font-size: 36px !important;
