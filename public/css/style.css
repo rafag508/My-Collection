@@ -561,7 +561,8 @@ body {
   }
 
 
-  /* Título do card (Series/Movies) */
+  /* Título do card (Series/Movies) - forçar tamanho grande */
+  #statsRoot > div > section > h2,
   #statsRoot section h2 {
     font-size: 160px !important;
     margin-bottom: 40px !important;
@@ -578,7 +579,7 @@ body {
 
   /* Números grandes */
   #statsRoot section .text-2xl {
-    font-size: 80px !important;
+    font-size: 64px !important;
     line-height: 1.1 !important;
   }
 
@@ -609,21 +610,21 @@ body {
   }
 
   /* Tabelas de géneros */
-  #statsRoot table {
-    font-size: 40px !important;
+  #statsRoot section table {
+    font-size: 64px !important;
     width: 100% !important;
-    margin-top: 24px !important;
+    margin-top: 28px !important;
   }
 
-  #statsRoot td,
-  #statsRoot th {
-    padding: 20px 18px !important;
-    font-size: 38px !important;
-    line-height: 1.4 !important;
+  #statsRoot section td,
+  #statsRoot section th {
+    padding: 24px 20px !important;
+    font-size: 56px !important;
+    line-height: 1.3 !important;
   }
 
-  #statsRoot table thead {
-    font-size: 40px !important;
+  #statsRoot section table thead {
+    font-size: 64px !important;
   }
 
   /* Header da tabela */
