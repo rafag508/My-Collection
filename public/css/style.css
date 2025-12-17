@@ -758,21 +758,22 @@ body {
     padding: 14px 18px !important;
   }
 
-  /* Grid 2 colunas - posters mais estreitos */
+  /* Grid 3 colunas */
   #moviesGrid {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(3, 1fr) !important;
     gap: 12px !important;
-    padding: 0 20px !important;
+    padding: 0 16px !important;
   }
 
-  /* Posters maiores - mais altura, menos largura */
+  /* Posters maiores - mais altura */
   #moviesGrid .movie-card {
     border-radius: 12px !important;
   }
 
   #moviesGrid .movie-card img {
-    height: 400px !important;
+    height: 480px !important;
     object-fit: cover !important;
+    transform: scale(0.75) !important; /* Zoom out 25% */
   }
 
   #moviesGrid .movie-card h3 {
