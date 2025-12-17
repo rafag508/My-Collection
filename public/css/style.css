@@ -768,12 +768,25 @@ body {
   /* Posters maiores - mais altura */
   #moviesGrid .movie-card {
     border-radius: 12px !important;
+    overflow: hidden !important; /* Garantir que a imagem não sai do card */
+  }
+
+  /* Container da imagem - precisa de overflow para cortar o scale */
+  #moviesGrid .movie-card > div {
+    overflow: hidden !important;
+    position: relative !important;
+    width: 100% !important;
+    height: 480px !important; /* Altura fixa do container */
   }
 
   #moviesGrid .movie-card img {
-    height: 480px !important;
+    height: 600px !important; /* Aumentar altura para compensar scale 0.80 (480/0.8 = 600) */
+    width: 125% !important; /* Aumentar largura para compensar scale 0.80 (100/0.8 = 125) */
     object-fit: cover !important;
-    transform: scale(0.75) !important; /* Zoom out 25% */
+    transform: scale(0.80) !important; /* Zoom out 20% */
+    transform-origin: center center !important;
+    display: block !important;
+    margin-left: -12.5% !important; /* Centralizar após aumentar largura */
   }
 
   #moviesGrid .movie-card h3 {
