@@ -451,7 +451,9 @@ body {
   }
 
   #notificationsList img {
-    max-height: 400px !important;
+    min-height: 350px !important;
+    max-height: none !important;
+    object-fit: cover;
   }
 
   #notificationsList .text-base {
