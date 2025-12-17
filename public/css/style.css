@@ -147,8 +147,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 24px;
-    padding-top: calc(env(safe-area-inset-top, 0) + 20px);
+    padding: 28px 28px;
+    padding-top: calc(env(safe-area-inset-top, 0) + 28px);
     background: rgba(17, 24, 39, 0.98);
     position: sticky;
     top: 0;
@@ -156,87 +156,92 @@ body {
   }
 
   .app-profile-header h1 {
-    font-size: 24px;
+    font-size: 32px;
   }
 
   .menu-toggle-btn {
-    padding: 12px;
+    padding: 16px;
     color: #e5e7eb;
   }
 
   .menu-toggle-btn svg {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
   }
 
   .profile-main {
-    padding: 24px;
-    padding-bottom: 160px;
+    padding: 28px;
+    padding-bottom: 180px;
   }
 
   .avatar-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px 0;
+    padding: 50px 0;
   }
 
   .avatar-box {
-    width: 160px;
-    height: 160px;
+    width: 200px;
+    height: 200px;
     background: #3b82f6;
-    border-radius: 28px;
+    border-radius: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 72px;
+    font-size: 96px;
     font-weight: 800;
     color: white;
   }
 
+  #userEmail {
+    font-size: 22px !important;
+    margin-top: 20px !important;
+  }
+
   .profile-section {
-    margin-bottom: 36px;
+    margin-bottom: 44px;
   }
 
   .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 0;
+    padding: 22px 0;
     text-decoration: none;
     color: inherit;
   }
 
   .section-header span.text-lg {
-    font-size: 20px;
+    font-size: 26px;
   }
 
   .section-header svg.w-6 {
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
   }
 
   .section-header svg.w-5 {
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
   }
 
   .notif-badge {
     background: #ef4444;
     color: white;
-    font-size: 15px;
+    font-size: 20px;
     font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 14px;
-    min-width: 28px;
+    padding: 10px 16px;
+    border-radius: 18px;
+    min-width: 36px;
     text-align: center;
   }
 
   .horizontal-scroll {
     display: flex;
-    gap: 18px;
+    gap: 24px;
     overflow-x: auto;
-    padding: 12px 0;
+    padding: 16px 0;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
   }
@@ -248,31 +253,32 @@ body {
   /* Notification Cards */
   .notif-card {
     flex-shrink: 0;
-    width: 240px;
+    width: 75vw;
+    max-width: 320px;
     background: rgba(31, 41, 55, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
     overflow: hidden;
     scroll-snap-align: start;
   }
 
   .notif-card.unread {
     border-color: #3b82f6;
-    border-width: 2px;
+    border-width: 3px;
   }
 
   .notif-poster {
     width: 100%;
-    height: 140px;
+    height: 200px;
     object-fit: cover;
   }
 
   .notif-content {
-    padding: 16px;
+    padding: 22px;
   }
 
   .notif-title {
-    font-size: 17px;
+    font-size: 22px;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
@@ -280,9 +286,9 @@ body {
   }
 
   .notif-msg {
-    font-size: 14px;
+    font-size: 18px;
     color: #9ca3af;
-    margin-top: 6px;
+    margin-top: 10px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -291,24 +297,25 @@ body {
   /* Stats Cards */
   .stat-card {
     flex-shrink: 0;
-    min-width: 170px;
+    min-width: 55vw;
+    max-width: 260px;
     background: rgba(31, 41, 55, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 18px;
-    padding: 22px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 32px;
     text-align: center;
     scroll-snap-align: start;
   }
 
   .stat-label {
-    font-size: 14px;
+    font-size: 18px;
     color: #9ca3af;
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
   }
 
   .stat-value {
-    font-size: 30px;
+    font-size: 42px;
     font-weight: 700;
     color: #3b82f6;
   }
@@ -328,9 +335,9 @@ body {
     right: 0;
     background: rgba(31, 41, 55, 0.98);
     backdrop-filter: blur(10px);
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
-    padding: 20px 24px 28px;
+    border-top-left-radius: 32px;
+    border-top-right-radius: 32px;
+    padding: 28px 28px 36px;
     z-index: 999;
     transform: translateY(0);
     transition: transform 0.3s ease;
@@ -347,23 +354,23 @@ body {
   }
 
   .slide-menu-handle {
-    width: 48px;
-    height: 5px;
+    width: 60px;
+    height: 6px;
     background: #4b5563;
-    border-radius: 3px;
-    margin: 0 auto 24px;
+    border-radius: 4px;
+    margin: 0 auto 32px;
   }
 
   .slide-menu-item {
     display: flex;
     align-items: center;
-    gap: 20px;
-    padding: 22px 20px;
+    gap: 28px;
+    padding: 28px 24px;
     color: #e5e7eb;
     text-decoration: none;
-    font-size: 20px;
+    font-size: 26px;
     font-weight: 500;
-    border-radius: 16px;
+    border-radius: 20px;
     transition: background 0.2s;
     width: 100%;
     border: none;
@@ -372,8 +379,8 @@ body {
   }
 
   .slide-menu-item svg {
-    width: 28px;
-    height: 28px;
+    width: 40px;
+    height: 40px;
   }
 
   .slide-menu-item:hover {
