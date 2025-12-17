@@ -734,6 +734,7 @@ body {
   body:has(#moviesGrid) main .flex.items-center.justify-between {
     flex-direction: row !important;
     align-items: center !important;
+    justify-content: flex-end !important;
     padding: 16px !important;
     gap: 12px !important;
     flex-wrap: wrap !important;
@@ -757,20 +758,20 @@ body {
     padding: 14px 18px !important;
   }
 
-  /* Grid 2 colunas */
+  /* Grid 2 colunas - posters mais estreitos */
   #moviesGrid {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 16px !important;
-    padding: 0 16px !important;
+    gap: 12px !important;
+    padding: 0 20px !important;
   }
 
-  /* Posters maiores */
+  /* Posters maiores - mais altura, menos largura */
   #moviesGrid .movie-card {
     border-radius: 12px !important;
   }
 
   #moviesGrid .movie-card img {
-    height: 320px !important;
+    height: 400px !important;
     object-fit: cover !important;
   }
 
