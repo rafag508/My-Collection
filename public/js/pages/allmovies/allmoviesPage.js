@@ -45,6 +45,19 @@ function updateURL(page) {
 export async function initAllMoviesPage() {
   renderNavbar();
   renderFooter();
+
+  // Remover padding do container principal apenas no modo app
+  const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone === true ||
+                    window.innerWidth <= 768;
+  
+  if (isAppMode) {
+    const container = document.querySelector('main .max-w-7xl');
+    if (container) {
+      container.style.paddingLeft = '0';
+      container.style.paddingRight = '0';
+    }
+  }
   
   // 🔥 LER PÁGINA DA URL (ou usar 1 como padrão)
   let urlPage = getPageFromURL();
