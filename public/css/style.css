@@ -676,53 +676,58 @@ body {
 
   /* Hero - App Style */
   #hero {
-    min-height: calc(100vh - 140px) !important; /* Ocupa quase o ecrã todo */
-    display: flex !important;
-    align-items: center !important;
-    padding: 40px 24px !important;
+    padding: 24px !important;
+    padding-top: 16px !important;
   }
 
   #hero > div {
     display: flex !important;
-    flex-direction: column !important; /* Layout vertical */
+    flex-direction: column !important;
     width: 100% !important;
   }
 
-  /* Esconder a imagem do hero */
-  #hero .lg\\:col-span-5 {
-    display: none !important;
-  }
-
-  /* Texto do hero ocupa tudo */
+  /* Texto do hero no topo */
   #hero .lg\\:col-span-7 {
     width: 100% !important;
     text-align: center !important;
+    order: 1 !important;
   }
 
   #hero h1 {
-    font-size: 48px !important;
+    font-size: 36px !important;
     line-height: 1.2 !important;
-    margin-bottom: 24px !important;
+    margin-bottom: 16px !important;
   }
 
   #hero p {
-    font-size: 24px !important;
+    font-size: 18px !important;
     max-width: 100% !important;
-    margin: 0 auto 40px auto !important;
+    margin: 0 auto 24px auto !important;
   }
 
   /* Botões do hero */
   #hero .flex.gap-3 {
-    flex-direction: column !important;
-    gap: 20px !important;
+    flex-direction: row !important;
+    gap: 12px !important;
+    justify-content: center !important;
   }
 
   #hero a {
-    font-size: 28px !important;
-    padding: 20px 32px !important;
-    border-radius: 20px !important;
+    font-size: 18px !important;
+    padding: 14px 24px !important;
+    border-radius: 16px !important;
+  }
+
+  /* Imagem/Posters em baixo */
+  #hero .lg\\:col-span-5 {
+    order: 2 !important;
+    margin-top: 32px !important;
     width: 100% !important;
-    text-align: center !important;
+  }
+
+  #hero .lg\\:col-span-5 .aspect-\\[16\\/9\\] {
+    aspect-ratio: 9/16 !important; /* Vertical */
+    max-height: 50vh !important;
   }
 
 }
