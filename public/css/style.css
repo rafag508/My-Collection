@@ -945,19 +945,22 @@ body {
     min-height: 0 !important;
   }
 
-  body:has(.allmovies-tabs) #moviesGrid .movie-card img {
+  body:has(.allmovies-tabs) #moviesGrid .movie-card img,
+  body:has(.allmovies-tabs) #moviesGrid .movie-card .movie-card-link img {
     height: 420px !important;
     object-fit: cover !important;
   }
 
   /* Texto - AllMovies (mesmos estilos que Movies) */
-  body:has(.allmovies-tabs) #moviesGrid .movie-card h3 {
+  body:has(.allmovies-tabs) #moviesGrid .movie-card h3,
+  body:has(.allmovies-tabs) #moviesGrid .movie-card .movie-card-link h3 {
     font-size: 22px !important;
     font-weight: 600 !important;
     margin-bottom: 4px !important;
   }
 
-  body:has(.allmovies-tabs) #moviesGrid .movie-card p.text-xs {
+  body:has(.allmovies-tabs) #moviesGrid .movie-card p.text-xs,
+  body:has(.allmovies-tabs) #moviesGrid .movie-card .movie-card-link p.text-xs {
     font-size: 20px !important;
   }
 
@@ -967,7 +970,8 @@ body {
     margin-top: 8px !important;
   }
 
-  body:has(.allmovies-tabs) #moviesGrid .movie-card .p-2 {
+  body:has(.allmovies-tabs) #moviesGrid .movie-card .p-2,
+  body:has(.allmovies-tabs) #moviesGrid .movie-card .movie-card-link .p-2 {
     padding: 14px !important;
   }
 

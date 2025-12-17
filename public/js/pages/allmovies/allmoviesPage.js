@@ -796,11 +796,11 @@ async function loadMovies() {
 
 function renderMovieCard(movie) {
   return `
-    <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:ring-2 hover:ring-blue-500 transition-all duration-200 group cursor-pointer relative">
+    <div class="movie-card bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:ring-2 hover:ring-blue-500 transition-all duration-200 group cursor-pointer relative">
       <a href="allmovie.html?id=${movie.id}" data-page="${currentPage}" class="block movie-card-link">
         <img src="${movie.poster}" 
              data-placeholder="${PLACEHOLDER_IMAGE}"
-             class="w-full h-72 object-100 object-top rounded-t-lg group-hover:opacity-80 transition">
+             class="w-full h-72 object-fill object-top rounded-t-lg group-hover:opacity-80 transition">
         <div class="p-2 text-center">
           <h3 class="font-semibold hover:text-blue-400">${movie.title}</h3>
           <p class="text-xs text-gray-400">${movie.year}</p>
