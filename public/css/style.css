@@ -953,7 +953,7 @@ body {
   body:has(.allmovies-tabs) #moviesGrid {
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 16px !important;
-    padding: 0 16px !important;
+    padding: 0 24px !important; /* Aumentado para igualar MY MOVIES */
     padding-bottom: 100px !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
