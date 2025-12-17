@@ -754,8 +754,8 @@ body {
     inset: auto !important;
     opacity: 1 !important;
     aspect-ratio: 2/3 !important;
-    height: 50vh !important;
-    max-height: 50vh !important;
+    height: 58vh !important;
+    max-height: 58vh !important;
   }
 
   #upcoming .bg-cover,
@@ -774,32 +774,52 @@ body {
   #upcoming .relative.z-10 {
     position: relative !important;
     height: auto !important;
-    padding: 20px !important;
+    padding: 24px !important;
     background: #1a1a2e !important;
     justify-content: flex-start !important;
     text-align: center !important;
+    align-items: center !important;
   }
 
   /* Título */
   #upcoming .relative.z-10 h2 {
-    font-size: 24px !important;
-    margin-bottom: 8px !important;
+    font-size: 32px !important;
+    margin-bottom: 12px !important;
   }
 
-  /* Data e episódio */
+  /* Data e episódio - na mesma linha */
+  #upcoming .relative.z-10 .space-y-4 {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
   #upcoming .relative.z-10 p {
-    font-size: 16px !important;
+    font-size: 20px !important;
     color: #9ca3af !important;
+    display: inline !important;
+  }
+
+  /* Data e episódio juntos */
+  #upcoming .relative.z-10 p + p {
+    margin-left: 8px !important;
+  }
+
+  /* Container do botão - centralizado */
+  #upcoming .relative.z-10 .flex.flex-wrap {
+    justify-content: center !important;
+    width: 100% !important;
+    padding-top: 8px !important;
   }
 
   /* Botão Ver detalhes */
   #upcoming [data-hero-more] {
-    margin-top: 12px !important;
+    margin-top: 16px !important;
     background: #22c55e !important;
     border: none !important;
-    padding: 12px 24px !important;
-    font-size: 16px !important;
-    border-radius: 8px !important;
+    padding: 14px 32px !important;
+    font-size: 20px !important;
+    border-radius: 10px !important;
   }
 
   /* Esconder setas de navegação */

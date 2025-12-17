@@ -9,7 +9,7 @@ export function renderHero() {
           My personal library of <span class="text-blue-400">Movies</span> & <span class="text-green-400">TV Shows</span>
         </h1>
         <p class="mt-4 text-gray-400 max-w-lg">
-          Explore, bookmark, and track your progress. Everything is stored locally.
+          Explore, bookmark, and track your progress.
         </p>
         <div class="mt-6 flex gap-3">
           <a href="movies.html" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 font-semibold">Watch Movies</a>
