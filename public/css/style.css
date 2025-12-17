@@ -45,8 +45,10 @@ body {
 
 /* Mostrar apenas em modo standalone (app instalada) ou mobile pequeno */
 @media (display-mode: standalone), (max-width: 768px) {
-  /* Esconder navbar desktop */
-  header#navbar {
+  /* Esconder navbar desktop e footer */
+  header#navbar,
+  footer#footer,
+  footer {
     display: none !important;
   }
 
@@ -100,53 +102,4 @@ body {
     padding-top: env(safe-area-inset-top, 0);
   }
 
-  /* Profile Popup Menu */
-  .profile-popup-menu {
-    position: fixed;
-    bottom: 120px;
-    right: 16px;
-    background: rgba(31, 41, 55, 0.98);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 8px;
-    min-width: 200px;
-    z-index: 1001;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-  }
-
-  .profile-popup-menu.hidden {
-    display: none;
-  }
-
-  .profile-menu-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 18px;
-    color: #e5e7eb;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 500;
-    border-radius: 12px;
-    transition: background 0.2s;
-    width: 100%;
-    border: none;
-    background: none;
-    cursor: pointer;
-    text-align: left;
-  }
-
-  .profile-menu-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .profile-menu-item.logout-btn {
-    color: #ef4444;
-  }
-
-  .profile-menu-icon {
-    width: 24px;
-    height: 24px;
-  }
 }
