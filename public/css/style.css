@@ -768,20 +768,19 @@ body {
     height: auto !important;
   }
 
-  /* Botão eliminar com fundo vermelho e ícone branco */
+  /* Botão eliminar com fundo branco e ícone vermelho */
   body:has(.movies-tabs) #deleteMoviesBtn {
-    background-color: #dc2626 !important;
+    background-color: white !important;
     border: 2px solid #dc2626 !important;
-    color: white !important;
   }
   
   body:has(.movies-tabs) #deleteMoviesBtn:hover {
-    background-color: #b91c1c !important;
+    background-color: #fef2f2 !important;
   }
 
-  /* SVG do botão eliminar - garantir que seja branco */
+  /* SVG do botão eliminar - círculo e linha vermelhos */
   body:has(.movies-tabs) #deleteMoviesBtn svg {
-    stroke: white !important;
+    stroke: #dc2626 !important;
     fill: none !important;
   }
 
