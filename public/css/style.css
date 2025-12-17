@@ -772,13 +772,14 @@ body {
   body:has(.movies-tabs) #deleteMoviesBtn {
     background-color: white !important;
     border: 2px solid #dc2626 !important;
+    color: #dc2626 !important;
   }
 
-  /* Checkboxes de seleção maiores */
+  /* Checkboxes de seleção (tamanho médio) */
   body:has(.movies-tabs) #moviesGrid .movie-card button[onclick*="toggleDeleteSelect"] {
-    font-size: 48px !important;
-    width: 56px !important;
-    height: 56px !important;
+    font-size: 36px !important;
+    width: 44px !important;
+    height: 44px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
