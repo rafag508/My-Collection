@@ -722,24 +722,35 @@ body {
   #upcoming {
     margin-top: 24px !important;
     padding: 0 16px !important;
+    display: flex !important;
+    flex-direction: row !important;
     overflow-x: auto !important;
     scroll-snap-type: x mandatory !important;
     -webkit-overflow-scrolling: touch !important;
+    gap: 16px !important;
+    scrollbar-width: none !important; /* Firefox */
+    -ms-overflow-style: none !important; /* IE/Edge */
+  }
+
+  #upcoming::-webkit-scrollbar {
+    display: none !important; /* Chrome/Safari */
   }
 
   /* Container principal do slide */
-  #upcoming > div:first-child {
+  #upcoming > div {
     aspect-ratio: auto !important;
     max-height: none !important;
     height: auto !important;
     scroll-snap-align: center !important;
+    scroll-snap-stop: always !important;
     display: flex !important;
     flex-direction: column !important;
     background: #1a1a2e !important;
     border-radius: 16px !important;
     overflow: hidden !important;
-    margin: 0 auto !important;
-    max-width: 85% !important;
+    flex: 0 0 85% !important; /* Largura fixa de 85% */
+    width: 85% !important;
+    min-width: 85% !important;
   }
 
   #upcoming [class*="aspect-"] {

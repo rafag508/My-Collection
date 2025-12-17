@@ -129,6 +129,11 @@ async function renderUpcomingHero() {
       return `S${s} | E${e}`;
     }
 
+    // Detectar se está em modo app (standalone)
+    const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                      window.navigator.standalone === true ||
+                      window.innerWidth <= 768;
+
     function renderSlide(index) {
       const item = upcomingItems[index];
       if (!item) return;
@@ -153,9 +158,10 @@ async function renderUpcomingHero() {
         })
         .join("");
 
-      container.innerHTML = `
+      return `
         <div
           class="w-full relative overflow-hidden bg-gradient-to-r from-gray-900 via-gray-900/80 to-black ring-1 ring-white/10 aspect-[16/9] max-h-[700px]"
+          data-slide-index="${index}"
         >
           <div class="absolute inset-0 opacity-70 lg:opacity-100">
             <div
@@ -181,6 +187,7 @@ async function renderUpcomingHero() {
             <div class="flex flex-wrap items-center gap-3 pt-4">
               <button
                 data-hero-more
+                data-href="${href}"
                 class="inline-flex items-center gap-2 rounded-full bg-transparent border border-white/50 px-4 py-2 text-sm font-semibold text-white/90 hover:bg-white/10 transition-colors"
               >
                 Ver detalhes
@@ -208,29 +215,58 @@ async function renderUpcomingHero() {
           </div>
         </div>
       `;
+    }
 
-      const moreBtn = container.querySelector("[data-hero-more]");
-      if (moreBtn) {
-        moreBtn.addEventListener("click", () => {
-          window.location.href = href;
+    // Renderizar todos os slides em modo app, ou apenas um em desktop
+    if (isAppMode) {
+      // Modo app: renderizar todos os slides para scroll horizontal
+      const allSlidesHtml = upcomingItems.map((_, i) => renderSlide(i)).join('');
+      const dotsHtml = upcomingItems
+        .map((_, i) => `<span class="w-2 h-2 rounded-full bg-white/40"></span>`)
+        .join("");
+      
+      container.innerHTML = allSlidesHtml + `
+        <div class="absolute inset-x-0 bottom-6 flex justify-center pointer-events-none w-full">
+          <div class="flex gap-1">
+            ${dotsHtml}
+          </div>
+        </div>
+      `;
+
+      // Event listeners para todos os botões "Ver detalhes"
+      container.querySelectorAll("[data-hero-more]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          window.location.href = btn.getAttribute("data-href");
         });
+      });
+    } else {
+      // Modo desktop: comportamento original (um slide de cada vez)
+      function setupSlideListeners() {
+        const moreBtn = container.querySelector("[data-hero-more]");
+        if (moreBtn) {
+          moreBtn.addEventListener("click", () => {
+            window.location.href = moreBtn.getAttribute("data-href");
+          });
+        }
+        const prevBtn = container.querySelector("[data-prev]");
+        const nextBtn = container.querySelector("[data-next]");
+        if (prevBtn) {
+          prevBtn.addEventListener("click", () => {
+            const prevIndex = (currentIndex - 1 + upcomingItems.length) % upcomingItems.length;
+            container.innerHTML = renderSlide(prevIndex);
+            setupSlideListeners();
+          });
+        }
+        if (nextBtn) {
+          nextBtn.addEventListener("click", () => {
+            const nextIndex = (currentIndex + 1) % upcomingItems.length;
+            container.innerHTML = renderSlide(nextIndex);
+            setupSlideListeners();
+          });
+        }
       }
 
-      const prevBtn = container.querySelector("[data-prev]");
-      const nextBtn = container.querySelector("[data-next]");
-
-      if (prevBtn) {
-        prevBtn.addEventListener("click", () => {
-          const prevIndex = (currentIndex - 1 + upcomingItems.length) % upcomingItems.length;
-          renderSlide(prevIndex);
-        });
-      }
-      if (nextBtn) {
-        nextBtn.addEventListener("click", () => {
-          const nextIndex = (currentIndex + 1) % upcomingItems.length;
-          renderSlide(nextIndex);
-        });
-      }
+      setupSlideListeners();
 
       // --- AUTOPLAY: ~8 segundos por slide ---
       if (autoplayId) {
@@ -238,12 +274,14 @@ async function renderUpcomingHero() {
       }
       autoplayId = setInterval(() => {
         const nextIndex = (currentIndex + 1) % upcomingItems.length;
-        renderSlide(nextIndex);
+        container.innerHTML = renderSlide(nextIndex);
+        setupSlideListeners();
       }, 8000);
+      
+      // Renderizar primeiro slide
+      container.innerHTML = renderSlide(currentIndex);
+      setupSlideListeners();
     }
-
-    // Primeiro slide
-    renderSlide(currentIndex);
   } catch (err) {
     console.warn("Home: renderUpcomingHero failed:", err);
   }
