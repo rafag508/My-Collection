@@ -482,10 +482,6 @@ body {
     font-size: 40px !important;
   }
 
-  #statsRoot h2 {
-    font-size: 32px !important;
-  }
-
   #statsRoot h3,
   #statsRoot .text-xl {
     font-size: 28px !important;
