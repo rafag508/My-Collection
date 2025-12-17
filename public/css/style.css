@@ -33,3 +33,68 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* ========================================
+   Bottom Navigation (PWA App Mode)
+   ======================================== */
+
+/* Esconder por defeito */
+.bottom-nav {
+  display: none;
+}
+
+/* Mostrar apenas em modo standalone (app instalada) ou mobile pequeno */
+@media (display-mode: standalone), (max-width: 768px) {
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: rgba(17, 24, 39, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 12px;
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 500;
+    transition: color 0.2s;
+    min-width: 64px;
+  }
+
+  .bottom-nav-item.active {
+    color: #3b82f6;
+  }
+
+  .bottom-nav-item:hover {
+    color: #3b82f6;
+  }
+
+  .bottom-nav-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Adicionar padding ao body para não tapar conteúdo */
+  body {
+    padding-bottom: 80px;
+  }
+
+  /* Esconder navbar desktop quando bottom nav está visível */
+  /* (opcional - descomenta se quiseres esconder) */
+  /* header { display: none; } */
+}

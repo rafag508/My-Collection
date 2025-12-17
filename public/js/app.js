@@ -11,6 +11,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 import { protectPage } from "./firebase/auth.js";
 import { loadUserPreferences } from "./modules/idioma.js";
 import { isGuestMode, isProtectedPage } from "./modules/guestMode.js";
+import { renderBottomNav } from "./ui/bottomNav.js";
 
 // Evita misturar com outras implementações antigas: usamos apenas a modular app
 function getPageName() {
@@ -216,6 +217,7 @@ if ('serviceWorker' in navigator) {
 
 window.addEventListener("DOMContentLoaded", () => {
   setFavicon();
+  renderBottomNav(); // Renderizar bottom navigation para app mode
   bootstrap();
 });
 
