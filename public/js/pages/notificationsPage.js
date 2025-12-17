@@ -211,7 +211,7 @@ async function renderNotifications(container, notifs) {
         }
 
         const FALLBACK_POSTER = "./assets/icons/mc-icon-green.svg";
-        const posterUrl = poster || FALLBACK_POSTER;
+        const posterUrl = n.seriePoster || poster || FALLBACK_POSTER;
         const serieName = n.serieName || serie?.title || "Unknown series";
 
         const seasonNum = n.season != null ? n.season : null;

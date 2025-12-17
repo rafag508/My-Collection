@@ -188,6 +188,7 @@ export async function checkSeriesReleases() {
         type: "series_episode_release",
         serieId: serieId.toString(),
         serieName: serie.title,
+        seriePoster: serie.poster || null,
         season: nextEpisode.seasonNumber,
         episode: nextEpisode.episodeNumber,
         episodeName: nextEpisode.name || null,
