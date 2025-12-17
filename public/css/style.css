@@ -34,6 +34,42 @@ body {
   display: none;
 }
 
+/* Profile Page Items */
+.profile-page-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: rgba(31, 41, 55, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  transition: background 0.2s;
+  width: 100%;
+  cursor: pointer;
+}
+
+.profile-page-item:hover {
+  background: rgba(31, 41, 55, 0.9);
+}
+
+.profile-page-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+}
+
+.profile-page-item.logout-item {
+  border: none;
+  background: transparent;
+}
+
 /* ========================================
    Bottom Navigation (PWA App Mode)
    ======================================== */
