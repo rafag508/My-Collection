@@ -5,6 +5,8 @@ import { logout, getCurrentUser } from "../firebase/auth.js";
 import { getUserPreferencesFirestore } from "../firebase/firestore.js";
 import { getNotifications } from "../modules/notifications.js";
 import { storageService } from "../modules/storageService.js";
+import { getSerieById } from "../modules/series/seriesDataManager.js";
+import { getMovieById } from "../modules/movies/moviesDataManager.js";
 
 const EPISODE_AVG_MIN = 45;
 const MOVIE_AVG_MIN = 120;
@@ -110,26 +112,48 @@ async function loadNotificationsPreview() {
     }
     
     if (notifications.length === 0) {
-      container.innerHTML = '<p class="text-gray-500 text-sm px-4">No notifications</p>';
+      container.innerHTML = '<p class="text-gray-500 text-lg px-4">No notifications</p>';
       return;
     }
     
     // Show last 10 notifications
     const recent = notifications.slice(0, 10);
-    container.innerHTML = recent.map(notif => `
-      <div class="notif-card ${notif.read ? '' : 'unread'}">
-        <img src="${notif.posterPath || '/assets/icons/mc-icon-blue.svg'}" 
-             alt="" class="notif-poster" 
-             onerror="this.src='/assets/icons/mc-icon-blue.svg'">
-        <div class="notif-content">
-          <p class="notif-title">${notif.title || 'Notification'}</p>
-          <p class="notif-msg">${notif.message || ''}</p>
+    const cards = await Promise.all(recent.map(async (notif) => {
+      let posterUrl = '/assets/icons/mc-icon-blue.svg';
+      let title = notif.title || 'Notification';
+      
+      // Get poster from serie or movie
+      if (notif.type === 'movie_release' && notif.movieId) {
+        try {
+          const movie = await getMovieById(notif.movieId);
+          posterUrl = movie?.poster || notif.moviePoster || posterUrl;
+          title = notif.movieTitle || movie?.title || title;
+        } catch (e) {}
+      } else if (notif.serieId) {
+        try {
+          const serie = await getSerieById(notif.serieId);
+          posterUrl = serie?.poster || notif.seriePoster || '/assets/icons/mc-icon-green.svg';
+          title = notif.serieName || serie?.title || title;
+        } catch (e) {}
+      }
+      
+      return `
+        <div class="notif-card ${notif.read ? '' : 'unread'}">
+          <img src="${posterUrl}" 
+               alt="" class="notif-poster" 
+               onerror="this.src='/assets/icons/mc-icon-blue.svg'">
+          <div class="notif-content">
+            <p class="notif-title">${title}</p>
+            <p class="notif-msg">${notif.message || ''}</p>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }));
+    
+    container.innerHTML = cards.join('');
   } catch (err) {
     console.warn('Error loading notifications:', err);
-    container.innerHTML = '<p class="text-gray-500 text-sm px-4">Failed to load</p>';
+    container.innerHTML = '<p class="text-gray-500 text-lg px-4">Failed to load</p>';
   }
 }
 
