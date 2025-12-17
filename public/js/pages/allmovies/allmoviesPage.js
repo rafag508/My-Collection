@@ -180,6 +180,97 @@ export async function initAllMoviesPage() {
   
   setupSearch();
   setupFilter();
+
+  // Mostrar tabs apenas no modo app
+  const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone === true ||
+                    window.innerWidth <= 768;
+  
+  const tabsElement = document.querySelector('.allmovies-tabs');
+  if (tabsElement) {
+    if (isAppMode) {
+      tabsElement.classList.remove('hidden');
+    } else {
+      tabsElement.classList.add('hidden');
+    }
+  }
+
+  // Adicionar swipe para mudar entre páginas (apenas no modo app)
+  if (isAppMode) {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+    let isSwipe = false;
+    const mainElement = document.querySelector('main');
+
+    if (mainElement) {
+      mainElement.addEventListener('touchstart', (e) => {
+        // Só capturar se não for em um elemento clicável (botão, link, etc.)
+        const target = e.target;
+        if (target.tagName === 'BUTTON' || target.tagName === 'A' || target.closest('button') || target.closest('a')) {
+          return;
+        }
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+        isSwipe = false;
+      }, { passive: true });
+
+      mainElement.addEventListener('touchmove', (e) => {
+        if (touchStartX === 0) return;
+        const currentX = e.changedTouches[0].screenX;
+        const currentY = e.changedTouches[0].screenY;
+        const diffX = Math.abs(currentX - touchStartX);
+        const diffY = Math.abs(currentY - touchStartY);
+        
+        // Só considerar swipe se o movimento horizontal for maior que o vertical
+        if (diffX > diffY && diffX > 10) {
+          isSwipe = true;
+        }
+      }, { passive: true });
+
+      mainElement.addEventListener('touchend', (e) => {
+        if (!isSwipe || touchStartX === 0) {
+          touchStartX = 0;
+          touchStartY = 0;
+          return;
+        }
+
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        
+        const diffX = touchStartX - touchEndX;
+        const diffY = Math.abs(touchStartY - touchEndY);
+        const swipeThreshold = 80; // Mínimo de pixels para considerar swipe
+
+        // Só processar se o movimento horizontal for significativo e maior que o vertical
+        if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > diffY) {
+          if (diffX > 0) {
+            // Swipe para a esquerda = próxima página
+            const nextBtn = Array.from(document.querySelectorAll('#moviesPagination button, #moviesPaginationTop button'))
+              .find(btn => btn.textContent.includes('Next'));
+            if (nextBtn && !nextBtn.disabled) {
+              nextBtn.click();
+            }
+          } else {
+            // Swipe para a direita = página anterior
+            if (currentPage > 1) {
+              currentPage--;
+              updateURL(currentPage);
+              renderMovies();
+            }
+          }
+        }
+
+        // Reset
+        touchStartX = 0;
+        touchStartY = 0;
+        touchEndX = 0;
+        touchEndY = 0;
+        isSwipe = false;
+      }, { passive: true });
+    }
+  }
   
   // 🔥 Listener para o botão retroceder do browser
   window.addEventListener('popstate', (e) => {

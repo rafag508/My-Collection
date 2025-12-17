@@ -859,6 +859,185 @@ body {
     height: 44px !important;
   }
 
+  /* AllMovies Page - App Style (mesma lógica que Movies) */
+  body:has(.allmovies-tabs) main {
+    padding: 0 !important;
+  }
+
+  body:has(.allmovies-tabs) main .max-w-7xl {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Esconder título "All Movies" */
+  body:has(.allmovies-tabs) main h1.text-3xl {
+    display: none !important;
+  }
+
+  /* Tabs no topo - AllMovies */
+  .allmovies-tabs {
+    display: flex !important;
+    width: 100% !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
+    margin-bottom: 24px !important;
+    padding: 0 16px !important;
+    margin-top: 16px !important;
+  }
+
+  .allmovies-tabs.hidden {
+    display: none !important;
+  }
+
+  .allmovies-tab {
+    flex: 1 !important;
+    text-align: center !important;
+    padding: 16px 0 !important;
+    font-size: 26px !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    text-decoration: none !important;
+    position: relative !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  .allmovies-tab.active {
+    color: white !important;
+  }
+
+  .allmovies-tab.active::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -2px !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 2px !important;
+    background: white !important;
+  }
+
+  /* Container dos botões - AllMovies */
+  body:has(.allmovies-tabs) main .flex.items-center.justify-between {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    padding: 16px !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* Botões maiores - AllMovies */
+  body:has(.allmovies-tabs) main button {
+    font-size: 24px !important;
+    padding: 14px 18px !important;
+    min-height: 44px !important;
+  }
+
+  /* Grid 3 colunas - AllMovies */
+  body:has(.allmovies-tabs) #moviesGrid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+    padding: 0 16px !important;
+    padding-bottom: 100px !important;
+  }
+
+  /* Cards - AllMovies */
+  body:has(.allmovies-tabs) #moviesGrid .movie-card {
+    min-height: 0 !important;
+  }
+
+  body:has(.allmovies-tabs) #moviesGrid .movie-card img {
+    height: 420px !important;
+    object-fit: cover !important;
+  }
+
+  /* Texto - AllMovies */
+  body:has(.allmovies-tabs) #moviesGrid .movie-card h3 {
+    font-size: 22px !important;
+    font-weight: 600 !important;
+    margin-bottom: 4px !important;
+  }
+
+  body:has(.allmovies-tabs) #moviesGrid .movie-card p.text-xs {
+    font-size: 20px !important;
+  }
+
+  body:has(.allmovies-tabs) #moviesGrid .movie-card button {
+    font-size: 16px !important;
+    padding: 12px 16px !important;
+    margin-top: 8px !important;
+  }
+
+  body:has(.allmovies-tabs) #moviesGrid .movie-card .p-2 {
+    padding: 14px !important;
+  }
+
+  /* Paginação - AllMovies */
+  body:has(.allmovies-tabs) #moviesPagination,
+  body:has(.allmovies-tabs) #moviesPaginationTop {
+    padding: 0 16px !important;
+    margin: 24px 0 !important;
+  }
+
+  body:has(.allmovies-tabs) #moviesPagination button,
+  body:has(.allmovies-tabs) #moviesPaginationTop button {
+    font-size: 18px !important;
+    padding: 12px 20px !important;
+    min-width: 44px !important;
+  }
+
+  /* Modal de Filtros - AllMovies (mesma estrutura) */
+  body:has(.allmovies-tabs) #filterMoviesModal h2 {
+    font-size: 32px !important;
+    margin-bottom: 32px !important;
+  }
+
+  body:has(.allmovies-tabs) #filterMoviesModal #filterTopRatingBtn,
+  body:has(.allmovies-tabs) #filterMoviesModal #filterGenreBtn,
+  body:has(.allmovies-tabs) #filterMoviesModal #filterYearBtn,
+  body:has(.allmovies-tabs) #filterMoviesModal #filterUpcomingBtn {
+    font-size: 22px !important;
+    padding: 16px 24px !important;
+  }
+
+  body:has(.allmovies-tabs) #filterMoviesModal p {
+    font-size: 20px !important;
+  }
+
+  body:has(.allmovies-tabs) #filterMoviesModal label {
+    font-size: 22px !important;
+    margin-bottom: 16px !important;
+  }
+
+  body:has(.allmovies-tabs) #filterMoviesModal .genre-tag {
+    font-size: 22px !important;
+    padding: 16px 24px !important;
+  }
+
+  body:has(.allmovies-tabs) #filterMoviesModal .release-type-btn {
+    font-size: 20px !important;
+    padding: 16px 20px !important;
+  }
+
+  body:has(.allmovies-tabs) #filterMoviesModal input {
+    font-size: 20px !important;
+    padding: 14px !important;
+  }
+
+  body:has(.allmovies-tabs) #filterMoviesModal #applyTopRatingBtn,
+  body:has(.allmovies-tabs) #filterMoviesModal #applyGenreBtn,
+  body:has(.allmovies-tabs) #filterMoviesModal #applyYearBtn,
+  body:has(.allmovies-tabs) #filterMoviesModal #applyUpcomingBtn,
+  body:has(.allmovies-tabs) #filterMoviesModal #clearFiltersBtn {
+    font-size: 20px !important;
+    padding: 14px 24px !important;
+  }
+
+  body:has(.allmovies-tabs) #filterMoviesModal #closeFilterMoviesModal {
+    font-size: 32px !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+
   /* Hero - App Style */
   #hero {
     padding: 24px !important;
