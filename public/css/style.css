@@ -870,15 +870,19 @@ body {
     padding: 0 !important;
   }
 
-  body:has(.allmovies-tabs) main .max-w-7xl {
-    padding: 0 !important;
-    max-width: 100% !important;
-  }
-
-  /* Remover padding horizontal do container em AllMovies */
-  body:has(.allmovies-tabs) main .max-w-7xl.px-6 {
+  /* Remover TODOS os paddings do container principal em AllMovies */
+  body:has(.allmovies-tabs) main > div {
     padding-left: 0 !important;
     padding-right: 0 !important;
+  }
+
+  body:has(.allmovies-tabs) main .max-w-7xl {
+    padding: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    max-width: 100% !important;
   }
 
   /* Esconder título "All Movies" */
