@@ -762,6 +762,10 @@ body {
   body:has(.movies-tabs) #addMoviesBtn {
     font-size: 24px !important;
     padding: 14px 18px !important;
+    min-width: 56px !important;
+    min-height: 56px !important;
+    width: auto !important;
+    height: auto !important;
   }
 
   /* Grid 3 colunas - Movies */
