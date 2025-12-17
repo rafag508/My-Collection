@@ -675,17 +675,17 @@ body {
   }
 
   /* Movies Page - App Style */
-  body:has(#moviesGrid) main {
+  body:has(.movies-tabs) main {
     padding: 0 !important;
   }
 
-  body:has(#moviesGrid) main .max-w-\\[90rem\\] {
+  body:has(.movies-tabs) main .max-w-\\[90rem\\] {
     padding: 0 !important;
     max-width: 100% !important;
   }
 
   /* Esconder título "My Movies" */
-  body:has(#moviesGrid) main h1.text-3xl {
+  body:has(.movies-tabs) main h1.text-3xl {
     display: none !important;
   }
 
@@ -731,7 +731,7 @@ body {
   }
 
   /* Container dos botões - descer um pouco */
-  body:has(#moviesGrid) main .flex.items-center.justify-between {
+  body:has(.movies-tabs) main .flex.items-center.justify-between {
     flex-direction: row !important;
     align-items: center !important;
     justify-content: flex-end !important;
@@ -741,119 +741,119 @@ body {
   }
 
   /* Botões maiores */
-  body:has(#moviesGrid) main button {
+  body:has(.movies-tabs) main button {
     font-size: 16px !important;
     padding: 12px 16px !important;
     min-height: 44px !important;
   }
 
   /* Botões de ação específicos */
-  body:has(#moviesGrid) #editMoviesBtn,
-  body:has(#moviesGrid) #moveMoviesBtn,
-  body:has(#moviesGrid) #deleteMoviesBtn,
-  body:has(#moviesGrid) #confirmDeleteMoviesBtn,
-  body:has(#moviesGrid) #filterMoviesBtn,
-  body:has(#moviesGrid) #addMoviesBtn {
+  body:has(.movies-tabs) #editMoviesBtn,
+  body:has(.movies-tabs) #moveMoviesBtn,
+  body:has(.movies-tabs) #deleteMoviesBtn,
+  body:has(.movies-tabs) #confirmDeleteMoviesBtn,
+  body:has(.movies-tabs) #filterMoviesBtn,
+  body:has(.movies-tabs) #addMoviesBtn {
     font-size: 24px !important;
     padding: 14px 18px !important;
   }
 
-  /* Grid 3 colunas */
-  #moviesGrid {
+  /* Grid 3 colunas - Movies */
+  body:has(.movies-tabs) #moviesGrid {
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 16px !important;
     padding: 0 16px !important;
     padding-bottom: 100px !important; /* Espaço para scroll */
   }
 
-  /* Aumentar altura dos cards */
-  #moviesGrid .movie-card {
+  /* Aumentar altura dos cards - Movies */
+  body:has(.movies-tabs) #moviesGrid .movie-card {
     min-height: 0 !important;
   }
 
-  #moviesGrid .movie-card img {
+  body:has(.movies-tabs) #moviesGrid .movie-card img {
     height: 420px !important; /* Aumentar altura do poster */
     object-fit: cover !important;
   }
 
-  /* Aumentar tamanho do título e ano */
-  #moviesGrid .movie-card h3 {
+  /* Aumentar tamanho do título e ano - Movies */
+  body:has(.movies-tabs) #moviesGrid .movie-card h3 {
     font-size: 22px !important;
     font-weight: 600 !important;
     margin-bottom: 4px !important;
   }
 
-  #moviesGrid .movie-card p.text-xs {
+  body:has(.movies-tabs) #moviesGrid .movie-card p.text-xs {
     font-size: 20px !important;
   }
 
-  /* Aumentar botão */
-  #moviesGrid .movie-card button {
+  /* Aumentar botão - Movies */
+  body:has(.movies-tabs) #moviesGrid .movie-card button {
     font-size: 16px !important;
     padding: 12px 16px !important;
     margin-top: 8px !important;
   }
 
-  /* Aumentar padding do container do texto */
-  #moviesGrid .movie-card .p-2 {
+  /* Aumentar padding do container do texto - Movies */
+  body:has(.movies-tabs) #moviesGrid .movie-card .p-2 {
     padding: 14px !important;
   }
 
-  /* Paginação */
-  #moviesPagination,
-  #moviesPaginationTop {
+  /* Paginação - Movies */
+  body:has(.movies-tabs) #moviesPagination,
+  body:has(.movies-tabs) #moviesPaginationTop {
     padding: 0 16px !important;
     margin: 24px 0 !important;
   }
 
-  #moviesPagination button,
-  #moviesPaginationTop button {
+  body:has(.movies-tabs) #moviesPagination button,
+  body:has(.movies-tabs) #moviesPaginationTop button {
     font-size: 18px !important;
     padding: 12px 20px !important;
     min-width: 44px !important;
   }
 
-  /* Modal de Filtros - App Style */
-  #filterMoviesModal h2 {
+  /* Modal de Filtros - Movies */
+  body:has(.movies-tabs) #filterMoviesModal h2 {
     font-size: 32px !important;
     margin-bottom: 32px !important;
   }
 
-  #filterMoviesModal #filterTopRatingBtn,
-  #filterMoviesModal #filterGenreBtn,
-  #filterMoviesModal #filterListBtn {
+  body:has(.movies-tabs) #filterMoviesModal #filterTopRatingBtn,
+  body:has(.movies-tabs) #filterMoviesModal #filterGenreBtn,
+  body:has(.movies-tabs) #filterMoviesModal #filterListBtn {
     font-size: 22px !important;
     padding: 16px 24px !important;
   }
 
-  #filterMoviesModal p {
+  body:has(.movies-tabs) #filterMoviesModal p {
     font-size: 20px !important;
   }
 
-  #filterMoviesModal label {
+  body:has(.movies-tabs) #filterMoviesModal label {
     font-size: 22px !important;
     margin-bottom: 16px !important;
   }
 
-  #filterMoviesModal .genre-tag {
+  body:has(.movies-tabs) #filterMoviesModal .genre-tag {
     font-size: 22px !important;
     padding: 16px 24px !important;
   }
 
-  #filterMoviesModal .list-option-btn {
+  body:has(.movies-tabs) #filterMoviesModal .list-option-btn {
     font-size: 24px !important;
     padding: 20px 24px !important;
   }
 
-  #filterMoviesModal #applyTopRatingBtn,
-  #filterMoviesModal #applyGenreBtn,
-  #filterMoviesModal #applyListBtn,
-  #filterMoviesModal #clearFiltersBtn {
+  body:has(.movies-tabs) #filterMoviesModal #applyTopRatingBtn,
+  body:has(.movies-tabs) #filterMoviesModal #applyGenreBtn,
+  body:has(.movies-tabs) #filterMoviesModal #applyListBtn,
+  body:has(.movies-tabs) #filterMoviesModal #clearFiltersBtn {
     font-size: 20px !important;
     padding: 14px 24px !important;
   }
 
-  #filterMoviesModal #closeFilterMoviesModal {
+  body:has(.movies-tabs) #filterMoviesModal #closeFilterMoviesModal {
     font-size: 32px !important;
     width: 44px !important;
     height: 44px !important;
@@ -940,7 +940,7 @@ body {
     padding-bottom: 100px !important;
   }
 
-  /* Cards - AllMovies */
+  /* Cards - AllMovies (mesmos estilos que Movies) */
   body:has(.allmovies-tabs) #moviesGrid .movie-card {
     min-height: 0 !important;
   }
@@ -950,7 +950,7 @@ body {
     object-fit: cover !important;
   }
 
-  /* Texto - AllMovies */
+  /* Texto - AllMovies (mesmos estilos que Movies) */
   body:has(.allmovies-tabs) #moviesGrid .movie-card h3 {
     font-size: 22px !important;
     font-weight: 600 !important;
@@ -969,6 +969,14 @@ body {
 
   body:has(.allmovies-tabs) #moviesGrid .movie-card .p-2 {
     padding: 14px !important;
+  }
+
+  /* Garantir que o grid de AllMovies tem os mesmos estilos */
+  body:has(.allmovies-tabs) #moviesGrid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+    padding: 0 16px !important;
+    padding-bottom: 100px !important;
   }
 
   /* Paginação - AllMovies */
