@@ -765,66 +765,6 @@ body {
     padding: 0 16px !important;
   }
 
-  /* Posters - design compacto */
-  #moviesGrid .movie-card {
-    border-radius: 12px !important;
-    overflow: hidden !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  /* Container da imagem */
-  #moviesGrid .movie-card > div {
-    overflow: hidden !important;
-    position: relative !important;
-    width: 100% !important;
-    height: 280px !important; /* Altura mais compacta */
-  }
-
-  #moviesGrid .movie-card img {
-    height: 280px !important;
-    width: 100% !important;
-    object-fit: cover !important;
-    display: block !important;
-  }
-
-  /* Texto visível */
-  #moviesGrid .movie-card .p-2 {
-    padding: 12px !important;
-    display: block !important;
-  }
-
-  #moviesGrid .movie-card h3 {
-    font-size: 16px !important;
-    padding: 0 !important;
-    margin-bottom: 4px !important;
-    display: block !important;
-    color: white !important;
-  }
-
-  #moviesGrid .movie-card p.text-xs {
-    font-size: 13px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: block !important;
-    color: #9ca3af !important;
-  }
-
-  #moviesGrid .movie-card button {
-    font-size: 13px !important;
-    padding: 8px 12px !important;
-    margin: 8px 0 0 0 !important;
-    width: calc(100% - 24px) !important;
-    margin-left: 12px !important;
-    margin-right: 12px !important;
-  }
-
-  /* Garantir que o container do texto não está escondido */
-  #moviesGrid .movie-card > div.cursor-pointer {
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
   /* Paginação */
   #moviesPagination,
   #moviesPaginationTop {
