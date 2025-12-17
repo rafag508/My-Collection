@@ -950,10 +950,15 @@ body {
 
   /* Grid 3 colunas - AllMovies */
   body[data-page="allmovies"] #moviesGrid,
-  body:has(.allmovies-tabs) #moviesGrid {
+  body:has(.allmovies-tabs) #moviesGrid,
+  /* Seletor mais específico para garantir que funciona */
+  body[data-page="allmovies"] main #moviesGrid,
+  body:has(.allmovies-tabs) main #moviesGrid {
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 16px !important;
-    padding: 0 24px !important; /* Aumentado para igualar MY MOVIES */
+    padding-left: 24px !important; /* Aumentado para igualar MY MOVIES */
+    padding-right: 24px !important; /* Aumentado para igualar MY MOVIES */
+    padding-top: 0 !important;
     padding-bottom: 100px !important;
     margin-left: 0 !important;
     margin-right: 0 !important;

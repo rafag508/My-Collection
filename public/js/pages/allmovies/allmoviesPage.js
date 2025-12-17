@@ -25,6 +25,21 @@ let currentFilters = {
   }
 };
 
+// Função helper para aplicar padding do grid no modo app
+function applyAllMoviesGridPadding() {
+  const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone === true ||
+                    window.innerWidth <= 768;
+  
+  if (isAppMode) {
+    const grid = document.getElementById('moviesGrid');
+    if (grid) {
+      grid.style.paddingLeft = '24px';
+      grid.style.paddingRight = '24px';
+    }
+  }
+}
+
 // 🔥 Funções para gerir paginação na URL
 function getPageFromURL() {
   const params = new URLSearchParams(window.location.search);
@@ -194,6 +209,9 @@ export async function initAllMoviesPage() {
       tabsElement.classList.add('hidden');
     }
   }
+
+  // Aplicar padding do grid imediatamente
+  applyAllMoviesGridPadding();
 
   // Adicionar swipe para mudar entre páginas (apenas no modo app)
   if (isAppMode) {
@@ -662,6 +680,9 @@ async function loadFilteredMovies(page = 1) {
 
   grid.innerHTML = movies.map(movie => renderMovieCard(movie)).join("");
 
+  // Aplicar padding do grid no modo app
+  applyAllMoviesGridPadding();
+
   // Adicionar handlers de erro para imagens após inserir HTML
   grid.querySelectorAll('img[data-placeholder]').forEach(img => {
     img.onerror = function() {
@@ -735,6 +756,9 @@ async function performSearch(query, page = 1) {
 
   grid.innerHTML = movies.map(movie => renderMovieCard(movie)).join("");
 
+  // Aplicar padding do grid no modo app
+  applyAllMoviesGridPadding();
+
   // Adicionar handlers de erro para imagens após inserir HTML
   grid.querySelectorAll('img[data-placeholder]').forEach(img => {
     img.onerror = function() {
@@ -770,6 +794,9 @@ async function loadMovies() {
   const total = Math.min(data.totalPages || 0, 500);
 
   grid.innerHTML = movies.map(movie => renderMovieCard(movie)).join("");
+
+  // Aplicar padding do grid no modo app
+  applyAllMoviesGridPadding();
 
   // Adicionar handlers de erro para imagens após inserir HTML
   grid.querySelectorAll('img[data-placeholder]').forEach(img => {
