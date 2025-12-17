@@ -768,9 +768,9 @@ body {
     height: auto !important;
   }
 
-  /* Garantir que os botões mover e eliminar tenham exatamente o mesmo tamanho */
-  body:has(.movies-tabs) #moveMoviesBtn,
-  body:has(.movies-tabs) #deleteMoviesBtn {
+  /* Garantir que os botões mover e eliminar tenham exatamente o mesmo tamanho (apenas quando visíveis) */
+  body:has(.movies-tabs) #moveMoviesBtn:not(.hidden),
+  body:has(.movies-tabs) #deleteMoviesBtn:not(.hidden) {
     width: 56px !important;
     height: 56px !important;
     padding: 0 !important;
@@ -779,33 +779,39 @@ body {
     justify-content: center !important;
   }
 
-  /* Tamanho do emoji no botão mover igual ao SVG */
-  body:has(.movies-tabs) #moveMoviesBtn {
+  /* Garantir que os botões fiquem ocultos quando têm a classe hidden */
+  body:has(.movies-tabs) #moveMoviesBtn.hidden,
+  body:has(.movies-tabs) #deleteMoviesBtn.hidden {
+    display: none !important;
+  }
+
+  /* Tamanho do emoji no botão mover igual ao SVG (apenas quando visível) */
+  body:has(.movies-tabs) #moveMoviesBtn:not(.hidden) {
     font-size: 24px !important;
   }
 
-  /* Botão eliminar com fundo vermelho e círculo branco no interior */
-  body:has(.movies-tabs) #deleteMoviesBtn {
+  /* Botão eliminar com fundo vermelho e círculo branco no interior (apenas quando visível) */
+  body:has(.movies-tabs) #deleteMoviesBtn:not(.hidden) {
     background-color: #dc2626 !important;
     border: 2px solid #dc2626 !important;
   }
   
-  body:has(.movies-tabs) #deleteMoviesBtn:hover {
+  body:has(.movies-tabs) #deleteMoviesBtn:not(.hidden):hover {
     background-color: #b91c1c !important;
   }
 
-  /* SVG do botão eliminar - círculo branco com contorno vermelho e linha vermelha */
-  body:has(.movies-tabs) #deleteMoviesBtn svg {
+  /* SVG do botão eliminar - círculo branco com contorno vermelho e linha vermelha (apenas quando visível) */
+  body:has(.movies-tabs) #deleteMoviesBtn:not(.hidden) svg {
     width: 24px !important;
     height: 24px !important;
   }
 
-  body:has(.movies-tabs) #deleteMoviesBtn svg circle {
+  body:has(.movies-tabs) #deleteMoviesBtn:not(.hidden) svg circle {
     fill: white !important;
     stroke: #dc2626 !important;
   }
 
-  body:has(.movies-tabs) #deleteMoviesBtn svg line {
+  body:has(.movies-tabs) #deleteMoviesBtn:not(.hidden) svg line {
     stroke: #dc2626 !important;
   }
 
