@@ -522,6 +522,7 @@ body {
   /* Cards dos stats - carousel horizontal */
   #statsRoot {
     padding: 20px !important;
+    overflow: hidden !important;
   }
 
   #statsRoot > h1 {
@@ -529,25 +530,30 @@ body {
   }
 
   /* Grid -> horizontal scroll carousel */
-  #statsRoot .grid.md\\:grid-cols-2 {
+  #statsRoot > div.grid {
     display: flex !important;
     flex-direction: row !important;
+    flex-wrap: nowrap !important;
     overflow-x: auto !important;
+    overflow-y: hidden !important;
     scroll-snap-type: x mandatory !important;
     gap: 0 !important;
     padding-bottom: 40px !important;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
 
-  #statsRoot .grid.md\\:grid-cols-2::-webkit-scrollbar {
+  #statsRoot > div.grid::-webkit-scrollbar {
     display: none;
   }
 
-  #statsRoot .grid.md\\:grid-cols-2 > section {
+  #statsRoot > div.grid > section {
     flex: 0 0 100% !important;
     width: 100% !important;
     min-width: 100% !important;
+    max-width: 100% !important;
     scroll-snap-align: start !important;
+    scroll-snap-stop: always !important;
     padding: 28px !important;
     border-radius: 24px !important;
     box-sizing: border-box !important;
@@ -562,22 +568,6 @@ body {
   #statsRoot td,
   #statsRoot th {
     padding: 18px 14px !important;
-  }
-
-  /* Dots indicator - usando pseudo elemento */
-  #statsRoot .grid.md\\:grid-cols-2::after {
-    content: '● ○';
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 14px;
-    color: #6b7280;
-    letter-spacing: 8px;
-  }
-
-  #statsRoot .grid.md\\:grid-cols-2 {
-    position: relative;
   }
 
 }
