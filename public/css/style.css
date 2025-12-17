@@ -718,38 +718,102 @@ body {
     border-radius: 18px !important;
   }
 
-  /* Carrossel vertical na home */
+  /* Carrossel estilo poster na home - App Mode */
   #upcoming {
-    margin-top: 40px !important;
+    margin-top: 24px !important;
+    padding: 0 16px !important;
     overflow-x: auto !important;
     scroll-snap-type: x mandatory !important;
     -webkit-overflow-scrolling: touch !important;
   }
 
+  /* Container principal do slide */
   #upcoming > div:first-child {
-    aspect-ratio: 9/16 !important;
-    max-height: 65vh !important;
-    height: 65vh !important;
+    aspect-ratio: auto !important;
+    max-height: none !important;
+    height: auto !important;
     scroll-snap-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #1a1a2e !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    margin: 0 auto !important;
+    max-width: 85% !important;
   }
 
   #upcoming [class*="aspect-"] {
-    aspect-ratio: 9/16 !important;
-    max-height: 65vh !important;
-    height: 65vh !important;
+    aspect-ratio: auto !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+
+  /* Imagem do poster - ocupa o topo */
+  #upcoming .absolute.inset-0.opacity-70 {
+    position: relative !important;
+    inset: auto !important;
+    opacity: 1 !important;
+    aspect-ratio: 2/3 !important;
+    height: 50vh !important;
+    max-height: 50vh !important;
   }
 
   #upcoming .bg-cover,
   #upcoming [style*="background-image"] {
     background-size: cover !important;
     background-position: top center !important;
+    border-radius: 16px 16px 0 0 !important;
   }
 
-  /* Esconder setas de navegação no carrossel */
-  #upcoming [data-prev],
-  #upcoming [data-next],
-  #upcoming button:has(svg) {
+  /* Esconder o gradient overlay na imagem */
+  #upcoming .absolute.inset-0.bg-gradient-to-r {
     display: none !important;
+  }
+
+  /* Área de texto - vai para baixo */
+  #upcoming .relative.z-10 {
+    position: relative !important;
+    height: auto !important;
+    padding: 20px !important;
+    background: #1a1a2e !important;
+    justify-content: flex-start !important;
+    text-align: center !important;
+  }
+
+  /* Título */
+  #upcoming .relative.z-10 h2 {
+    font-size: 24px !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Data e episódio */
+  #upcoming .relative.z-10 p {
+    font-size: 16px !important;
+    color: #9ca3af !important;
+  }
+
+  /* Botão Ver detalhes */
+  #upcoming [data-hero-more] {
+    margin-top: 12px !important;
+    background: #22c55e !important;
+    border: none !important;
+    padding: 12px 24px !important;
+    font-size: 16px !important;
+    border-radius: 8px !important;
+  }
+
+  /* Esconder setas de navegação */
+  #upcoming [data-prev],
+  #upcoming [data-next] {
+    display: none !important;
+  }
+
+  /* Dots de paginação */
+  #upcoming .absolute.inset-x-0.bottom-6 {
+    position: relative !important;
+    inset: auto !important;
+    padding: 16px 0 !important;
+    background: #1a1a2e !important;
   }
 
 }
