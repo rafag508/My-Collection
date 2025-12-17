@@ -549,10 +549,10 @@ body {
     width: 95% !important;
     min-width: 95% !important;
     max-width: 95% !important;
-    min-height: 70vh !important;
+    min-height: 62vh !important;
     scroll-snap-align: center !important;
     scroll-snap-stop: always !important;
-    padding: 40px 36px !important;
+    padding: 36px 32px !important;
     margin: 24px 2.5% !important;
     border-radius: 28px !important;
     box-sizing: border-box !important;
