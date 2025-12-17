@@ -718,25 +718,21 @@ body {
     border-radius: 18px !important;
   }
 
-  /* Carrossel em baixo - vertical */
-  #hero .lg\\:col-span-5,
-  #followingCarousel {
-    order: 2 !important;
+  /* Carrossel vertical na home */
+  #upcoming {
     margin-top: 40px !important;
-    width: 100% !important;
   }
 
-  /* Carrossel vertical */
-  #followingCarousel {
+  #upcoming > div,
+  #upcoming .aspect-\\[16\\/9\\] {
     aspect-ratio: 2/3 !important;
-    max-height: 55vh !important;
+    max-height: 60vh !important;
+    height: auto !important;
   }
 
-  #followingCarousel .aspect-\\[16\\/9\\],
-  #followingCarousel > div {
-    aspect-ratio: 2/3 !important;
-    height: 55vh !important;
-    max-height: 55vh !important;
+  #upcoming .bg-cover {
+    background-size: cover !important;
+    background-position: center !important;
   }
 
 }
