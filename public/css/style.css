@@ -213,7 +213,7 @@ body {
   }
 
   .section-header span.text-lg {
-    font-size: 32px;
+    font-size: 48px;
   }
 
   .section-header svg.w-6 {
@@ -464,7 +464,7 @@ body {
 
   /* Header da página */
   main h1.text-2xl {
-    font-size: 40px !important;
+    font-size: 48px !important;
   }
 
   /* Botão Clear all */
@@ -636,7 +636,7 @@ body {
   }
 
   body:has(#changePasswordForm) main h1.text-3xl {
-    font-size: 64px !important;
+    font-size: 48px !important;
     margin-bottom: 40px !important;
   }
 
