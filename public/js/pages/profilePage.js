@@ -69,11 +69,11 @@ async function loadUserInfo() {
   try {
     const prefs = await getUserPreferencesFirestore();
     if (prefs) {
-      if (avatarLetter && prefs.profileLetter) {
-        avatarLetter.textContent = prefs.profileLetter.toUpperCase();
+      if (avatarLetter && prefs.profileButtonLetter) {
+        avatarLetter.textContent = prefs.profileButtonLetter.toUpperCase();
       }
-      if (avatarBox && prefs.profileColor) {
-        avatarBox.style.backgroundColor = getColorHex(prefs.profileColor);
+      if (avatarBox && prefs.profileButtonColor) {
+        avatarBox.style.backgroundColor = getColorHex(prefs.profileButtonColor);
       }
     }
   } catch (err) {
