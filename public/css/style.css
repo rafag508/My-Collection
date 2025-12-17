@@ -813,6 +813,52 @@ body {
     min-width: 44px !important;
   }
 
+  /* Modal de Filtros - App Style */
+  #filterMoviesModal h2 {
+    font-size: 32px !important;
+    margin-bottom: 32px !important;
+  }
+
+  #filterMoviesModal #filterTopRatingBtn,
+  #filterMoviesModal #filterGenreBtn,
+  #filterMoviesModal #filterListBtn {
+    font-size: 22px !important;
+    padding: 16px 24px !important;
+  }
+
+  #filterMoviesModal p {
+    font-size: 20px !important;
+  }
+
+  #filterMoviesModal label {
+    font-size: 22px !important;
+    margin-bottom: 16px !important;
+  }
+
+  #filterMoviesModal .genre-tag {
+    font-size: 18px !important;
+    padding: 12px 20px !important;
+  }
+
+  #filterMoviesModal .list-option-btn {
+    font-size: 20px !important;
+    padding: 16px 20px !important;
+  }
+
+  #filterMoviesModal #applyTopRatingBtn,
+  #filterMoviesModal #applyGenreBtn,
+  #filterMoviesModal #applyListBtn,
+  #filterMoviesModal #clearFiltersBtn {
+    font-size: 20px !important;
+    padding: 14px 24px !important;
+  }
+
+  #filterMoviesModal #closeFilterMoviesModal {
+    font-size: 32px !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+
   /* Hero - App Style */
   #hero {
     padding: 24px !important;
