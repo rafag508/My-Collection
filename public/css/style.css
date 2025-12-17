@@ -768,6 +768,22 @@ body {
     height: auto !important;
   }
 
+  /* Garantir que os botões mover e eliminar tenham exatamente o mesmo tamanho */
+  body:has(.movies-tabs) #moveMoviesBtn,
+  body:has(.movies-tabs) #deleteMoviesBtn {
+    width: 56px !important;
+    height: 56px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Tamanho do emoji no botão mover igual ao SVG */
+  body:has(.movies-tabs) #moveMoviesBtn {
+    font-size: 24px !important;
+  }
+
   /* Botão eliminar com fundo vermelho e círculo branco no interior */
   body:has(.movies-tabs) #deleteMoviesBtn {
     background-color: #dc2626 !important;
@@ -779,6 +795,11 @@ body {
   }
 
   /* SVG do botão eliminar - círculo branco com contorno vermelho e linha vermelha */
+  body:has(.movies-tabs) #deleteMoviesBtn svg {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
   body:has(.movies-tabs) #deleteMoviesBtn svg circle {
     fill: white !important;
     stroke: #dc2626 !important;
