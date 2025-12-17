@@ -667,7 +667,7 @@ body {
   body:has(#changePasswordForm) main .bg-gray-900\\/70 {
     padding: 36px !important;
     border-radius: 24px !important;
-    margin-bottom: 48px !important;
+    margin-bottom: 64px !important;
   }
 
   body:has(#changePasswordForm) main .space-y-4 > div {
