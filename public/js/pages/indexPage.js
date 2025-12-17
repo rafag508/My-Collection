@@ -171,12 +171,12 @@ async function renderUpcomingHero() {
             </h2>
 
             ${
-              longDate
-                ? `<p class="text-lg sm:text-xl lg:text-2xl font-semibold text-white">${longDate}</p>`
+              longDate || epCode
+                ? `<p class="hero-date-episode text-lg sm:text-xl lg:text-2xl font-semibold text-white">
+                    ${longDate ? longDate : ""}${longDate && epCode ? " • " : ""}${epCode ? epCode : ""}
+                  </p>`
                 : ""
             }
-
-            ${epCode ? `<p class="text-sm sm:text-base text-gray-200">${epCode}</p>` : ""}
 
             <div class="flex flex-wrap items-center gap-3 pt-4">
               <button

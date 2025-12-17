@@ -792,17 +792,13 @@ body {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
+    gap: 4px !important;
   }
 
-  #upcoming .relative.z-10 p {
-    font-size: 20px !important;
-    color: #9ca3af !important;
-    display: inline !important;
-  }
-
-  /* Data e episódio juntos */
-  #upcoming .relative.z-10 p + p {
-    margin-left: 8px !important;
+  #upcoming .relative.z-10 p,
+  #upcoming .hero-date-episode {
+    font-size: 28px !important;
+    color: #d1d5db !important;
   }
 
   /* Container do botão - centralizado */
