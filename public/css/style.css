@@ -425,4 +425,44 @@ body {
     background: rgba(255, 255, 255, 0.1);
   }
 
+  /* ========================================
+     Notifications Page - App Style
+     ======================================== */
+
+  #notificationsList article {
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  #notificationsList h2 {
+    font-size: 28px !important;
+  }
+
+  #notificationsList p {
+    font-size: 20px !important;
+  }
+
+  #notificationsList img {
+    max-height: 400px !important;
+  }
+
+  #notificationsList .text-base {
+    font-size: 20px !important;
+  }
+
+  #notificationsList .text-lg {
+    font-size: 24px !important;
+  }
+
+  /* Header da página */
+  main h1.text-2xl {
+    font-size: 32px !important;
+  }
+
+  /* Botão Clear all */
+  #clearNotificationsBtn {
+    font-size: 18px !important;
+    padding: 14px 20px !important;
+  }
+
 }
