@@ -309,42 +309,44 @@ export async function initSettingsPage() {
   }
   
   async function setupProfileCustomization() {
-    // Carregar preferências guardadas
-    let savedColor = 'cyan';
-    let savedLetter = 'R';
-    
-    const uid = getCurrentUID();
-    
-    if (uid) {
-      // Tentar carregar do Firestore
-      try {
-        const prefs = await getUserPreferencesFirestore();
-        if (prefs) {
-          savedColor = prefs.profileButtonColor || 'cyan';
-          savedLetter = prefs.profileButtonLetter || 'R';
-        }
-      } catch (err) {
-        console.warn("Could not load profile preferences from Firestore:", err);
-        // Fallback para localStorage
-        savedColor = localStorage.getItem('profileButtonColor') || 'cyan';
-        savedLetter = localStorage.getItem('profileButtonLetter') || 'R';
-      }
-    } else {
-      // Se não houver utilizador, usar localStorage
-      savedColor = localStorage.getItem('profileButtonColor') || 'cyan';
-      savedLetter = localStorage.getItem('profileButtonLetter') || 'R';
-    }
-    
     const colorSelect = document.getElementById("profileColorSelect");
     const letterInput = document.getElementById("profileLetterInput");
     const saveBtn = document.getElementById("saveProfileBtn");
     
-    if (colorSelect) {
-      colorSelect.value = savedColor;
+    // 1. Carregar imediatamente do localStorage (sem delay)
+    let savedColor = localStorage.getItem('profileButtonColor') || 'cyan';
+    let savedLetter = localStorage.getItem('profileButtonLetter') || 'R';
+    
+    if (colorSelect) colorSelect.value = savedColor;
+    if (letterInput) letterInput.value = savedLetter;
+    
+    // 2. Confirmar com Firestore em background (se houver utilizador)
+    const uid = getCurrentUID();
+    if (uid) {
+      try {
+        const prefs = await getUserPreferencesFirestore();
+        if (prefs) {
+          const firestoreColor = prefs.profileButtonColor || 'cyan';
+          const firestoreLetter = prefs.profileButtonLetter || 'R';
+          
+          // Atualizar se diferente do localStorage
+          if (firestoreColor !== savedColor) {
+            savedColor = firestoreColor;
+            localStorage.setItem('profileButtonColor', savedColor);
+            if (colorSelect) colorSelect.value = savedColor;
+          }
+          if (firestoreLetter !== savedLetter) {
+            savedLetter = firestoreLetter;
+            localStorage.setItem('profileButtonLetter', savedLetter);
+            if (letterInput) letterInput.value = savedLetter;
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load profile preferences from Firestore:", err);
+      }
     }
     
     if (letterInput) {
-      letterInput.value = savedLetter;
       // Converter para maiúscula automaticamente
       letterInput.addEventListener("input", (e) => {
         e.target.value = e.target.value.toUpperCase().slice(0, 1);
@@ -358,8 +360,12 @@ export async function initSettingsPage() {
         
         const uid = getCurrentUID();
         
+        // Guardar sempre no localStorage (cache imediato)
+        localStorage.setItem('profileButtonColor', color);
+        localStorage.setItem('profileButtonLetter', letter);
+        
         if (uid) {
-          // Guardar no Firestore
+          // Guardar também no Firestore
           try {
             await saveUserPreferencesFirestore({
               profileButtonColor: color,
@@ -367,14 +373,7 @@ export async function initSettingsPage() {
             });
           } catch (err) {
             console.warn("Could not save profile preferences to Firestore:", err);
-            // Fallback para localStorage
-            localStorage.setItem('profileButtonColor', color);
-            localStorage.setItem('profileButtonLetter', letter);
           }
-        } else {
-          // Se não houver utilizador, usar localStorage
-          localStorage.setItem('profileButtonColor', color);
-          localStorage.setItem('profileButtonLetter', letter);
         }
         
         // Recarregar navbar para aplicar mudanças
