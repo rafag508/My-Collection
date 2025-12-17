@@ -684,6 +684,12 @@ body {
     max-width: 100% !important;
   }
 
+  /* Remover padding horizontal do container em Movies */
+  body:has(.movies-tabs) main .max-w-\\[90rem\\].px-8 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
   /* Esconder título "My Movies" */
   body:has(.movies-tabs) main h1.text-3xl {
     display: none !important;
@@ -867,6 +873,12 @@ body {
   body:has(.allmovies-tabs) main .max-w-7xl {
     padding: 0 !important;
     max-width: 100% !important;
+  }
+
+  /* Remover padding horizontal do container em AllMovies */
+  body:has(.allmovies-tabs) main .max-w-7xl.px-6 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
   /* Esconder título "All Movies" */
