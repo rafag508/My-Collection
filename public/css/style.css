@@ -669,7 +669,12 @@ body {
   }
 
   body:has(#changePasswordForm) main .space-y-4 > div {
-    margin-bottom: 24px !important;
+    margin-bottom: 28px !important;
+  }
+
+  body:has(#changePasswordForm) main label {
+    margin-bottom: 12px !important;
+    display: block !important;
   }
 
 }
