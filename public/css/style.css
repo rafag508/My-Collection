@@ -610,14 +610,14 @@ body {
 
   /* Tabelas de géneros (usa grid com text-xs) */
   #statsRoot section .grid.text-xs {
-    font-size: 48px !important;
+    font-size: 40px !important;
     gap: 16px 12px !important;
     margin-top: 24px !important;
   }
 
   #statsRoot section .grid.text-xs > div {
     padding: 12px 0 !important;
-    font-size: 44px !important;
+    font-size: 38px !important;
     line-height: 1.4 !important;
   }
 
