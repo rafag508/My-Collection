@@ -723,16 +723,22 @@ body {
     margin-top: 40px !important;
   }
 
-  #upcoming > div,
-  #upcoming .aspect-\\[16\\/9\\] {
-    aspect-ratio: 2/3 !important;
-    max-height: 60vh !important;
-    height: auto !important;
+  #upcoming > div:first-child {
+    aspect-ratio: 9/16 !important;
+    max-height: 55vh !important;
+    height: 55vh !important;
   }
 
-  #upcoming .bg-cover {
+  #upcoming [class*="aspect-"] {
+    aspect-ratio: 9/16 !important;
+    max-height: 55vh !important;
+    height: 55vh !important;
+  }
+
+  #upcoming .bg-cover,
+  #upcoming [style*="background-image"] {
     background-size: cover !important;
-    background-position: center !important;
+    background-position: top center !important;
   }
 
 }
