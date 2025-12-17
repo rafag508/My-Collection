@@ -563,10 +563,10 @@ body {
 
   /* Título do card (Series/Movies) - forçar tamanho grande */
   #statsRoot section h2.text-xl {
-    font-size: 80px !important;
-    margin-bottom: 32px !important;
+    font-size: 64px !important;
+    margin-bottom: 28px !important;
     line-height: 1.1 !important;
-    padding-bottom: 18px !important;
+    padding-bottom: 16px !important;
     border-bottom: 2px solid rgba(255, 255, 255, 0.15) !important;
   }
 
@@ -611,14 +611,14 @@ body {
   /* Tabelas de géneros (usa grid com text-xs) */
   #statsRoot section .grid.text-xs {
     font-size: 32px !important;
-    gap: 12px 10px !important;
+    gap: 6px 8px !important;
     margin-top: 20px !important;
   }
 
   #statsRoot section .grid.text-xs > div {
-    padding: 10px 0 !important;
+    padding: 4px 0 !important;
     font-size: 30px !important;
-    line-height: 1.4 !important;
+    line-height: 1.2 !important;
   }
 
   /* Header da tabela */
