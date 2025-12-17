@@ -434,35 +434,51 @@ body {
     margin-bottom: 28px;
   }
 
+  #notificationsList article > div {
+    padding: 24px !important;
+  }
+
+  #notificationsList article .p-4 {
+    padding: 28px !important;
+  }
+
   #notificationsList h2 {
-    font-size: 56px !important;
+    font-size: 36px !important;
   }
 
   #notificationsList p {
-    font-size: 40px !important;
+    font-size: 24px !important;
   }
 
   #notificationsList img {
-    max-height: 800px !important;
+    min-height: 350px !important;
+    max-height: none !important;
+    object-fit: cover;
   }
 
   #notificationsList .text-base {
-    font-size: 40px !important;
+    font-size: 24px !important;
   }
 
   #notificationsList .text-lg {
-    font-size: 48px !important;
+    font-size: 28px !important;
+  }
+
+  /* Poster container maior */
+  #notificationsList .w-full.md\\:w-1\\/4 {
+    min-height: 350px;
   }
 
   /* Header da página */
   main h1.text-2xl {
-    font-size: 64px !important;
+    font-size: 40px !important;
   }
 
   /* Botão Clear all */
   #clearNotificationsBtn {
-    font-size: 36px !important;
-    padding: 28px 40px !important;
+    font-size: 22px !important;
+    padding: 18px 28px !important;
+    border-radius: 16px !important;
   }
 
 }
