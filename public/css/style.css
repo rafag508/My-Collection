@@ -876,35 +876,13 @@ body {
   body:has(.allmovies-tabs) main > div {
     padding-left: 0 !important;
     padding-right: 0 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
   }
 
   body[data-page="allmovies"] main .max-w-7xl,
   body:has(.allmovies-tabs) main .max-w-7xl {
-    padding: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
     max-width: 100% !important;
-  }
-
-  /* Forçar remoção de qualquer padding horizontal que possa vir do Tailwind */
-  body[data-page="allmovies"] main div[class*="px-"],
-  body:has(.allmovies-tabs) main div[class*="px-"],
-  /* Remover padding específico do Tailwind px-6 */
-  body[data-page="allmovies"] main div.px-6,
-  body:has(.allmovies-tabs) main div.px-6 {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  /* Garantir que o container principal não tem padding */
-  body[data-page="allmovies"] main > div.mx-auto,
-  body:has(.allmovies-tabs) main > div.mx-auto {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
   }
 
   /* Esconder título "All Movies" */
