@@ -768,11 +768,15 @@ body {
     height: auto !important;
   }
 
-  /* Botão eliminar com fundo branco para melhor visibilidade */
+  /* Botão eliminar com fundo vermelho e ícone branco */
   body:has(.movies-tabs) #deleteMoviesBtn {
-    background-color: white !important;
+    background-color: #dc2626 !important;
     border: 2px solid #dc2626 !important;
-    color: #dc2626 !important;
+    color: white !important;
+  }
+  
+  body:has(.movies-tabs) #deleteMoviesBtn:hover {
+    background-color: #b91c1c !important;
   }
 
   /* Checkboxes de seleção (tamanho médio) */
