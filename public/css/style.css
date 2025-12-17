@@ -765,44 +765,64 @@ body {
     padding: 0 16px !important;
   }
 
-  /* Posters maiores - mais altura */
+  /* Posters - design compacto */
   #moviesGrid .movie-card {
     border-radius: 12px !important;
-    overflow: hidden !important; /* Garantir que a imagem não sai do card */
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
-  /* Container da imagem - precisa de overflow para cortar o scale */
+  /* Container da imagem */
   #moviesGrid .movie-card > div {
     overflow: hidden !important;
     position: relative !important;
     width: 100% !important;
-    height: 480px !important; /* Altura fixa do container */
+    height: 280px !important; /* Altura mais compacta */
   }
 
   #moviesGrid .movie-card img {
-    height: 600px !important; /* Aumentar altura para compensar scale 0.80 (480/0.8 = 600) */
-    width: 125% !important; /* Aumentar largura para compensar scale 0.80 (100/0.8 = 125) */
+    height: 280px !important;
+    width: 100% !important;
     object-fit: cover !important;
-    transform: scale(0.80) !important; /* Zoom out 20% */
-    transform-origin: center center !important;
     display: block !important;
-    margin-left: -12.5% !important; /* Centralizar após aumentar largura */
+  }
+
+  /* Texto visível */
+  #moviesGrid .movie-card .p-2 {
+    padding: 12px !important;
+    display: block !important;
   }
 
   #moviesGrid .movie-card h3 {
-    font-size: 18px !important;
-    padding: 12px 8px !important;
+    font-size: 16px !important;
+    padding: 0 !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+    color: white !important;
   }
 
-  #moviesGrid .movie-card p {
-    font-size: 14px !important;
-    padding: 0 8px 8px 8px !important;
+  #moviesGrid .movie-card p.text-xs {
+    font-size: 13px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    color: #9ca3af !important;
   }
 
   #moviesGrid .movie-card button {
-    font-size: 14px !important;
-    padding: 10px 16px !important;
-    margin: 8px !important;
+    font-size: 13px !important;
+    padding: 8px 12px !important;
+    margin: 8px 0 0 0 !important;
+    width: calc(100% - 24px) !important;
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+  }
+
+  /* Garantir que o container do texto não está escondido */
+  #moviesGrid .movie-card > div.cursor-pointer {
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   /* Paginação */
