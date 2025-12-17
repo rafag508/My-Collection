@@ -5,8 +5,10 @@ import { logout, getCurrentUser } from "../firebase/auth.js";
 import { getUserPreferencesFirestore } from "../firebase/firestore.js";
 import { getNotifications } from "../modules/notifications.js";
 import { storageService } from "../modules/storageService.js";
-import { getSerieById } from "../modules/series/seriesDataManager.js";
-import { getMovieById } from "../modules/movies/moviesDataManager.js";
+import { getSerieById, getAllSeries } from "../modules/series/seriesDataManager.js";
+import { getMovieById, getAllMovies } from "../modules/movies/moviesDataManager.js";
+import { loadProgress as loadSeriesProgress, countWatchedEpisodes } from "../modules/series/seriesProgress.js";
+import { loadProgress as loadMoviesProgress } from "../modules/movies/moviesProgress.js";
 
 const EPISODE_AVG_MIN = 45;
 const MOVIE_AVG_MIN = 120;
@@ -165,30 +167,31 @@ async function loadStatsPreview() {
   const moviesEl = document.getElementById('statMovies');
   
   try {
-    // Load from cache first
-    const series = await storageService.get("series", []);
-    const movies = await storageService.get("movies", []);
-    const seriesProgress = await storageService.get("series_progress", {});
-    const moviesProgress = await storageService.get("movies_progress", {});
+    // Use the same functions as statsPage for accurate data
+    const [series, movies, seriesProgressMap, moviesProgressMap] = await Promise.all([
+      getAllSeries(),
+      getAllMovies(),
+      loadSeriesProgress(),
+      loadMoviesProgress()
+    ]);
     
-    // Count episodes watched
+    // Count episodes watched using the same function as statsPage
     let episodesWatched = 0;
     if (Array.isArray(series)) {
       series.forEach(serie => {
-        const progress = seriesProgress[serie.id] || { watched: {} };
-        if (progress.watched) {
-          Object.values(progress.watched).forEach(season => {
-            if (typeof season === 'object') {
-              episodesWatched += Object.keys(season).length;
-            }
-          });
+        const progress = seriesProgressMap[serie.id] || { watched: {} };
+        try {
+          const info = countWatchedEpisodes(serie, progress);
+          episodesWatched += info.watched || 0;
+        } catch (err) {
+          // Ignore errors for individual series
         }
       });
     }
     
     // Count movies watched
     let moviesWatched = 0;
-    Object.values(moviesProgress || {}).forEach(data => {
+    Object.values(moviesProgressMap || {}).forEach(data => {
       if (data.watched) moviesWatched++;
     });
     
