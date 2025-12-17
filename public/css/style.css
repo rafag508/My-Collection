@@ -297,40 +297,40 @@ body {
   /* Stats Cards */
   .stat-card {
     flex-shrink: 0;
-    min-width: 55vw;
-    max-width: 280px;
+    min-width: 70vw;
+    max-width: 340px;
     background: rgba(31, 41, 55, 0.6);
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
+    border-radius: 28px;
     overflow: hidden;
     scroll-snap-align: start;
   }
 
   .stat-label {
-    font-size: 18px;
+    font-size: 22px;
     color: #9ca3af;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    padding: 20px 20px;
+    gap: 12px;
+    padding: 24px 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .stat-label svg {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 
   .stat-value {
-    padding: 28px 20px;
+    padding: 36px 24px;
     text-align: center;
   }
 
   .stat-value .stat-numbers {
     display: flex;
     justify-content: center;
-    gap: 24px;
+    gap: 32px;
   }
 
   .stat-value .stat-unit {
@@ -340,20 +340,20 @@ body {
   }
 
   .stat-value .stat-number {
-    font-size: 42px;
+    font-size: 52px;
     font-weight: 700;
     color: white;
   }
 
   .stat-value .stat-unit-label {
-    font-size: 14px;
+    font-size: 18px;
     color: #6b7280;
     text-transform: uppercase;
-    margin-top: 6px;
+    margin-top: 8px;
   }
 
   .stat-value .stat-single {
-    font-size: 48px;
+    font-size: 60px;
     font-weight: 700;
     color: white;
   }
