@@ -567,35 +567,41 @@ body {
 
   /* Título do card (Series/Movies) */
   #statsRoot section h2 {
-    font-size: 52px !important;
-    margin-bottom: 24px !important;
+    font-size: 80px !important;
+    margin-bottom: 32px !important;
+    line-height: 1.1 !important;
   }
 
   /* Labels (Total added, etc) */
   #statsRoot section .font-semibold {
-    font-size: 36px !important;
+    font-size: 40px !important;
+    line-height: 1.3 !important;
   }
 
   /* Números grandes */
   #statsRoot section .text-2xl {
-    font-size: 72px !important;
+    font-size: 64px !important;
+    line-height: 1.1 !important;
   }
 
   /* Texto secundário */
   #statsRoot section .text-gray-300,
   #statsRoot section .text-gray-400 {
-    font-size: 28px !important;
+    font-size: 30px !important;
+    line-height: 1.4 !important;
+    margin-top: 8px !important;
   }
 
   /* Time breakdown */
   #statsRoot section .text-lg {
-    font-size: 38px !important;
+    font-size: 42px !important;
+    line-height: 1.3 !important;
   }
 
   /* Seções dentro do card */
   #statsRoot section .space-y-4 > div {
-    padding-top: 20px !important;
-    padding-bottom: 16px !important;
+    padding-top: 28px !important;
+    padding-bottom: 24px !important;
     border-bottom: 2px solid rgba(255, 255, 255, 0.15) !important;
   }
 
@@ -605,19 +611,20 @@ body {
 
   /* Tabelas de géneros */
   #statsRoot table {
-    font-size: 32px !important;
+    font-size: 34px !important;
     width: 100% !important;
-    margin-top: 16px !important;
+    margin-top: 20px !important;
   }
 
   #statsRoot td,
   #statsRoot th {
-    padding: 14px 12px !important;
-    font-size: 30px !important;
+    padding: 16px 14px !important;
+    font-size: 32px !important;
+    line-height: 1.4 !important;
   }
 
   #statsRoot table thead {
-    font-size: 32px !important;
+    font-size: 34px !important;
   }
 
   /* Header da tabela */
