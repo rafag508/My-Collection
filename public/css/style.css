@@ -564,53 +564,38 @@ body {
     flex-direction: column !important;
   }
 
-  /* Conteúdo do card espalha-se verticalmente */
-  #statsRoot section .space-y-4 {
-    flex: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-evenly !important;
-  }
-
-  /* Seções dentro ocupam espaço igual */
-  #statsRoot section .space-y-4 > div {
-    flex: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-  }
 
   /* Título do card (Series/Movies) */
   #statsRoot section h2 {
-    font-size: 44px !important;
-    margin-bottom: 32px !important;
+    font-size: 52px !important;
+    margin-bottom: 24px !important;
   }
 
   /* Labels (Total added, etc) */
   #statsRoot section .font-semibold {
-    font-size: 30px !important;
+    font-size: 36px !important;
   }
 
   /* Números grandes */
   #statsRoot section .text-2xl {
-    font-size: 52px !important;
+    font-size: 72px !important;
   }
 
   /* Texto secundário */
   #statsRoot section .text-gray-300,
   #statsRoot section .text-gray-400 {
-    font-size: 26px !important;
+    font-size: 28px !important;
   }
 
   /* Time breakdown */
   #statsRoot section .text-lg {
-    font-size: 32px !important;
+    font-size: 38px !important;
   }
 
-  /* Seções dentro do card - linhas divisórias */
+  /* Seções dentro do card */
   #statsRoot section .space-y-4 > div {
-    padding-top: 28px !important;
-    padding-bottom: 20px !important;
+    padding-top: 20px !important;
+    padding-bottom: 16px !important;
     border-bottom: 2px solid rgba(255, 255, 255, 0.15) !important;
   }
 
@@ -620,19 +605,19 @@ body {
 
   /* Tabelas de géneros */
   #statsRoot table {
-    font-size: 28px !important;
+    font-size: 32px !important;
     width: 100% !important;
-    margin-top: 20px !important;
+    margin-top: 16px !important;
   }
 
   #statsRoot td,
   #statsRoot th {
-    padding: 18px 16px !important;
-    font-size: 26px !important;
+    padding: 14px 12px !important;
+    font-size: 30px !important;
   }
 
   #statsRoot table thead {
-    font-size: 28px !important;
+    font-size: 32px !important;
   }
 
   /* Header da tabela */
