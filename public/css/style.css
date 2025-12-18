@@ -1346,6 +1346,7 @@ body {
   body:has(.series-tabs) #filterSeriesModal #applyTopRatingBtn,
   body:has(.series-tabs) #filterSeriesModal #applyGenreBtn,
   body:has(.series-tabs) #filterSeriesModal #applyYearBtn,
+  body:has(.series-tabs) #filterSeriesModal #applyListBtn,
   body:has(.series-tabs) #filterSeriesModal #clearFiltersBtn {
     font-size: 20px !important;
     padding: 14px 24px !important;
@@ -1574,6 +1575,7 @@ body {
   body:has(.allseries-tabs) #filterSeriesModal #applyTopRatingBtn,
   body:has(.allseries-tabs) #filterSeriesModal #applyGenreBtn,
   body:has(.allseries-tabs) #filterSeriesModal #applyYearBtn,
+  body:has(.allseries-tabs) #filterSeriesModal #applyListBtn,
   body:has(.allseries-tabs) #filterSeriesModal #clearFiltersBtn {
     font-size: 20px !important;
     padding: 14px 24px !important;

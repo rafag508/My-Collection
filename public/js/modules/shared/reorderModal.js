@@ -97,9 +97,11 @@ export class ReorderModal {
     const GAP = 16;
     const VISIBLE_ROWS = 4;
     
-    // Detectar se é mobile (largura <= 768px)
-    const isMobile = window.innerWidth <= 768;
-    const columns = isMobile ? 4 : 6;
+    // Detectar se é mobile/app mode (largura <= 768px ou app mode)
+    const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                      window.navigator.standalone || 
+                      (window.innerWidth <= 768);
+    const columns = isAppMode ? 4 : 6;
     
     grid.style.display = "grid";
     grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
@@ -170,11 +172,14 @@ export class ReorderModal {
       });
 
       // Touch events para mobile
+      let isDragging = false;
+      let dragThreshold = 10; // Threshold mínimo para iniciar drag
+      
       card.addEventListener("touchstart", (e) => {
         touchStartElement = card;
         touchStartY = e.touches[0].clientY;
         touchStartX = e.touches[0].clientX;
-        card.classList.add("opacity-50");
+        isDragging = false;
       }, { passive: true });
 
       card.addEventListener("touchmove", (e) => {
@@ -184,44 +189,47 @@ export class ReorderModal {
         const touchX = e.touches[0].clientX;
         const deltaY = touchY - touchStartY;
         const deltaX = touchX - touchStartX;
+        const totalDelta = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-        // Se o movimento for principalmente vertical, permitir scroll
-        if (Math.abs(deltaY) > Math.abs(deltaX)) {
-          return;
+        // Se ainda não iniciou drag e o movimento é significativo, iniciar drag
+        if (!isDragging && totalDelta > dragThreshold) {
+          isDragging = true;
+          card.classList.add("opacity-50");
+          e.preventDefault(); // Prevenir scroll quando inicia drag
         }
 
-        // Se o movimento horizontal for significativo, prevenir scroll e fazer drag
-        if (Math.abs(deltaX) > 10) {
+        // Se está em modo drag, prevenir scroll e fazer drag
+        if (isDragging) {
           e.preventDefault();
-        }
+          
+          // Encontrar o elemento sobre o qual estamos a passar
+          const elementBelow = document.elementFromPoint(touchX, touchY);
+          if (!elementBelow) return;
 
-        // Encontrar o elemento sobre o qual estamos a passar
-        const elementBelow = document.elementFromPoint(touchX, touchY);
-        if (!elementBelow) return;
-
-        // Procurar o card pai (pode ser o próprio elemento ou um parent)
-        let targetCard = elementBelow;
-        while (targetCard && targetCard !== grid) {
-          if (targetCard.parentElement === grid && targetCard !== card) {
-            break;
+          // Procurar o card pai (pode ser o próprio elemento ou um parent)
+          let targetCard = elementBelow;
+          while (targetCard && targetCard !== grid) {
+            if (targetCard.parentElement === grid && targetCard !== card) {
+              break;
+            }
+            targetCard = targetCard.parentElement;
           }
-          targetCard = targetCard.parentElement;
-        }
 
-        if (!targetCard || targetCard === card || !grid.contains(targetCard)) return;
+          if (!targetCard || targetCard === card || !grid.contains(targetCard)) return;
 
-        const items = [...grid.children];
-        const dragIndex = items.indexOf(card);
-        const hoverIndex = items.indexOf(targetCard);
+          const items = [...grid.children];
+          const dragIndex = items.indexOf(card);
+          const hoverIndex = items.indexOf(targetCard);
 
-        if (dragIndex !== hoverIndex && dragIndex !== -1 && hoverIndex !== -1) {
-          if (dragIndex < hoverIndex) {
-            grid.insertBefore(card, targetCard.nextSibling);
-          } else {
-            grid.insertBefore(card, targetCard);
+          if (dragIndex !== hoverIndex && dragIndex !== -1 && hoverIndex !== -1) {
+            if (dragIndex < hoverIndex) {
+              grid.insertBefore(card, targetCard.nextSibling);
+            } else {
+              grid.insertBefore(card, targetCard);
+            }
+            touchStartY = touchY;
+            touchStartX = touchX;
           }
-          touchStartY = touchY;
-          touchStartX = touchX;
         }
       }, { passive: false });
 
@@ -231,6 +239,7 @@ export class ReorderModal {
           touchStartElement = null;
           touchStartY = 0;
           touchStartX = 0;
+          isDragging = false;
         }
       }, { passive: true });
 
@@ -240,6 +249,7 @@ export class ReorderModal {
           touchStartElement = null;
           touchStartY = 0;
           touchStartX = 0;
+          isDragging = false;
         }
       }, { passive: true });
     });
