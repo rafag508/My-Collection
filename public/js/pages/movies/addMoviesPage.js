@@ -48,7 +48,7 @@ function openModal() {
   const currentFontSize = window.getComputedStyle(searchInput).fontSize;
   console.log('🔍 [Zoom Debug] Font-size ANTES:', currentFontSize);
   
-  // CRÍTICO: Garantir que o font-size está aplicado ANTES do focus
+  // CRÍTICO: Garantir que o font-size está aplicado
   searchInput.style.fontSize = '16px';
   searchInput.style.setProperty('font-size', '16px', 'important');
   
@@ -56,34 +56,9 @@ function openModal() {
   const fontSizeAfter = window.getComputedStyle(searchInput).fontSize;
   console.log('🔍 [Zoom Debug] Font-size DEPOIS:', fontSizeAfter);
   
-  // Forçar o navegador a "processar" a mudança de estilo
-  // Isso garante que o iOS vê o font-size antes do focus
-  void searchInput.offsetHeight; // Força reflow
-  
-  // Verificar novamente após reflow
-  const fontSizeAfterReflow = window.getComputedStyle(searchInput).fontSize;
-  console.log('🔍 [Zoom Debug] Font-size APÓS REFLOW:', fontSizeAfterReflow);
-  
-  // Usar requestAnimationFrame para garantir que está tudo pronto
-  requestAnimationFrame(() => {
-    const fontSizeBeforeFocus = window.getComputedStyle(searchInput).fontSize;
-    console.log('🔍 [Zoom Debug] Font-size ANTES DO FOCUS:', fontSizeBeforeFocus);
-    
-    // Delay adicional para garantir que o iOS processou o font-size
-    setTimeout(() => {
-      console.log('🔍 [Zoom Debug] Fazendo focus agora...');
-      searchInput.focus();
-      
-      // Verificar após focus
-      setTimeout(() => {
-        const fontSizeAfterFocus = window.getComputedStyle(searchInput).fontSize;
-        const viewportWidth = window.innerWidth;
-        console.log('🔍 [Zoom Debug] Font-size APÓS FOCUS:', fontSizeAfterFocus);
-        console.log('🔍 [Zoom Debug] Viewport width:', viewportWidth);
-        console.log('🔍 [Zoom Debug] Zoom detectado?', viewportWidth < window.outerWidth);
-      }, 50);
-    }, 100);
-  });
+  // NÃO fazer focus automático - deixar o utilizador clicar no input
+  // Isso evita o zoom porque o font-size já está aplicado quando clicam
+  console.log('🔍 [Zoom Debug] Modal aberto - aguardando clique do utilizador (sem focus automático)');
 }
 
 function closeModal() {
