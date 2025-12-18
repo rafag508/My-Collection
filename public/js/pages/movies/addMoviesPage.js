@@ -42,13 +42,22 @@ function openModal() {
   modal.classList.add("flex");
   searchInput.value = "";
   resultsContainer.innerHTML = "";
-  // Forçar font-size para evitar zoom no iOS
+  
+  // CRÍTICO: Garantir que o font-size está aplicado ANTES do focus
   searchInput.style.fontSize = '16px';
   searchInput.style.setProperty('font-size', '16px', 'important');
-  // Pequeno delay para garantir que o estilo é aplicado antes do focus
-  setTimeout(() => {
-    searchInput.focus();
-  }, 50);
+  
+  // Forçar o navegador a "processar" a mudança de estilo
+  // Isso garante que o iOS vê o font-size antes do focus
+  void searchInput.offsetHeight; // Força reflow
+  
+  // Usar requestAnimationFrame para garantir que está tudo pronto
+  requestAnimationFrame(() => {
+    // Delay adicional para garantir que o iOS processou o font-size
+    setTimeout(() => {
+      searchInput.focus();
+    }, 100); // Aumentar para 100ms para ter mais certeza
+  });
 }
 
 function closeModal() {

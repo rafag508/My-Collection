@@ -776,6 +776,38 @@ body {
     mix-blend-mode: normal !important;
     isolation: isolate !important;
     position: relative !important;
+    /* Forçar que o emoji mantenha suas cores originais */
+    color: unset !important;
+    -webkit-text-fill-color: unset !important;
+    background: transparent !important;
+  }
+  
+  /* Criar um pseudo-elemento para o background vermelho */
+  body:has(.movies-tabs) #deleteMoviesBtn::before,
+  body:has(.movies-tabs) #deleteSeriesBtn::before,
+  #deleteMoviesBtn::before,
+  #deleteSeriesBtn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgb(220, 38, 38); /* bg-red-600 */
+    border-radius: 0.5rem;
+    z-index: -1;
+  }
+  
+  body:has(.movies-tabs) #deleteMoviesBtn:hover::before,
+  body:has(.movies-tabs) #deleteSeriesBtn:hover::before,
+  #deleteMoviesBtn:hover::before,
+  #deleteSeriesBtn:hover::before {
+    background-color: rgb(185, 28, 28); /* bg-red-700 */
+  }
+  
+  /* Garantir que o emoji está acima do background */
+  body:has(.movies-tabs) #deleteMoviesBtn,
+  body:has(.movies-tabs) #deleteSeriesBtn,
+  #deleteMoviesBtn,
+  #deleteSeriesBtn {
+    background-color: transparent !important;
   }
   
   body:has(.movies-tabs) #deleteMoviesBtn > *,
