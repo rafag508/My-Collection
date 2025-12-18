@@ -768,36 +768,6 @@ body {
     height: auto !important;
   }
 
-  /* Garantir que os botões fiquem ocultos quando têm a classe hidden */
-  body:has(.movies-tabs) #moveMoviesBtn.hidden,
-  body:has(.movies-tabs) #deleteMoviesBtn.hidden {
-    display: none !important;
-  }
-
-  /* Botão eliminar com fundo vermelho e círculo branco no interior (apenas quando visível) */
-  body:has(.movies-tabs) #deleteMoviesBtn:not(.hidden) {
-    background-color: #dc2626 !important;
-    border: 2px solid #dc2626 !important;
-  }
-  
-  body:has(.movies-tabs) #deleteMoviesBtn:not(.hidden):hover {
-    background-color: #b91c1c !important;
-  }
-
-  /* SVG do botão eliminar - círculo branco com contorno vermelho e linha vermelha (apenas quando visível) */
-  body:has(.movies-tabs) #deleteMoviesBtn:not(.hidden) svg {
-    width: 24px !important;
-    height: 24px !important;
-  }
-
-  body:has(.movies-tabs) #deleteMoviesBtn:not(.hidden) svg circle {
-    fill: white !important;
-    stroke: #dc2626 !important;
-  }
-
-  body:has(.movies-tabs) #deleteMoviesBtn:not(.hidden) svg line {
-    stroke: #dc2626 !important;
-  }
 
   /* Checkboxes de seleção (tamanho médio) */
   body:has(.movies-tabs) #moviesGrid .movie-card button[onclick*="toggleDeleteSelect"] {
