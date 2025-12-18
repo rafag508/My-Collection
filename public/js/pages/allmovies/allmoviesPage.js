@@ -2,6 +2,7 @@ import { renderNavbar } from "../../ui/navbar.js";
 import { renderFooter } from "../../ui/footer.js";
 import { getPopularMovies, searchMovies, discoverMovies } from "../../modules/tmdbApi.js";
 import { toastSuccess } from "../../ui/toast.js";
+import { PaginationManager } from "../../modules/shared/pagination.js";
 
 // Placeholder SVG para imagens que falham ao carregar
 const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='750'%3E%3Crect fill='%23374151' width='500' height='750'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='24' font-family='Arial'%3ENo Image%3C/text%3E%3C/svg%3E";
@@ -13,6 +14,8 @@ let isFilterMode = false;
 let searchTimeout = null;
 let currentSearchQuery = "";
 let searchTotalPages = 0;
+let pagination = null; // Será inicializado no initAllMoviesPage
+let totalPages = 0; // Total de páginas atual (para filter/normal)
 let currentFilters = {
   topRating: false,
   genres: [],
@@ -184,6 +187,43 @@ export async function initAllMoviesPage() {
     isFilterMode = false;
   }
   
+  // ✅ INICIALIZAR PAGINAÇÃO
+  pagination = new PaginationManager({
+    pageSize: PAGE_SIZE,
+    initialPage: currentPage,
+    buttonPrefix: 'allmovies',
+    activeColor: 'bg-blue-600',
+    updateURL: (page) => {
+      updateURL(page);
+      currentPage = page;
+      // Save current page and filters to sessionStorage
+      sessionStorage.setItem('allmoviesPage', page.toString());
+      if (isFilterMode) {
+        sessionStorage.setItem('allmoviesFilters', JSON.stringify(currentFilters));
+      }
+    },
+    getTotalItems: () => {
+      if (isSearchMode) {
+        // Para search, usar searchTotalPages diretamente
+        return searchTotalPages > 0 ? searchTotalPages * PAGE_SIZE : PAGE_SIZE;
+      }
+      // Para filter e normal, usar totalPages
+      return totalPages > 0 ? totalPages * PAGE_SIZE : PAGE_SIZE;
+    },
+    onPageChange: (page) => {
+      currentPage = page;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Verificar o modo e chamar a função apropriada
+      if (isSearchMode && currentSearchQuery) {
+        performSearch(currentSearchQuery, page);
+      } else if (isFilterMode) {
+        loadFilteredMovies(page);
+      } else {
+        loadMovies();
+      }
+    }
+  });
+
   if (isFilterMode) {
     await loadFilteredMovies(currentPage);
   } else {
@@ -262,21 +302,13 @@ export async function initAllMoviesPage() {
         const swipeThreshold = 80; // Mínimo de pixels para considerar swipe
 
         // Só processar se o movimento horizontal for significativo e maior que o vertical
-        if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > diffY) {
+        if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > diffY && pagination) {
           if (diffX > 0) {
             // Swipe para a esquerda = próxima página
-            const nextBtn = Array.from(document.querySelectorAll('#moviesPagination button, #moviesPaginationTop button'))
-              .find(btn => btn.textContent.includes('Next'));
-            if (nextBtn && !nextBtn.disabled) {
-              nextBtn.click();
-            }
+            pagination.nextPage();
           } else {
             // Swipe para a direita = página anterior
-            if (currentPage > 1) {
-              currentPage--;
-              updateURL(currentPage);
-              renderMovies();
-            }
+            pagination.prevPage();
           }
         }
 
@@ -290,29 +322,11 @@ export async function initAllMoviesPage() {
     }
   }
   
-  // 🔥 Listener para o botão retroceder do browser
-  window.addEventListener('popstate', (e) => {
-    if (e.state && e.state.page) {
-      currentPage = e.state.page;
-      if (isSearchMode && currentSearchQuery) {
-        performSearch(currentSearchQuery, currentPage);
-      } else if (isFilterMode) {
-        loadFilteredMovies(currentPage);
-      } else {
-        loadMovies();
-      }
-    } else {
-      // Se não houver state, ler da URL
-      currentPage = getPageFromURL();
-      if (isSearchMode && currentSearchQuery) {
-        performSearch(currentSearchQuery, currentPage);
-      } else if (isFilterMode) {
-        loadFilteredMovies(currentPage);
-      } else {
-        loadMovies();
-      }
-    }
-  });
+  // ✅ PopState já está configurado no PaginationManager.setupPopStateListener()
+  // Mas precisamos de um listener adicional para atualizar quando o modo muda
+  if (pagination) {
+    pagination.setupPopStateListener();
+  }
 }
 
 function setupFilter() {
@@ -669,12 +683,13 @@ async function loadFilteredMovies(page = 1) {
 
   const data = await discoverMovies(page, currentFilters);
   const movies = data.results || [];
-  const total = Math.min(data.totalPages || 0, 500);
+  totalPages = Math.min(data.totalPages || 0, 500);
 
   if (movies.length === 0) {
     grid.innerHTML = `<p class="text-gray-400">No movies found with these filters.</p>`;
-    renderPagination(paginator, total);
-    if (paginatorTop) renderPagination(paginatorTop, total);
+    if (pagination) {
+      pagination.render("moviesPaginationTop", "moviesPagination");
+    }
     return;
   }
 
@@ -702,8 +717,9 @@ async function loadFilteredMovies(page = 1) {
     });
   });
 
-  renderPagination(paginator, total);
-  if (paginatorTop) renderPagination(paginatorTop, total);
+  if (pagination) {
+    pagination.render("moviesPaginationTop", "moviesPagination");
+  }
 }
 
 function setupSearch() {
@@ -719,6 +735,9 @@ function setupSearch() {
       isSearchMode = false;
       currentSearchQuery = "";
       currentPage = 1;
+      if (pagination) {
+        pagination.setPage(1);
+      }
       if (isFilterMode) {
         loadFilteredMovies(1);
       } else {
@@ -730,6 +749,9 @@ function setupSearch() {
     currentSearchQuery = query;
     currentPage = 1;
     isFilterMode = false; // Desativar filtros quando pesquisar
+    if (pagination) {
+      pagination.setPage(1);
+    }
     searchTimeout = setTimeout(() => performSearch(query, 1), 350);
   });
 }
@@ -742,6 +764,9 @@ async function performSearch(query, page = 1) {
   grid.innerHTML = `<p class="text-gray-400">Searching...</p>`;
   isSearchMode = true;
   currentPage = page;
+  if (pagination) {
+    pagination.setPage(page);
+  }
 
   const data = await searchMovies(query, page);
   const movies = data.results || [];
@@ -749,8 +774,9 @@ async function performSearch(query, page = 1) {
 
   if (movies.length === 0) {
     grid.innerHTML = `<p class="text-gray-400">No movies found.</p>`;
-    renderPagination(paginator, searchTotalPages);
-    if (paginatorTop) renderPagination(paginatorTop, searchTotalPages);
+    if (pagination) {
+      pagination.render("moviesPaginationTop", "moviesPagination");
+    }
     return;
   }
 
@@ -778,8 +804,9 @@ async function performSearch(query, page = 1) {
     });
   });
 
-  renderPagination(paginator, searchTotalPages);
-  if (paginatorTop) renderPagination(paginatorTop, searchTotalPages);
+  if (pagination) {
+    pagination.render("moviesPaginationTop", "moviesPagination");
+  }
 }
 
 async function loadMovies() {
@@ -791,7 +818,7 @@ async function loadMovies() {
 
   const data = await getPopularMovies(currentPage);
   const movies = data.results || [];
-  const total = Math.min(data.totalPages || 0, 500);
+  totalPages = Math.min(data.totalPages || 0, 500);
 
   grid.innerHTML = movies.map(movie => renderMovieCard(movie)).join("");
 
@@ -817,8 +844,9 @@ async function loadMovies() {
     });
   });
 
-  renderPagination(paginator, total);
-  if (paginatorTop) renderPagination(paginatorTop, total);
+  if (pagination) {
+    pagination.render("moviesPaginationTop", "moviesPagination");
+  }
 }
 
 function renderMovieCard(movie) {
@@ -837,57 +865,6 @@ function renderMovieCard(movie) {
   `;
 }
 
-function renderPagination(container, totalPages) {
-  if (totalPages <= 1) {
-    container.innerHTML = "";
-    return;
-  }
-
-  let html = "";
-
-  if (currentPage >= 2) html += btn(1, "««");
-  if (currentPage > 1) html += btn(currentPage - 1, "Prev");
-
-  const start = Math.max(1, currentPage - 2);
-  const end = Math.min(totalPages, currentPage + 2);
-
-  for (let p = start; p <= end; p++) {
-    html += `<button data-page="${p}" class="px-3 py-1 rounded ${
-      p === currentPage ? "bg-blue-600" : "bg-gray-800 hover:bg-gray-700"
-    }">${p}</button>`;
-  }
-
-  if (currentPage < totalPages) {
-    html += btn(currentPage + 1, "Next");
-    html += btn(totalPages, "»»");
-  }
-
-  container.innerHTML = html;
-
-  container.querySelectorAll("button").forEach(b =>
-    b.addEventListener("click", () => {
-      const page = Number(b.dataset.page);
-      currentPage = page;
-      updateURL(page); // 🔥 Atualizar URL
-      // Save current page and filters to sessionStorage
-      sessionStorage.setItem('allmoviesPage', page.toString());
-      if (isFilterMode) {
-        sessionStorage.setItem('allmoviesFilters', JSON.stringify(currentFilters));
-      }
-      if (isSearchMode && currentSearchQuery) {
-        performSearch(currentSearchQuery, page);
-      } else if (isFilterMode) {
-        loadFilteredMovies(page);
-      } else {
-        loadMovies();
-      }
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    })
-  );
-}
-
-function btn(page, text) {
-  return `<button data-page="${page}" class="px-3 py-1 rounded bg-gray-800 hover:bg-gray-700">${text}</button>`;
-}
+// ✅ PAGINATION agora é gerido pelo PaginationManager (já configurado no início)
 
 

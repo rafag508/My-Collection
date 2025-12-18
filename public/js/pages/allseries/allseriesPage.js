@@ -1,6 +1,7 @@
 import { renderNavbar } from "../../ui/navbar.js";
 import { renderFooter } from "../../ui/footer.js";
 import { getPopularSeries, searchSeries, discoverSeries } from "../../modules/tmdbApi.js";
+import { PaginationManager } from "../../modules/shared/pagination.js";
 
 // Placeholder SVG para imagens que falham ao carregar
 const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='750'%3E%3Crect fill='%23374151' width='500' height='750'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='24' font-family='Arial'%3ENo Image%3C/text%3E%3C/svg%3E";
@@ -12,6 +13,8 @@ let isFilterMode = false;
 let searchTimeout = null;
 let currentSearchQuery = "";
 let searchTotalPages = 0;
+let pagination = null; // Será inicializado no initAllSeriesPage
+let totalPages = 0; // Total de páginas atual (para filter/normal)
 let currentFilters = {
   topRating: false,
   genres: [],
@@ -138,6 +141,41 @@ export async function initAllSeriesPage() {
     isFilterMode = false;
   }
 
+  // ✅ INICIALIZAR PAGINAÇÃO
+  pagination = new PaginationManager({
+    pageSize: PAGE_SIZE,
+    initialPage: currentPage,
+    buttonPrefix: 'allseries',
+    activeColor: 'bg-green-600',
+    updateURL: (page) => {
+      updateURL(page);
+      currentPage = page;
+      // Save current page and filters to sessionStorage
+      sessionStorage.setItem('allseriesPage', page.toString());
+      if (isFilterMode) {
+        sessionStorage.setItem('allseriesFilters', JSON.stringify(currentFilters));
+      }
+    },
+    getTotalItems: () => {
+      if (isSearchMode) {
+        return searchTotalPages > 0 ? searchTotalPages * PAGE_SIZE : PAGE_SIZE;
+      }
+      return totalPages > 0 ? totalPages * PAGE_SIZE : PAGE_SIZE;
+    },
+    onPageChange: (page) => {
+      currentPage = page;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Verificar o modo e chamar a função apropriada
+      if (isSearchMode && currentSearchQuery) {
+        performSearch(currentSearchQuery, page);
+      } else if (isFilterMode) {
+        loadFilteredSeries(page);
+      } else {
+        loadSeries();
+      }
+    }
+  });
+
   if (isFilterMode) {
     await loadFilteredSeries(currentPage);
   } else {
@@ -150,29 +188,10 @@ export async function initAllSeriesPage() {
   setupSearch();
   setupFilter();
   
-  // 🔥 Listener para o botão retroceder do browser
-  window.addEventListener('popstate', (e) => {
-    if (e.state && e.state.page) {
-      currentPage = e.state.page;
-      if (isSearchMode && currentSearchQuery) {
-        performSearch(currentSearchQuery, currentPage);
-      } else if (isFilterMode) {
-        loadFilteredSeries(currentPage);
-      } else {
-        loadSeries();
-      }
-    } else {
-      // Se não houver state, ler da URL
-      currentPage = getPageFromURL();
-      if (isSearchMode && currentSearchQuery) {
-        performSearch(currentSearchQuery, currentPage);
-      } else if (isFilterMode) {
-        loadFilteredSeries(currentPage);
-      } else {
-        loadSeries();
-      }
-    }
-  });
+  // ✅ PopState já está configurado no PaginationManager.setupPopStateListener()
+  if (pagination) {
+    pagination.setupPopStateListener();
+  }
 }
 
 function setupSearch() {
@@ -188,6 +207,9 @@ function setupSearch() {
       isSearchMode = false;
       currentSearchQuery = "";
       currentPage = 1;
+      if (pagination) {
+        pagination.setPage(1);
+      }
       if (isFilterMode) {
         loadFilteredSeries(1);
       } else {
@@ -199,6 +221,9 @@ function setupSearch() {
     currentSearchQuery = query;
     currentPage = 1;
     isFilterMode = false; // Desativar filtros quando pesquisar
+    if (pagination) {
+      pagination.setPage(1);
+    }
     searchTimeout = setTimeout(() => performSearch(query, 1), 350);
   });
 }
@@ -211,6 +236,9 @@ async function performSearch(query, page = 1) {
   grid.innerHTML = `<p class="text-gray-400">Searching...</p>`;
   isSearchMode = true;
   currentPage = page;
+  if (pagination) {
+    pagination.setPage(page);
+  }
 
   const data = await searchSeries(query, page);
   const series = data.results || [];
@@ -218,8 +246,9 @@ async function performSearch(query, page = 1) {
 
   if (series.length === 0) {
     grid.innerHTML = `<p class="text-gray-400">No series found.</p>`;
-    renderPagination(paginator, searchTotalPages);
-    if (paginatorTop) renderPagination(paginatorTop, searchTotalPages);
+    if (pagination) {
+      pagination.render("seriesPaginationTop", "seriesPagination");
+    }
     return;
   }
 
@@ -244,8 +273,9 @@ async function performSearch(query, page = 1) {
     });
   });
 
-  renderPagination(paginator, searchTotalPages);
-  if (paginatorTop) renderPagination(paginatorTop, searchTotalPages);
+  if (pagination) {
+    pagination.render("seriesPaginationTop", "seriesPagination");
+  }
 }
 
 async function loadSeries() {
@@ -257,7 +287,7 @@ async function loadSeries() {
 
   const data = await getPopularSeries(currentPage);
   const series = data.results || [];
-  const total = Math.min(data.totalPages || 0, 500);
+  totalPages = Math.min(data.totalPages || 0, 500);
 
   grid.innerHTML = series.map(renderSeriesCard).join("");
 
@@ -280,8 +310,9 @@ async function loadSeries() {
     });
   });
 
-  renderPagination(paginator, total);
-  if (paginatorTop) renderPagination(paginatorTop, total);
+  if (pagination) {
+    pagination.render("seriesPaginationTop", "seriesPagination");
+  }
 }
 
 function renderSeriesCard(show) {
@@ -300,58 +331,7 @@ function renderSeriesCard(show) {
   `;
 }
 
-function renderPagination(container, totalPages) {
-  if (totalPages <= 1) {
-    container.innerHTML = "";
-    return;
-  }
-
-  let html = "";
-
-  if (currentPage >= 2) html += btn(1, "««");
-  if (currentPage > 1) html += btn(currentPage - 1, "Prev");
-
-  const start = Math.max(1, currentPage - 2);
-  const end = Math.min(totalPages, currentPage + 2);
-
-  for (let p = start; p <= end; p++) {
-    html += `<button data-page="${p}" class="px-3 py-1 rounded ${
-      p === currentPage ? "bg-green-600" : "bg-gray-800 hover:bg-gray-700"
-    }">${p}</button>`;
-  }
-
-  if (currentPage < totalPages) {
-    html += btn(currentPage + 1, "Next");
-    html += btn(totalPages, "»»");
-  }
-
-  container.innerHTML = html;
-
-  container.querySelectorAll("button").forEach(b =>
-    b.addEventListener("click", () => {
-      const page = Number(b.dataset.page);
-      currentPage = page;
-      updateURL(page); // 🔥 Atualizar URL
-      // Save current page and filters to sessionStorage
-      sessionStorage.setItem('allseriesPage', page.toString());
-      if (isFilterMode) {
-        sessionStorage.setItem('allseriesFilters', JSON.stringify(currentFilters));
-      }
-      if (isSearchMode && currentSearchQuery) {
-        performSearch(currentSearchQuery, page);
-      } else if (isFilterMode) {
-        loadFilteredSeries(page);
-      } else {
-        loadSeries();
-      }
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    })
-  );
-}
-
-function btn(page, text) {
-  return `<button data-page="${page}" class="px-3 py-1 rounded bg-gray-800 hover:bg-gray-700">${text}</button>`;
-}
+// ✅ PAGINATION agora é gerido pelo PaginationManager (já configurado no início)
 
 function setupFilter() {
   const filterBtn = document.getElementById("filterSeriesBtn");
@@ -591,12 +571,13 @@ async function loadFilteredSeries(page = 1) {
 
   const data = await discoverSeries(page, currentFilters);
   const series = data.results || [];
-  const total = Math.min(data.totalPages || 0, 500);
+  totalPages = Math.min(data.totalPages || 0, 500);
 
   if (series.length === 0) {
     grid.innerHTML = `<p class="text-gray-400">No series found with these filters.</p>`;
-    renderPagination(paginator, total);
-    if (paginatorTop) renderPagination(paginatorTop, total);
+    if (pagination) {
+      pagination.render("seriesPaginationTop", "seriesPagination");
+    }
     return;
   }
 
@@ -621,7 +602,8 @@ async function loadFilteredSeries(page = 1) {
     });
   });
 
-  renderPagination(paginator, total);
-  if (paginatorTop) renderPagination(paginatorTop, total);
+  if (pagination) {
+    pagination.render("seriesPaginationTop", "seriesPagination");
+  }
 }
 

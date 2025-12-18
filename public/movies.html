@@ -49,11 +49,7 @@
               <button id="deleteMoviesBtn"
                 class="w-10 h-10 rounded-lg bg-red-600 hover:bg-red-700 flex items-center justify-center shadow-md transition-all duration-200 z-50 hidden"
                 title="Eliminar Filmes">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="1" y="1" width="22" height="22" rx="5" fill="#dc2626"/>
-                  <circle cx="12" cy="12" r="8" fill="white"/>
-                  <line x1="7" y1="7" x2="17" y2="17" stroke="#374151" stroke-width="3" stroke-linecap="round"/>
-                </svg>
+                🚫
               </button>
 
               <button id="confirmDeleteMoviesBtn"
@@ -99,7 +95,7 @@
 <div id="addMoviesModal"
   class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex items-center justify-center">
     
-  <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-[90%] max-w-2xl relative max-h-[90vh] overflow-y-auto">
+  <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-[90%] max-w-3xl relative max-h-[90vh] overflow-y-auto">
     
     <button id="closeAddMoviesModal" class="absolute top-3 right-3 text-gray-400 hover:text-white">✖</button>
 
@@ -108,7 +104,7 @@
     </h2>
 
     <input id="tmdbMoviesSearchInput" type="text" placeholder="Pesquisar filme..."
-      class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none text-white mb-4" />
+      class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none text-white mb-4 text-base" />
 
     <div id="tmdbMoviesResults" class="space-y-2"></div>
 

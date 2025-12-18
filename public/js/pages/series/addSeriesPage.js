@@ -24,6 +24,13 @@ export function setupAddSeriesModal() {
   const titleEl = modal.querySelector("h2");
   if (titleEl) titleEl.textContent = translate("addSeriesViaTMDB");
   searchInput.placeholder = translate("searchSeries");
+
+  // Fechar ao clicar fora
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
 }
 
 function openModal() {

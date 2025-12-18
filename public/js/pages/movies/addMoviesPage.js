@@ -28,6 +28,13 @@ export function setupAddMoviesModal() {
   closeBtn.addEventListener("click", closeModal);
   searchInput.addEventListener("input", handleSearch);
   resultsContainer.addEventListener("click", handleSelect);
+
+  // Fechar ao clicar fora
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
 }
 
 function openModal() {
