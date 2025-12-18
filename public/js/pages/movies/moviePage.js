@@ -20,6 +20,15 @@ export async function initMoviePage() {
   renderNavbar();
   renderFooter();
 
+  // Mostrar botão de voltar em app mode
+  const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone || 
+                    (window.innerWidth <= 768);
+  const backButton = document.getElementById('backButton');
+  if (backButton && isAppMode) {
+    backButton.classList.remove('hidden');
+  }
+
   const params = new URLSearchParams(window.location.search);
   movieId = params.get("id");
   fromAllMovies = params.get("from") === "allmovies";

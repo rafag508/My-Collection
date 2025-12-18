@@ -1755,3 +1755,172 @@ body {
     grid-template-columns: repeat(4, 1fr) !important;
   }
 }
+
+/* Movie/Serie Pages - App Mode Styling */
+@media (display-mode: standalone), (max-width: 768px) {
+  /* Reduzir max-width do container principal */
+  body[data-page="movie"] main,
+  body[data-page="serie"] main,
+  body[data-page="allmovie"] main,
+  body[data-page="allserie"] main {
+    max-width: 100% !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 16px !important;
+  }
+
+  /* Aumentar tamanho do poster */
+  body[data-page="movie"] #movieInfo img,
+  body[data-page="serie"] #serieInfo img,
+  body[data-page="allmovie"] #movieInfo img,
+  body[data-page="allserie"] #serieInfo img {
+    width: 100% !important;
+    max-width: 300px !important;
+    height: auto !important;
+    aspect-ratio: 2/3 !important;
+    margin: 0 auto !important;
+  }
+
+  /* Aumentar tamanho do título */
+  body[data-page="movie"] #movieInfo h1,
+  body[data-page="serie"] #serieInfo h1,
+  body[data-page="allmovie"] #movieInfo h1,
+  body[data-page="allserie"] #serieInfo h1 {
+    font-size: 32px !important;
+    margin-bottom: 16px !important;
+  }
+
+  /* Aumentar tamanho do texto de descrição */
+  body[data-page="movie"] #movieInfo p,
+  body[data-page="serie"] #serieInfo p,
+  body[data-page="allmovie"] #movieInfo p,
+  body[data-page="allserie"] #serieInfo p {
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Aumentar tamanho do texto de informações (Year, Genre, etc.) */
+  body[data-page="movie"] #movieInfo .text-sm,
+  body[data-page="serie"] #serieInfo .text-sm,
+  body[data-page="allmovie"] #movieInfo .text-sm,
+  body[data-page="allserie"] #serieInfo .text-sm {
+    font-size: 18px !important;
+  }
+
+  /* Aumentar tamanho dos botões */
+  body[data-page="movie"] #movieInfo button,
+  body[data-page="serie"] #serieInfo button,
+  body[data-page="allmovie"] #movieInfo button,
+  body[data-page="allserie"] #serieInfo button {
+    font-size: 20px !important;
+    padding: 14px 24px !important;
+    min-height: 48px !important;
+  }
+
+  /* Aumentar tamanho do botão de favorito */
+  body[data-page="movie"] #favoriteToggleBtn,
+  body[data-page="serie"] #favoriteToggleBtn,
+  body[data-page="allmovie"] #favoriteToggleBtn,
+  body[data-page="allserie"] #favoriteToggleBtn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  body[data-page="movie"] #favoriteToggleBtn svg,
+  body[data-page="serie"] #favoriteToggleBtn svg,
+  body[data-page="allmovie"] #favoriteToggleBtn svg,
+  body[data-page="allserie"] #favoriteToggleBtn svg {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  /* Aumentar tamanho do rating circle */
+  body[data-page="movie"] #movieInfo .w-12,
+  body[data-page="serie"] #serieInfo .w-12,
+  body[data-page="allmovie"] #movieInfo .w-12,
+  body[data-page="allserie"] #serieInfo .w-12 {
+    width: 56px !important;
+    height: 56px !important;
+    font-size: 20px !important;
+  }
+
+  /* Aumentar gap entre elementos */
+  body[data-page="movie"] #movieInfo .gap-8,
+  body[data-page="serie"] #serieInfo .gap-8,
+  body[data-page="allmovie"] #movieInfo .gap-8,
+  body[data-page="allserie"] #serieInfo .gap-8 {
+    gap: 24px !important;
+  }
+
+  /* Aumentar tamanho da progress bar */
+  body[data-page="movie"] #progressBar,
+  body[data-page="serie"] #progressBar,
+  body[data-page="allmovie"] #progressBar,
+  body[data-page="allserie"] #progressBar {
+    height: 8px !important;
+  }
+
+  body[data-page="movie"] #progressBar .h-3,
+  body[data-page="serie"] #progressBar .h-3,
+  body[data-page="allmovie"] #progressBar .h-3,
+  body[data-page="allserie"] #progressBar .h-3 {
+    height: 8px !important;
+  }
+
+  /* Aumentar tamanho das temporadas e episódios */
+  body[data-page="serie"] #seasons button,
+  body[data-page="allserie"] #seasons button {
+    font-size: 20px !important;
+    padding: 16px 20px !important;
+    min-height: 48px !important;
+  }
+
+  body[data-page="serie"] #seasons .episode-btn,
+  body[data-page="allserie"] #seasons .episode-btn {
+    font-size: 16px !important;
+    padding: 12px 16px !important;
+    min-height: 44px !important;
+  }
+
+  body[data-page="serie"] #seasons .text-lg,
+  body[data-page="allserie"] #seasons .text-lg {
+    font-size: 24px !important;
+  }
+
+  body[data-page="serie"] #seasons .text-2xl,
+  body[data-page="allserie"] #seasons .text-2xl {
+    font-size: 28px !important;
+  }
+
+  body[data-page="serie"] #seasons .grid,
+  body[data-page="allserie"] #seasons .grid {
+    gap: 12px !important;
+  }
+
+  /* Botão de voltar */
+  #backButton {
+    position: fixed !important;
+    top: 16px !important;
+    left: 16px !important;
+    z-index: 1000 !important;
+    width: 44px !important;
+    height: 44px !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    font-size: 24px !important;
+    text-decoration: none !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.2s !important;
+  }
+
+  #backButton:hover {
+    background: rgba(0, 0, 0, 0.9) !important;
+    transform: scale(1.1) !important;
+  }
+}
