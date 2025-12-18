@@ -438,6 +438,49 @@ async function renderSerieInfo() {
     }, 0);
   }
 
+  // DEBUG - Título e espaçamento do header
+  setTimeout(() => {
+    if (isAppMode) {
+      const header = container.querySelector('.app-mode-header');
+      const title = header?.querySelector('h1');
+      
+      if (title && header) {
+        const titleStyles = window.getComputedStyle(title);
+        const headerStyles = window.getComputedStyle(header);
+        const titleRect = title.getBoundingClientRect();
+        const headerRect = header.getBoundingClientRect();
+        
+        console.log('🔍 [DEBUG] Title and Header Spacing:', {
+          title: {
+            fontSize: titleStyles.fontSize,
+            lineHeight: titleStyles.lineHeight,
+            marginTop: titleStyles.marginTop,
+            marginBottom: titleStyles.marginBottom,
+            paddingTop: titleStyles.paddingTop,
+            paddingBottom: titleStyles.paddingBottom,
+            height: titleStyles.height,
+            offsetTop: title.offsetTop,
+            offsetHeight: title.offsetHeight,
+            rectTop: titleRect.top,
+            rectHeight: titleRect.height
+          },
+          header: {
+            height: headerStyles.height,
+            paddingTop: headerStyles.paddingTop,
+            paddingBottom: headerStyles.paddingBottom,
+            rectTop: headerRect.top,
+            rectHeight: headerRect.height
+          },
+          spacing: {
+            titleToHeaderTop: titleRect.top - headerRect.top,
+            titleToHeaderBottom: headerRect.bottom - titleRect.bottom,
+            headerTotalHeight: headerRect.height
+          }
+        });
+      }
+    }
+  }, 150);
+
   // DEBUG - Após inserir HTML, verificar elementos
   setTimeout(() => {
     if (isAppMode) {
