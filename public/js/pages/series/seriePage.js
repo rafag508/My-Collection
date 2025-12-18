@@ -140,7 +140,10 @@ export async function initSeriePage() {
       seasonsContainer.innerHTML = "";
     }
   }
-  updateProgressInfo(); // Atualiza barra de progresso visual
+  // Atualizar progress bar após render (usar setTimeout para garantir que DOM está atualizado)
+  setTimeout(() => {
+    updateProgressInfo();
+  }, 0);
 
   // 4 — Sincronizar com TMDB em background (não bloquear a UI)
   syncSerieFromTMDB(serieId).then(async () => {
@@ -203,15 +206,15 @@ async function renderSerieInfo() {
     // Layout para app mode
     container.innerHTML = `
       <!-- Header fixo: Back + Título + Favorito -->
-      <div class="app-mode-header fixed top-0 left-0 right-0 h-16 bg-gray-900/95 backdrop-blur-md border-b border-white/10 z-50 flex items-center justify-between px-4">
-        <a href="javascript:history.back()" class="w-10 h-10 flex items-center justify-center text-white text-2xl">←</a>
-        <h1 class="text-lg font-bold text-center flex-1 px-4 truncate">${serie.title}</h1>
+      <div class="app-mode-header fixed top-0 left-0 right-0 h-20 bg-gray-900/95 backdrop-blur-md border-b border-white/10 z-50 flex items-center justify-between px-4">
+        <a href="javascript:history.back()" class="w-14 h-14 flex items-center justify-center text-white text-4xl">←</a>
+        <h1 class="text-xl font-bold text-center flex-1 px-4 truncate">${serie.title}</h1>
         <button
           id="favoriteToggleBtn"
-          class="w-10 h-10 rounded-full border-2 border-yellow-400 flex items-center justify-center text-yellow-400 flex-shrink-0"
+          class="w-14 h-14 rounded-full border-2 border-yellow-400 flex items-center justify-center text-yellow-400 flex-shrink-0"
           title="${isFavorite ? "Remove from favorites" : "Add to favorites"}"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7">
             ${
               isFavorite
                 ? `
@@ -228,7 +231,7 @@ async function renderSerieInfo() {
       </div>
 
       <!-- Conteúdo principal (com padding-top para compensar header) -->
-      <div class="app-mode-content pt-20 pb-8">
+      <div class="app-mode-content pt-24 pb-8">
         <!-- Poster horizontal -->
         <div class="mb-6">
           <img src="${serie.poster}"
@@ -237,12 +240,12 @@ async function renderSerieInfo() {
         </div>
 
         <!-- Sinopse -->
-        <p class="text-gray-400 mb-6 text-lg leading-relaxed">
+        <p class="text-gray-400 mb-6 text-xl leading-relaxed">
           ${serie.description || "No description available."}
         </p>
 
         <!-- Info: Year, Status, Genre -->
-        <div class="mb-6 text-lg text-gray-400 space-y-2">
+        <div class="mb-6 text-xl text-gray-400 space-y-2">
           <div><span class="font-semibold text-white">Year:</span> ${serie.year}</div>
           <div>
             <span class="font-semibold text-white">TV Status:</span>
@@ -257,12 +260,12 @@ async function renderSerieInfo() {
         <div class="mb-6 flex items-center gap-4">
           ${!fromAllSeries ? `
           <button id="toggleAllBtn"
-            class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold text-lg">
+            class="bg-green-600 hover:bg-green-700 px-8 py-4 rounded-lg font-semibold text-xl">
             ${fullyWatched ? `❌ ${translate("unmark")}` : `✔️ ${translate("markAsViewed")}`}
           </button>
           ` : ""}
           ${serie.rating
-            ? `<span class="w-14 h-14 rounded-full bg-transparent border-2 border-green-900 flex items-center justify-center text-green-400 font-bold text-lg">
+            ? `<span class="w-16 h-16 rounded-full bg-transparent border-2 border-green-900 flex items-center justify-center text-green-400 font-bold text-xl">
                 ${serie.rating.toFixed(1)}
               </span>`
             : ""}
@@ -270,7 +273,7 @@ async function renderSerieInfo() {
 
         <!-- Progress text (só para séries da coleção) -->
         ${!fromAllSeries ? `
-        <div id="progressInfo" class="mb-3 text-lg text-gray-400">
+        <div id="progressInfo" class="mb-3 text-xl text-gray-400">
           ${progressText}
         </div>
         ` : ""}
@@ -388,6 +391,14 @@ async function renderSerieInfo() {
   if (followBtn) {
     followBtn.addEventListener("click", toggleFollowSerie);
   }
+
+  // Se estiver em app mode, atualizar progress bar imediatamente após render
+  if (isAppMode && !fromAllSeries) {
+    // Usar setTimeout para garantir que o DOM está atualizado
+    setTimeout(() => {
+      updateProgressInfo();
+    }, 0);
+  }
 }
 
 /* ============================================================
@@ -476,8 +487,15 @@ function updateProgressInfo() {
   const watched = Object.values(progress?.watched || {}).filter(Boolean).length;
   const percent = total > 0 ? Math.round((watched / total) * 100) : 0;
 
+  // Procurar progressFill em qualquer lugar (pode estar no app-mode-content ou no main)
   const progressFill = document.getElementById("progressFill");
-  if (progressFill) progressFill.style.width = `${percent}%`;
+  if (progressFill) {
+    progressFill.style.width = `${percent}%`;
+    // Garantir que está visível
+    progressFill.style.display = "block";
+    progressFill.style.visibility = "visible";
+    progressFill.style.opacity = "1";
+  }
 
   const el = document.getElementById("progressInfo");
   if (el) {

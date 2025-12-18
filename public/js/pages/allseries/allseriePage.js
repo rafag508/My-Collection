@@ -106,14 +106,14 @@ async function renderSerieInfo() {
     // Layout para app mode
     container.innerHTML = `
       <!-- Header fixo: Back + Título -->
-      <div class="app-mode-header fixed top-0 left-0 right-0 h-16 bg-gray-900/95 backdrop-blur-md border-b border-white/10 z-50 flex items-center justify-between px-4">
-        <a href="javascript:history.back()" class="w-10 h-10 flex items-center justify-center text-white text-2xl">←</a>
-        <h1 class="text-lg font-bold text-center flex-1 px-4 truncate">${serie.title}</h1>
-        <div class="w-10"></div> <!-- Spacer para centralizar título -->
+      <div class="app-mode-header fixed top-0 left-0 right-0 h-20 bg-gray-900/95 backdrop-blur-md border-b border-white/10 z-50 flex items-center justify-between px-4">
+        <a href="javascript:history.back()" class="w-14 h-14 flex items-center justify-center text-white text-4xl">←</a>
+        <h1 class="text-xl font-bold text-center flex-1 px-4 truncate">${serie.title}</h1>
+        <div class="w-14"></div> <!-- Spacer para centralizar título -->
       </div>
 
       <!-- Conteúdo principal (com padding-top para compensar header) -->
-      <div class="app-mode-content pt-20 pb-8">
+      <div class="app-mode-content pt-24 pb-8">
         <!-- Poster horizontal -->
         <div class="mb-6">
           <img src="${serie.poster}"
@@ -122,12 +122,12 @@ async function renderSerieInfo() {
         </div>
 
         <!-- Sinopse -->
-        <p class="text-gray-400 mb-6 text-lg leading-relaxed">
+        <p class="text-gray-400 mb-6 text-xl leading-relaxed">
           ${serie.description || "No description available."}
         </p>
 
         <!-- Info: Year, Status, Genre -->
-        <div class="mb-6 text-lg text-gray-400 space-y-2">
+        <div class="mb-6 text-xl text-gray-400 space-y-2">
           <div><span class="font-semibold text-white">Year:</span> ${serie.year}</div>
           <div>
             <span class="font-semibold text-white">TV Status:</span>
@@ -142,17 +142,17 @@ async function renderSerieInfo() {
         <div class="mb-6 flex items-center gap-4 flex-wrap">
           ${!isInCollection ? `
           <button id="addToCollectionBtn"
-            class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold text-lg flex items-center gap-2">
+            class="bg-green-600 hover:bg-green-700 px-8 py-4 rounded-lg font-semibold text-xl flex items-center gap-2">
             <span>+</span>
             <span>Add to Collection</span>
           </button>
           ` : `
-          <span class="px-6 py-3 rounded-lg font-semibold bg-gray-700 text-gray-400 text-lg">
+          <span class="px-8 py-4 rounded-lg font-semibold bg-gray-700 text-gray-400 text-xl">
             ✓ In Collection
           </span>
           `}
           ${serie.rating
-            ? `<span class="w-14 h-14 rounded-full bg-transparent border-2 border-green-900 flex items-center justify-center text-green-400 font-bold text-lg">
+            ? `<span class="w-16 h-16 rounded-full bg-transparent border-2 border-green-900 flex items-center justify-center text-green-400 font-bold text-xl">
                 ${serie.rating.toFixed(1)}
               </span>`
             : ""}
@@ -161,7 +161,7 @@ async function renderSerieInfo() {
         <!-- Botão: Trailer -->
         <div class="mb-6">
           <button id="trailerBtn"
-            class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg font-semibold text-lg flex items-center gap-2">
+            class="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-lg font-semibold text-xl flex items-center gap-2">
             <span>▶</span>
             <span>Trailer</span>
           </button>

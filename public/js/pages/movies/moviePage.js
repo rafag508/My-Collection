@@ -137,15 +137,15 @@ async function renderMovieInfo() {
     // Layout para app mode
     container.innerHTML = `
       <!-- Header fixo: Back + Título + Favorito -->
-      <div class="app-mode-header fixed top-0 left-0 right-0 h-16 bg-gray-900/95 backdrop-blur-md border-b border-white/10 z-50 flex items-center justify-between px-4">
-        <a href="javascript:history.back()" class="w-10 h-10 flex items-center justify-center text-white text-2xl">←</a>
-        <h1 class="text-lg font-bold text-center flex-1 px-4 truncate">${movie.title}</h1>
+      <div class="app-mode-header fixed top-0 left-0 right-0 h-20 bg-gray-900/95 backdrop-blur-md border-b border-white/10 z-50 flex items-center justify-between px-4">
+        <a href="javascript:history.back()" class="w-14 h-14 flex items-center justify-center text-white text-4xl">←</a>
+        <h1 class="text-xl font-bold text-center flex-1 px-4 truncate">${movie.title}</h1>
         <button
           id="favoriteToggleBtn"
-          class="w-10 h-10 rounded-full border-2 border-yellow-400 flex items-center justify-center text-yellow-400 flex-shrink-0"
+          class="w-14 h-14 rounded-full border-2 border-yellow-400 flex items-center justify-center text-yellow-400 flex-shrink-0"
           title="${isFavorite ? "Remove from favorites" : "Add to favorites"}"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7">
             ${
               isFavorite
                 ? `
@@ -162,7 +162,7 @@ async function renderMovieInfo() {
       </div>
 
       <!-- Conteúdo principal (com padding-top para compensar header) -->
-      <div class="app-mode-content pt-20 pb-8">
+      <div class="app-mode-content pt-24 pb-8">
         <!-- Poster horizontal -->
         <div class="mb-6">
           <img src="${movie.poster}"
@@ -171,12 +171,12 @@ async function renderMovieInfo() {
         </div>
 
         <!-- Sinopse -->
-        <p class="text-gray-400 mb-6 text-lg leading-relaxed">
+        <p class="text-gray-400 mb-6 text-xl leading-relaxed">
           ${movie.overview || movie.description || "No description available."}
         </p>
 
         <!-- Info: Year, Genre -->
-        <div class="mb-6 text-lg text-gray-400 space-y-2">
+        <div class="mb-6 text-xl text-gray-400 space-y-2">
           <div><span class="font-semibold text-white">Year:</span> ${movie.year}</div>
           ${movie.genres && movie.genres.length > 0
             ? `<div><span class="font-semibold text-white">Genre:</span> ${movie.genres.join(", ")}</div>`
@@ -187,12 +187,12 @@ async function renderMovieInfo() {
         <div class="mb-6 flex items-center gap-4">
           ${!fromAllMovies ? `
           <button id="toggleWatchedBtn"
-            class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold text-lg">
+            class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg font-semibold text-xl">
             ${isWatched ? `❌ ${translate("unmark")}` : `✔️ ${translate("markAsViewed")}`}
           </button>
           ` : ""}
           ${movie.rating
-            ? `<span class="w-14 h-14 rounded-full bg-transparent border-2 border-blue-900 flex items-center justify-center text-blue-400 font-bold text-lg">
+            ? `<span class="w-16 h-16 rounded-full bg-transparent border-2 border-blue-900 flex items-center justify-center text-blue-400 font-bold text-xl">
                 ${movie.rating.toFixed(1)}
               </span>`
             : ""}
