@@ -274,14 +274,17 @@ export async function initAllMoviesPage() {
       mainElement.addEventListener('touchstart', (e) => {
         // Só capturar se não for em um elemento clicável (botão, link, etc.)
         const target = e.target;
-        if (target.tagName === 'BUTTON' || target.tagName === 'A' || target.closest('button') || target.closest('a')) {
-          console.log('🔍 [Swipe Debug] touchstart ignorado - elemento clicável');
+        // PERMITIR swipe em cards de filmes - só bloquear botões de paginação e links fora de cards
+        // Se for um link dentro de um card, permitir (será verificado no touchend se foi swipe ou clique)
+        if (target.tagName === 'BUTTON' && !target.closest('.movie-card')) {
+          console.log('🔍 [Swipe Debug] touchstart ignorado - botão fora de card:', target.tagName);
           return;
         }
+        // Permitir touchstart em cards (mesmo que tenham links) - verificaremos no touchend se foi swipe
         touchStartX = e.changedTouches[0].screenX;
         touchStartY = e.changedTouches[0].screenY;
         isSwipe = false;
-        console.log('🔍 [Swipe Debug] touchstart:', { x: touchStartX, y: touchStartY });
+        console.log('🔍 [Swipe Debug] touchstart:', { x: touchStartX, y: touchStartY, target: target.className || target.tagName, isCard: !!target.closest('.movie-card') });
       }, { passive: true });
 
       mainElement.addEventListener('touchmove', (e) => {
@@ -330,6 +333,15 @@ export async function initAllMoviesPage() {
             console.warn('❌ [Swipe Debug] Pagination not available');
             return;
           }
+          
+          // Se foi um swipe válido, prevenir o clique no link do card
+          const target = e.target;
+          if (target.closest('.movie-card-link')) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🔍 [Swipe Debug] Prevenindo clique no link - foi swipe');
+          }
+          
           console.log('✅ [Swipe Debug] Swipe válido! Direção:', diffX > 0 ? 'esquerda (next)' : 'direita (prev)');
           console.log('🔍 [Swipe Debug] Página atual:', pagination.currentPage, 'de', pagination.getTotalPages());
           
