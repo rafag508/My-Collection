@@ -402,36 +402,6 @@ async function renderSerieInfo() {
     }, 0);
   }
 
-  // Logs para verificar tamanhos dos elementos
-  setTimeout(() => {
-    const container = document.querySelector('.app-mode-content');
-    if (container) {
-      const title = document.querySelector('.app-mode-header h1');
-      const texts = container.querySelectorAll('p');
-      const buttons = container.querySelectorAll('button');
-      const poster = container.querySelector('img');
-      
-      console.log('📏 [SIZES] Element Sizes:', {
-        title: title ? {
-          fontSize: window.getComputedStyle(title).fontSize,
-          marginTop: window.getComputedStyle(title).marginTop
-        } : null,
-        texts: Array.from(texts).slice(0, 3).map(p => ({
-          fontSize: window.getComputedStyle(p).fontSize,
-          lineHeight: window.getComputedStyle(p).lineHeight
-        })),
-        buttons: Array.from(buttons).slice(0, 3).map(btn => ({
-          fontSize: window.getComputedStyle(btn).fontSize,
-          padding: window.getComputedStyle(btn).padding,
-          minHeight: window.getComputedStyle(btn).minHeight
-        })),
-        poster: poster ? {
-          width: window.getComputedStyle(poster).width,
-          height: window.getComputedStyle(poster).height
-        } : null
-      });
-    }
-  }, 200);
 }
 
 /* ============================================================
