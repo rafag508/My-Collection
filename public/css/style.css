@@ -776,14 +776,17 @@ body {
     mix-blend-mode: normal !important;
     isolation: isolate !important;
     position: relative !important;
-    /* FORÇAR remoção de qualquer cor herdada - usar initial em vez de unset */
-    color: initial !important;
-    -webkit-text-fill-color: initial !important;
+    /* FORÇAR remoção de qualquer cor herdada - usar revert para voltar ao padrão do navegador */
+    color: revert !important;
+    -webkit-text-fill-color: revert !important;
     background: transparent !important;
     /* Remover qualquer herança de cor branca */
     filter: none !important;
     /* Garantir que o emoji não herda cor do body */
     text-shadow: none !important;
+    /* Forçar que o emoji mantenha suas cores originais */
+    -webkit-font-smoothing: antialiased;
+    font-variant-emoji: emoji;
   }
   
   /* Criar um pseudo-elemento para o background vermelho */
