@@ -357,7 +357,7 @@ async function renderSerieInfo() {
             ` : ""}
 
             ${serie.rating
-              ? `<span class="w-12 h-12 rounded-full bg-transparent border border-blue-900 flex items-center justify-center text-blue-400 font-bold text-sm">
+              ? `<span class="w-12 h-12 rounded-full bg-transparent border border-green-900 flex items-center justify-center text-green-400 font-bold text-sm">
                   ${serie.rating.toFixed(1)}
                 </span>`
               : ""}

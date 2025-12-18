@@ -1884,6 +1884,7 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   body[data-page="allmovie"] .app-mode-header #favoriteToggleBtn,
   body[data-page="allserie"] .app-mode-header #favoriteToggleBtn {
     margin-right: 18px !important;
+    margin-top: 4px !important;
   }
 
   /* Aumentar tamanho do rating circle */
