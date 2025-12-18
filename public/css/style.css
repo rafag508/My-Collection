@@ -768,6 +768,16 @@ body {
     height: auto !important;
   }
 
+  /* Garantir que o emoji do botão eliminar não é afetado pelo background */
+  body:has(.movies-tabs) #deleteMoviesBtn,
+  body:has(.movies-tabs) #deleteSeriesBtn,
+  #deleteMoviesBtn,
+  #deleteSeriesBtn {
+    -webkit-text-fill-color: initial !important;
+    color: initial !important;
+    text-shadow: none !important;
+  }
+
 
   /* Checkboxes de seleção (tamanho médio) */
   body:has(.movies-tabs) #moviesGrid .movie-card button[onclick*="toggleDeleteSelect"] {

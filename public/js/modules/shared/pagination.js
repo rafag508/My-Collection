@@ -83,41 +83,61 @@ export class PaginationManager {
   buildHTML(total) {
     let html = `<div class="flex items-center justify-center gap-2 mt-6">`;
     
-    // First button
-    if (this.currentPage >= 2) {
+    // Se estiver na primeira página: 1 2 3 Next »»
+    if (this.currentPage === 1) {
+      for (let p = 1; p <= Math.min(3, total); p++) {
+        const isActive = p === this.currentPage;
+        html += `<button class="${this.buttonPrefix}-page-btn px-3 py-1 rounded ${isActive ? this.activeColor : 'bg-gray-800 hover:bg-gray-700'}" data-page="${p}">${p}</button>`;
+      }
+      if (this.currentPage < total) {
+        html += `<button class="${this.buttonPrefix}NextBtn px-3 py-1 rounded bg-gray-800 hover:bg-gray-700">Next</button>`;
+        html += `<button class="${this.buttonPrefix}LastBtn px-3 py-1 rounded bg-gray-800 hover:bg-gray-700" title="Last page">»»</button>`;
+      }
+    }
+    // Se estiver na última página: «« Prev [últimas 3 páginas]
+    else if (this.currentPage === total) {
       html += `<button class="${this.buttonPrefix}FirstBtn px-3 py-1 rounded bg-gray-800 hover:bg-gray-700" title="First page">««</button>`;
-    }
-    
-    // Previous button
-    if (this.currentPage > 1) {
       html += `<button class="${this.buttonPrefix}PrevBtn px-3 py-1 rounded bg-gray-800 hover:bg-gray-700">Prev</button>`;
+      const start = Math.max(1, total - 2);
+      for (let p = start; p <= total; p++) {
+        const isActive = p === this.currentPage;
+        html += `<button class="${this.buttonPrefix}-page-btn px-3 py-1 rounded ${isActive ? this.activeColor : 'bg-gray-800 hover:bg-gray-700'}" data-page="${p}">${p}</button>`;
+      }
     }
-
-    // Page numbers
-    const maxButtons = 7;
-    let start = Math.max(1, this.currentPage - 3);
-    let end = Math.min(total, start + maxButtons - 1);
-    if (end - start < maxButtons - 1) {
-      start = Math.max(1, end - maxButtons + 1);
+    // Se estiver na segunda página: «« Prev 1 2 3 4 5 Next »»
+    else if (this.currentPage === 2) {
+      html += `<button class="${this.buttonPrefix}FirstBtn px-3 py-1 rounded bg-gray-800 hover:bg-gray-700" title="First page">««</button>`;
+      html += `<button class="${this.buttonPrefix}PrevBtn px-3 py-1 rounded bg-gray-800 hover:bg-gray-700">Prev</button>`;
+      for (let p = 1; p <= Math.min(5, total); p++) {
+        const isActive = p === this.currentPage;
+        html += `<button class="${this.buttonPrefix}-page-btn px-3 py-1 rounded ${isActive ? this.activeColor : 'bg-gray-800 hover:bg-gray-700'}" data-page="${p}">${p}</button>`;
+      }
+      html += `<button class="${this.buttonPrefix}NextBtn px-3 py-1 rounded bg-gray-800 hover:bg-gray-700">Next</button>`;
+      html += `<button class="${this.buttonPrefix}LastBtn px-3 py-1 rounded bg-gray-800 hover:bg-gray-700" title="Last page">»»</button>`;
     }
-
-    if (start > 1) {
-      html += `<button class="${this.buttonPrefix}-page-btn px-2 py-1 rounded bg-gray-800 hover:bg-gray-700" data-page="1">1</button>`;
-      if (start > 2) html += `<span class="px-2">…</span>`;
-    }
-
-    for (let p = start; p <= end; p++) {
-      const isActive = p === this.currentPage;
-      html += `<button class="${this.buttonPrefix}-page-btn px-3 py-1 rounded ${isActive ? this.activeColor : 'bg-gray-800 hover:bg-gray-700'}" data-page="${p}">${p}</button>`;
-    }
-
-    if (end < total) {
-      if (end < total - 1) html += `<span class="px-2">…</span>`;
-      html += `<button class="${this.buttonPrefix}-page-btn px-2 py-1 rounded bg-gray-800 hover:bg-gray-700" data-page="${total}">${total}</button>`;
-    }
-
-    // Next button
-    if (this.currentPage < total) {
+    // Se estiver numa página intermédia: «« Prev [5 páginas centradas] Next »»
+    else {
+      html += `<button class="${this.buttonPrefix}FirstBtn px-3 py-1 rounded bg-gray-800 hover:bg-gray-700" title="First page">««</button>`;
+      html += `<button class="${this.buttonPrefix}PrevBtn px-3 py-1 rounded bg-gray-800 hover:bg-gray-700">Prev</button>`;
+      
+      // Calcular range de 5 páginas centradas na página atual
+      let start = Math.max(1, this.currentPage - 2);
+      let end = Math.min(total, this.currentPage + 2);
+      
+      // Ajustar se estiver muito perto do início
+      if (start === 1) {
+        end = Math.min(5, total);
+      }
+      // Ajustar se estiver muito perto do fim
+      if (end === total) {
+        start = Math.max(1, total - 4);
+      }
+      
+      for (let p = start; p <= end; p++) {
+        const isActive = p === this.currentPage;
+        html += `<button class="${this.buttonPrefix}-page-btn px-3 py-1 rounded ${isActive ? this.activeColor : 'bg-gray-800 hover:bg-gray-700'}" data-page="${p}">${p}</button>`;
+      }
+      
       html += `<button class="${this.buttonPrefix}NextBtn px-3 py-1 rounded bg-gray-800 hover:bg-gray-700">Next</button>`;
       html += `<button class="${this.buttonPrefix}LastBtn px-3 py-1 rounded bg-gray-800 hover:bg-gray-700" title="Last page">»»</button>`;
     }
