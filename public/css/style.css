@@ -1883,7 +1883,7 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   body[data-page="serie"] .app-mode-header #favoriteToggleBtn,
   body[data-page="allmovie"] .app-mode-header #favoriteToggleBtn,
   body[data-page="allserie"] .app-mode-header #favoriteToggleBtn {
-    margin-right: 8px !important;
+    margin-right: 16px !important;
   }
 
   /* Aumentar tamanho do rating circle */
@@ -1977,12 +1977,12 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
     padding: 0 16px !important;
   }
 
-  /* Título no header - 32px - MAIOR ESPECIFICIDADE */
+  /* Título no header - 36px - MAIOR ESPECIFICIDADE */
   body[data-page="movie"] .app-mode-header h1,
   body[data-page="serie"] .app-mode-header h1,
   body[data-page="allmovie"] .app-mode-header h1,
   body[data-page="allserie"] .app-mode-header h1 {
-    font-size: 32px !important;
+    font-size: 36px !important;
     margin-top: 4px !important;
   }
 
@@ -1991,7 +1991,7 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   body[data-page="serie"] #serieInfo .app-mode-header h1,
   body[data-page="allmovie"] #movieInfo .app-mode-header h1,
   body[data-page="allserie"] #serieInfo .app-mode-header h1 {
-    font-size: 32px !important;
+    font-size: 36px !important;
     margin-top: 4px !important;
   }
 
@@ -2004,6 +2004,7 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
     font-weight: 900 !important;
     -webkit-text-stroke: 1px currentColor !important;
     text-stroke: 1px currentColor !important;
+    margin-left: 16px !important;
   }
 
   /* Conteúdo principal com padding para header */
@@ -2056,7 +2057,7 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   body[data-page="serie"] .app-mode-content p.text-gray-400,
   body[data-page="allmovie"] .app-mode-content p.text-gray-400,
   body[data-page="allserie"] .app-mode-content p.text-gray-400 {
-    font-size: 20px !important;
+    font-size: 28px !important;
     line-height: 1.6 !important;
   }
 
@@ -2064,7 +2065,15 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   body[data-page="serie"] .app-mode-content .text-xl,
   body[data-page="allmovie"] .app-mode-content .text-xl,
   body[data-page="allserie"] .app-mode-content .text-xl {
-    font-size: 20px !important;
+    font-size: 28px !important;
+  }
+
+  /* Texto "Year, TV Status" - mais específico */
+  body[data-page="movie"] .app-mode-content .text-xl.text-gray-400,
+  body[data-page="serie"] .app-mode-content .text-xl.text-gray-400,
+  body[data-page="allmovie"] .app-mode-content .text-xl.text-gray-400,
+  body[data-page="allserie"] .app-mode-content .text-xl.text-gray-400 {
+    font-size: 32px !important;
   }
 
   /* Forçar todos os textos dentro do content - maior especificidade para sobrepor CSS antigo */
@@ -2080,7 +2089,7 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   body[data-page="serie"] .app-mode-content p,
   body[data-page="allmovie"] .app-mode-content p,
   body[data-page="allserie"] .app-mode-content p {
-    font-size: 20px !important;
+    font-size: 28px !important;
     line-height: 1.6 !important;
   }
 
@@ -2089,7 +2098,7 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   body[data-page="serie"] #serieInfo .app-mode-content p,
   body[data-page="allmovie"] #movieInfo .app-mode-content p,
   body[data-page="allserie"] #serieInfo .app-mode-content p {
-    font-size: 20px !important;
+    font-size: 28px !important;
     line-height: 1.6 !important;
   }
 
