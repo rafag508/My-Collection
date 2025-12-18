@@ -159,6 +159,7 @@ async function renderMovieInfo() {
         <button
           id="favoriteToggleBtn"
           class="w-14 h-14 rounded-full border-2 border-yellow-400 flex items-center justify-center text-yellow-400 flex-shrink-0"
+          data-favorite="${isFavorite}"
           title="${isFavorite ? "Remove from favorites" : "Add to favorites"}"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7">
@@ -230,6 +231,7 @@ async function renderMovieInfo() {
             <button
               id="favoriteToggleBtn"
               class="w-9 h-9 rounded-full border-2 border-yellow-400 flex items-center justify-center text-yellow-400"
+              data-favorite="${isFavorite}"
               title="${isFavorite ? "Remove from favorites" : "Add to favorites"}"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6">

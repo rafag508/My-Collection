@@ -1843,13 +1843,29 @@ body {
     height: 28px !important;
   }
 
-  /* Garantir que o SVG do botão de favoritos renderiza corretamente - não forçar fill */
+  /* Garantir que o SVG do botão de favoritos renderiza corretamente */
   body[data-page="movie"] #favoriteToggleBtn svg path,
   body[data-page="serie"] #favoriteToggleBtn svg path,
   body[data-page="allmovie"] #favoriteToggleBtn svg path,
   body[data-page="allserie"] #favoriteToggleBtn svg path {
     stroke: currentColor !important;
     /* Não forçar fill - deixar o SVG controlar (fill="currentColor" ou fill="none") */
+  }
+
+  /* Quando favorito, garantir que fill é currentColor */
+  body[data-page="movie"] #favoriteToggleBtn[data-favorite="true"] svg path,
+  body[data-page="serie"] #favoriteToggleBtn[data-favorite="true"] svg path,
+  body[data-page="allmovie"] #favoriteToggleBtn[data-favorite="true"] svg path,
+  body[data-page="allserie"] #favoriteToggleBtn[data-favorite="true"] svg path {
+    fill: currentColor !important;
+  }
+
+  /* Quando não favorito, garantir que fill é none */
+  body[data-page="movie"] #favoriteToggleBtn[data-favorite="false"] svg path,
+  body[data-page="serie"] #favoriteToggleBtn[data-favorite="false"] svg path,
+  body[data-page="allmovie"] #favoriteToggleBtn[data-favorite="false"] svg path,
+  body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
+    fill: none !important;
   }
 
   /* Aumentar tamanho do rating circle */
@@ -1943,12 +1959,24 @@ body {
     padding: 0 16px !important;
   }
 
-  /* Título no header - 32px */
+  /* Título no header - 36px e descer um pouco */
   body[data-page="movie"] .app-mode-header h1,
   body[data-page="serie"] .app-mode-header h1,
   body[data-page="allmovie"] .app-mode-header h1,
   body[data-page="allserie"] .app-mode-header h1 {
-    font-size: 32px !important;
+    font-size: 36px !important;
+    margin-top: 4px !important;
+  }
+
+  /* Botão de voltar no header - mais grosso */
+  body[data-page="movie"] .app-mode-header a,
+  body[data-page="serie"] .app-mode-header a,
+  body[data-page="allmovie"] .app-mode-header a,
+  body[data-page="allserie"] .app-mode-header a {
+    font-size: 40px !important;
+    font-weight: 900 !important;
+    -webkit-text-stroke: 1px currentColor !important;
+    text-stroke: 1px currentColor !important;
   }
 
   /* Conteúdo principal com padding para header */
