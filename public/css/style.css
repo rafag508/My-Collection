@@ -773,9 +773,12 @@ body {
   body:has(.movies-tabs) #deleteSeriesBtn,
   #deleteMoviesBtn,
   #deleteSeriesBtn {
-    -webkit-text-fill-color: initial !important;
-    color: initial !important;
+    -webkit-text-fill-color: unset !important;
+    color: unset !important;
     text-shadow: none !important;
+    filter: none !important;
+    background-clip: unset !important;
+    -webkit-background-clip: unset !important;
   }
 
 

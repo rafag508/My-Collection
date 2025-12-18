@@ -288,7 +288,9 @@ export async function initAllMoviesPage() {
       }, { passive: true });
 
       mainElement.addEventListener('touchend', (e) => {
-        if (touchStartX === 0) {
+        if (!isSwipe || touchStartX === 0) {
+          touchStartX = 0;
+          touchStartY = 0;
           return;
         }
 
@@ -300,17 +302,13 @@ export async function initAllMoviesPage() {
         const swipeThreshold = 80; // Mínimo de pixels para considerar swipe
 
         // Só processar se o movimento horizontal for significativo e maior que o vertical
-        if (isSwipe && Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > diffY) {
-          if (!pagination) {
-            console.warn('Pagination not initialized for swipe');
+        if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > diffY && pagination) {
+          if (diffX > 0) {
+            // Swipe para a esquerda = próxima página
+            pagination.nextPage();
           } else {
-            if (diffX > 0) {
-              // Swipe para a esquerda = próxima página
-              pagination.nextPage();
-            } else {
-              // Swipe para a direita = página anterior
-              pagination.prevPage();
-            }
+            // Swipe para a direita = página anterior
+            pagination.prevPage();
           }
         }
 
