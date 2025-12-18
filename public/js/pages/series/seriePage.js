@@ -403,6 +403,26 @@ async function renderSerieInfo() {
   const favoriteBtn = document.getElementById("favoriteToggleBtn");
   if (favoriteBtn) {
     favoriteBtn.addEventListener("click", toggleFavorite);
+    
+    // DEBUG - Logs para verificar botão de favoritos
+    setTimeout(() => {
+      const path = favoriteBtn.querySelector('svg path');
+      if (path) {
+        const computedFill = window.getComputedStyle(path).fill;
+        const computedStroke = window.getComputedStyle(path).stroke;
+        
+        console.log('🔍 [DEBUG] Favorite Button:', {
+          isFavorite: isFavorite,
+          dataFavorite: favoriteBtn.getAttribute('data-favorite'),
+          pathFill: path.getAttribute('fill'),
+          pathStroke: path.getAttribute('stroke'),
+          computedFill: computedFill,
+          computedStroke: computedStroke,
+          buttonClasses: favoriteBtn.className,
+          isAppMode: isAppMode
+        });
+      }
+    }, 100);
   }
 
   const followBtn = document.getElementById("followToggleBtn");

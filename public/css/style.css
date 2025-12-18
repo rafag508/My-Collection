@@ -1959,12 +1959,12 @@ body {
     padding: 0 16px !important;
   }
 
-  /* Título no header - 36px e descer mais */
+  /* Título no header - 48px */
   body[data-page="movie"] .app-mode-header h1,
   body[data-page="serie"] .app-mode-header h1,
   body[data-page="allmovie"] .app-mode-header h1,
   body[data-page="allserie"] .app-mode-header h1 {
-    font-size: 36px !important;
+    font-size: 48px !important;
     margin-top: 8px !important;
   }
 
