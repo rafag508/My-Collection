@@ -133,7 +133,7 @@ async function renderMovieInfo() {
       <!-- Header fixo: Back + Título -->
       <div class="app-mode-header fixed top-0 left-0 right-0 h-20 bg-gray-900/95 backdrop-blur-md border-b border-white/10 z-50 flex items-center justify-between px-4">
         <a href="javascript:history.back()" class="w-14 h-14 flex items-center justify-center text-white text-4xl">←</a>
-        <h1 class="text-xl font-bold text-center flex-1 px-4 truncate">${movie.title}</h1>
+        <h1 class="text-3xl font-bold text-center flex-1 px-4 truncate">${movie.title}</h1>
         <div class="w-14"></div> <!-- Spacer para centralizar título -->
       </div>
 
