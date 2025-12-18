@@ -1867,6 +1867,17 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
     height: 28px !important;
   }
 
+  /* Garantir que o SVG do botão de favoritos no header tem largura - MAIOR ESPECIFICIDADE */
+  body[data-page="movie"] .app-mode-header #favoriteToggleBtn svg,
+  body[data-page="serie"] .app-mode-header #favoriteToggleBtn svg,
+  body[data-page="allmovie"] .app-mode-header #favoriteToggleBtn svg,
+  body[data-page="allserie"] .app-mode-header #favoriteToggleBtn svg {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    flex-shrink: 0 !important;
+  }
+
   /* Aumentar tamanho do rating circle */
   body[data-page="movie"] #movieInfo .w-12,
   body[data-page="serie"] #serieInfo .w-12,
