@@ -1959,7 +1959,7 @@ body {
   body[data-page="allmovie"] .app-mode-content img,
   body[data-page="allserie"] .app-mode-content img {
     width: 100% !important;
-    height: 256px !important;
+    height: 400px !important;
     object-fit: cover !important;
     border-radius: 0.5rem !important;
   }
