@@ -1958,12 +1958,12 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
     padding: 0 16px !important;
   }
 
-  /* Título no header - 40px - MAIOR ESPECIFICIDADE */
+  /* Título no header - 32px - MAIOR ESPECIFICIDADE */
   body[data-page="movie"] .app-mode-header h1,
   body[data-page="serie"] .app-mode-header h1,
   body[data-page="allmovie"] .app-mode-header h1,
   body[data-page="allserie"] .app-mode-header h1 {
-    font-size: 40px !important;
+    font-size: 32px !important;
     margin-top: 4px !important;
   }
 
@@ -1972,7 +1972,7 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   body[data-page="serie"] #serieInfo .app-mode-header h1,
   body[data-page="allmovie"] #movieInfo .app-mode-header h1,
   body[data-page="allserie"] #serieInfo .app-mode-header h1 {
-    font-size: 40px !important;
+    font-size: 32px !important;
     margin-top: 4px !important;
   }
 

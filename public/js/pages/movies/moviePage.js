@@ -328,6 +328,88 @@ async function renderMovieInfo() {
           });
         }
       }, 100);
+      
+      // Logs para tamanhos e visibilidade do bookmark
+      setTimeout(() => {
+        const favoriteBtn = document.getElementById("favoriteToggleBtn");
+        if (favoriteBtn) {
+          const svg = favoriteBtn.querySelector('svg');
+          const path = favoriteBtn.querySelector('svg path');
+          const btnStyles = window.getComputedStyle(favoriteBtn);
+          const btnRect = favoriteBtn.getBoundingClientRect();
+          
+          // Logs de tamanhos
+          if (svg) {
+            const svgStyles = window.getComputedStyle(svg);
+            const svgRect = svg.getBoundingClientRect();
+            
+            console.log('🔍 [DEBUG] Favorite Button Sizes:', {
+              button: {
+                htmlClasses: favoriteBtn.className,
+                computedWidth: btnStyles.width,
+                computedHeight: btnStyles.height,
+                rectWidth: btnRect.width,
+                rectHeight: btnRect.height,
+                borderWidth: btnStyles.borderWidth
+              },
+              svg: {
+                htmlClasses: svg.className,
+                computedWidth: svgStyles.width,
+                computedHeight: svgStyles.height,
+                rectWidth: svgRect.width,
+                rectHeight: svgRect.height
+              },
+              isAppMode: isAppMode
+            });
+          }
+          
+          // Logs de visibilidade do bookmark
+          if (!svg) {
+            console.error('🔍 [DEBUG] Favorite Button - SVG NOT FOUND!');
+          } else if (!path) {
+            console.error('🔍 [DEBUG] Favorite Button - PATH NOT FOUND!');
+          } else {
+            const svgStyles = window.getComputedStyle(svg);
+            const pathStyles = window.getComputedStyle(path);
+            
+            console.log('🔍 [DEBUG] Favorite Button - Bookmark Visibility:', {
+              svg: {
+                exists: !!svg,
+                classes: svg.className,
+                display: svgStyles.display,
+                visibility: svgStyles.visibility,
+                opacity: svgStyles.opacity,
+                width: svgStyles.width,
+                height: svgStyles.height,
+                rectWidth: svg.getBoundingClientRect().width,
+                rectHeight: svg.getBoundingClientRect().height
+              },
+              path: {
+                exists: !!path,
+                d: path.getAttribute('d'),
+                fill: path.getAttribute('fill'),
+                stroke: path.getAttribute('stroke'),
+                display: pathStyles.display,
+                visibility: pathStyles.visibility,
+                opacity: pathStyles.opacity,
+                computedFill: pathStyles.fill,
+                computedStroke: pathStyles.stroke,
+                fillOpacity: pathStyles.fillOpacity,
+                strokeOpacity: pathStyles.strokeOpacity,
+                rectWidth: path.getBoundingClientRect().width,
+                rectHeight: path.getBoundingClientRect().height
+              },
+              button: {
+                color: btnStyles.color,
+                computedColor: btnStyles.color,
+                backgroundColor: btnStyles.backgroundColor
+              },
+              isFavorite: isFavorite,
+              dataFavorite: favoriteBtn.getAttribute('data-favorite')
+            });
+          }
+        }
+      }, 150);
     }
 
   // DEBUG - Após inserir HTML, verificar elementos
