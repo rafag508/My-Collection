@@ -38,25 +38,51 @@ export function setupAddMoviesModal() {
 }
 
 function openModal() {
+  console.log('🔍 [Zoom Debug] Abrindo modal Add Movies...');
   modal.classList.remove("hidden");
   modal.classList.add("flex");
   searchInput.value = "";
   resultsContainer.innerHTML = "";
   
+  // Verificar font-size atual
+  const currentFontSize = window.getComputedStyle(searchInput).fontSize;
+  console.log('🔍 [Zoom Debug] Font-size ANTES:', currentFontSize);
+  
   // CRÍTICO: Garantir que o font-size está aplicado ANTES do focus
   searchInput.style.fontSize = '16px';
   searchInput.style.setProperty('font-size', '16px', 'important');
+  
+  // Verificar se foi aplicado
+  const fontSizeAfter = window.getComputedStyle(searchInput).fontSize;
+  console.log('🔍 [Zoom Debug] Font-size DEPOIS:', fontSizeAfter);
   
   // Forçar o navegador a "processar" a mudança de estilo
   // Isso garante que o iOS vê o font-size antes do focus
   void searchInput.offsetHeight; // Força reflow
   
+  // Verificar novamente após reflow
+  const fontSizeAfterReflow = window.getComputedStyle(searchInput).fontSize;
+  console.log('🔍 [Zoom Debug] Font-size APÓS REFLOW:', fontSizeAfterReflow);
+  
   // Usar requestAnimationFrame para garantir que está tudo pronto
   requestAnimationFrame(() => {
+    const fontSizeBeforeFocus = window.getComputedStyle(searchInput).fontSize;
+    console.log('🔍 [Zoom Debug] Font-size ANTES DO FOCUS:', fontSizeBeforeFocus);
+    
     // Delay adicional para garantir que o iOS processou o font-size
     setTimeout(() => {
+      console.log('🔍 [Zoom Debug] Fazendo focus agora...');
       searchInput.focus();
-    }, 100); // Aumentar para 100ms para ter mais certeza
+      
+      // Verificar após focus
+      setTimeout(() => {
+        const fontSizeAfterFocus = window.getComputedStyle(searchInput).fontSize;
+        const viewportWidth = window.innerWidth;
+        console.log('🔍 [Zoom Debug] Font-size APÓS FOCUS:', fontSizeAfterFocus);
+        console.log('🔍 [Zoom Debug] Viewport width:', viewportWidth);
+        console.log('🔍 [Zoom Debug] Zoom detectado?', viewportWidth < window.outerWidth);
+      }, 50);
+    }, 100);
   });
 }
 

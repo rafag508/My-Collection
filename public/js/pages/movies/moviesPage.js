@@ -641,6 +641,22 @@ function setupButtons() {
     delBtn.classList.toggle("hidden", !editMode);
     confirmBtn.classList.add("hidden");
     deleteMode = false;
+    
+    // Debug do emoji quando o botão é mostrado
+    if (editMode && delBtn) {
+      setTimeout(() => {
+        const computedStyle = window.getComputedStyle(delBtn);
+        const beforeStyle = window.getComputedStyle(delBtn, '::before');
+        console.log('🔍 [Emoji Debug] Botão deleteMoviesBtn visível');
+        console.log('🔍 [Emoji Debug] Background:', computedStyle.backgroundColor);
+        console.log('🔍 [Emoji Debug] Color:', computedStyle.color);
+        console.log('🔍 [Emoji Debug] Mix-blend-mode:', computedStyle.mixBlendMode);
+        console.log('🔍 [Emoji Debug] ::before content:', beforeStyle.content);
+        console.log('🔍 [Emoji Debug] ::before background:', beforeStyle.backgroundColor);
+        console.log('🔍 [Emoji Debug] ::before z-index:', beforeStyle.zIndex);
+      }, 100);
+    }
+    
     renderMovies();
   });
 

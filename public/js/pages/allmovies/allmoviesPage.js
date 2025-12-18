@@ -254,6 +254,7 @@ export async function initAllMoviesPage() {
   applyAllMoviesGridPadding();
 
   // Adicionar swipe para mudar entre páginas (apenas no modo app)
+  console.log('🔍 [Swipe Debug] Verificando modo app...', isAppMode);
   if (isAppMode) {
     let touchStartX = 0;
     let touchStartY = 0;
@@ -262,16 +263,25 @@ export async function initAllMoviesPage() {
     let isSwipe = false;
     const mainElement = document.querySelector('main');
 
+    console.log('🔍 [Swipe Debug] mainElement:', mainElement ? 'encontrado' : 'NÃO encontrado');
+    console.log('🔍 [Swipe Debug] pagination:', pagination ? 'disponível' : 'NÃO disponível');
+    console.log('🔍 [Swipe Debug] pagination.currentPage:', pagination?.currentPage);
+    console.log('🔍 [Swipe Debug] pagination.getTotalPages():', pagination?.getTotalPages());
+
     if (mainElement && pagination) {
+      console.log('✅ [Swipe Debug] Configurando event listeners...');
+      
       mainElement.addEventListener('touchstart', (e) => {
         // Só capturar se não for em um elemento clicável (botão, link, etc.)
         const target = e.target;
         if (target.tagName === 'BUTTON' || target.tagName === 'A' || target.closest('button') || target.closest('a')) {
+          console.log('🔍 [Swipe Debug] touchstart ignorado - elemento clicável');
           return;
         }
         touchStartX = e.changedTouches[0].screenX;
         touchStartY = e.changedTouches[0].screenY;
         isSwipe = false;
+        console.log('🔍 [Swipe Debug] touchstart:', { x: touchStartX, y: touchStartY });
       }, { passive: true });
 
       mainElement.addEventListener('touchmove', (e) => {
@@ -284,11 +294,15 @@ export async function initAllMoviesPage() {
         // Só considerar swipe se o movimento horizontal for maior que o vertical
         if (diffX > diffY && diffX > 10) {
           isSwipe = true;
+          console.log('🔍 [Swipe Debug] touchmove - swipe detectado:', { diffX, diffY, isSwipe });
         }
       }, { passive: true });
 
       mainElement.addEventListener('touchend', (e) => {
+        console.log('🔍 [Swipe Debug] touchend:', { isSwipe, touchStartX });
+        
         if (!isSwipe || touchStartX === 0) {
+          console.log('🔍 [Swipe Debug] touchend ignorado - não é swipe válido');
           touchStartX = 0;
           touchStartY = 0;
           return;
@@ -301,19 +315,37 @@ export async function initAllMoviesPage() {
         const diffY = Math.abs(touchStartY - touchEndY);
         const swipeThreshold = 80; // Mínimo de pixels para considerar swipe
 
+        console.log('🔍 [Swipe Debug] touchend - calculando:', { 
+          diffX, 
+          diffY, 
+          swipeThreshold, 
+          absDiffX: Math.abs(diffX),
+          meetsThreshold: Math.abs(diffX) > swipeThreshold,
+          horizontalGreater: Math.abs(diffX) > diffY
+        });
+
         // Só processar se o movimento horizontal for significativo e maior que o vertical
         if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > diffY) {
           if (!pagination) {
-            console.warn('Swipe: Pagination not available');
+            console.warn('❌ [Swipe Debug] Pagination not available');
             return;
           }
+          console.log('✅ [Swipe Debug] Swipe válido! Direção:', diffX > 0 ? 'esquerda (next)' : 'direita (prev)');
+          console.log('🔍 [Swipe Debug] Página atual:', pagination.currentPage, 'de', pagination.getTotalPages());
+          
           if (diffX > 0) {
             // Swipe para a esquerda = próxima página
+            console.log('🔍 [Swipe Debug] Chamando pagination.nextPage()...');
             pagination.nextPage();
           } else {
             // Swipe para a direita = página anterior
+            console.log('🔍 [Swipe Debug] Chamando pagination.prevPage()...');
             pagination.prevPage();
           }
+          
+          console.log('🔍 [Swipe Debug] Página após swipe:', pagination.currentPage);
+        } else {
+          console.log('⚠️ [Swipe Debug] Swipe não atendeu aos critérios');
         }
 
         // Reset
@@ -323,7 +355,16 @@ export async function initAllMoviesPage() {
         touchEndY = 0;
         isSwipe = false;
       }, { passive: true });
+      
+      console.log('✅ [Swipe Debug] Event listeners adicionados com sucesso!');
+    } else {
+      console.warn('❌ [Swipe Debug] Não foi possível configurar swipe:', {
+        mainElement: !!mainElement,
+        pagination: !!pagination
+      });
     }
+  } else {
+    console.log('🔍 [Swipe Debug] Não está em modo app');
   }
   
   // ✅ PopState já está configurado no PaginationManager.setupPopStateListener()
