@@ -773,12 +773,17 @@ body {
   body:has(.movies-tabs) #deleteSeriesBtn,
   #deleteMoviesBtn,
   #deleteSeriesBtn {
-    -webkit-text-fill-color: unset !important;
-    color: unset !important;
-    text-shadow: none !important;
-    filter: none !important;
-    background-clip: unset !important;
-    -webkit-background-clip: unset !important;
+    mix-blend-mode: normal !important;
+    isolation: isolate !important;
+    position: relative !important;
+  }
+  
+  body:has(.movies-tabs) #deleteMoviesBtn > *,
+  body:has(.movies-tabs) #deleteSeriesBtn > *,
+  #deleteMoviesBtn > *,
+  #deleteSeriesBtn > * {
+    mix-blend-mode: normal !important;
+    isolation: isolate !important;
   }
 
 

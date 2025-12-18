@@ -42,7 +42,13 @@ function openModal() {
   modal.classList.add("flex");
   searchInput.value = "";
   resultsContainer.innerHTML = "";
-  searchInput.focus();
+  // Forçar font-size para evitar zoom no iOS
+  searchInput.style.fontSize = '16px';
+  searchInput.style.setProperty('font-size', '16px', 'important');
+  // Pequeno delay para garantir que o estilo é aplicado antes do focus
+  setTimeout(() => {
+    searchInput.focus();
+  }, 50);
 }
 
 function closeModal() {

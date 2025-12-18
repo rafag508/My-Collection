@@ -262,7 +262,7 @@ export async function initAllMoviesPage() {
     let isSwipe = false;
     const mainElement = document.querySelector('main');
 
-    if (mainElement) {
+    if (mainElement && pagination) {
       mainElement.addEventListener('touchstart', (e) => {
         // Só capturar se não for em um elemento clicável (botão, link, etc.)
         const target = e.target;
@@ -302,7 +302,11 @@ export async function initAllMoviesPage() {
         const swipeThreshold = 80; // Mínimo de pixels para considerar swipe
 
         // Só processar se o movimento horizontal for significativo e maior que o vertical
-        if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > diffY && pagination) {
+        if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > diffY) {
+          if (!pagination) {
+            console.warn('Swipe: Pagination not available');
+            return;
+          }
           if (diffX > 0) {
             // Swipe para a esquerda = próxima página
             pagination.nextPage();
