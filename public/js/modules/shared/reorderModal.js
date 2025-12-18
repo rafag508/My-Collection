@@ -97,14 +97,8 @@ export class ReorderModal {
     const GAP = 16;
     const VISIBLE_ROWS = 4;
     
-    // Detectar se é mobile/app mode (largura <= 768px ou app mode)
-    const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
-                      window.navigator.standalone || 
-                      (window.innerWidth <= 768);
-    const columns = isAppMode ? 4 : 6;
-    
     grid.style.display = "grid";
-    grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+    // Não definir gridTemplateColumns inline - deixar o CSS controlar (6 colunas desktop, 4 mobile)
     grid.style.gridAutoRows = `${CARD_HEIGHT}px`;
     grid.style.gap = `${GAP}px`;
     grid.style.padding = "8px";
@@ -202,30 +196,40 @@ export class ReorderModal {
         if (isDragging) {
           e.preventDefault();
           
-          // Encontrar o elemento sobre o qual estamos a passar
-          const elementBelow = document.elementFromPoint(touchX, touchY);
-          if (!elementBelow) return;
-
-          // Procurar o card pai (pode ser o próprio elemento ou um parent)
-          let targetCard = elementBelow;
-          while (targetCard && targetCard !== grid) {
-            if (targetCard.parentElement === grid && targetCard !== card) {
-              break;
-            }
-            targetCard = targetCard.parentElement;
-          }
-
-          if (!targetCard || targetCard === card || !grid.contains(targetCard)) return;
-
+          // Encontrar o card mais próximo baseado nas coordenadas do touch
           const items = [...grid.children];
+          let closestCard = null;
+          let minDistance = Infinity;
+
+          // Calcular qual card está mais próximo do ponto de touch
+          items.forEach(item => {
+            if (item === card) return;
+            
+            const rect = item.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Calcular distância do ponto de touch ao centro do card
+            const distance = Math.sqrt(
+              Math.pow(touchX - centerX, 2) + Math.pow(touchY - centerY, 2)
+            );
+            
+            if (distance < minDistance) {
+              minDistance = distance;
+              closestCard = item;
+            }
+          });
+
+          if (!closestCard || closestCard === card) return;
+
           const dragIndex = items.indexOf(card);
-          const hoverIndex = items.indexOf(targetCard);
+          const hoverIndex = items.indexOf(closestCard);
 
           if (dragIndex !== hoverIndex && dragIndex !== -1 && hoverIndex !== -1) {
             if (dragIndex < hoverIndex) {
-              grid.insertBefore(card, targetCard.nextSibling);
+              grid.insertBefore(card, closestCard.nextSibling);
             } else {
-              grid.insertBefore(card, targetCard);
+              grid.insertBefore(card, closestCard);
             }
             touchStartY = touchY;
             touchStartX = touchX;
