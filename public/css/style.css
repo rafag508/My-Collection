@@ -1777,11 +1777,11 @@ body {
     padding: 0 !important;
   }
 
-  /* Aumentar tamanho do poster */
-  body[data-page="movie"] #movieInfo img,
-  body[data-page="serie"] #serieInfo img,
-  body[data-page="allmovie"] #movieInfo img,
-  body[data-page="allserie"] #serieInfo img {
+  /* Aumentar tamanho do poster - apenas se NÃO estiver em app-mode-content */
+  body[data-page="movie"] #movieInfo:not(:has(.app-mode-content)) img,
+  body[data-page="serie"] #serieInfo:not(:has(.app-mode-content)) img,
+  body[data-page="allmovie"] #movieInfo:not(:has(.app-mode-content)) img,
+  body[data-page="allserie"] #serieInfo:not(:has(.app-mode-content)) img {
     width: 100% !important;
     max-width: 300px !important;
     height: auto !important;
@@ -1952,23 +1952,38 @@ body {
   body[data-page="allserie"] .app-mode-content > div:first-child {
     margin-left: -8px !important;
     margin-right: -8px !important;
+    width: calc(100% + 16px) !important;
+    max-width: none !important;
   }
 
+  /* Garantir que a imagem dentro do container também ocupa 100% */
+  body[data-page="movie"] .app-mode-content > div:first-child img,
+  body[data-page="serie"] .app-mode-content > div:first-child img,
+  body[data-page="allmovie"] .app-mode-content > div:first-child img,
+  body[data-page="allserie"] .app-mode-content > div:first-child img {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  /* Forçar largura do poster a 100% com maior especificidade */
   body[data-page="movie"] .app-mode-content img,
   body[data-page="serie"] .app-mode-content img,
   body[data-page="allmovie"] .app-mode-content img,
   body[data-page="allserie"] .app-mode-content img {
     width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
     height: 400px !important;
     object-fit: cover !important;
     border-radius: 0.5rem !important;
   }
 
-  /* Forçar tamanhos de texto em pixels */
-  body[data-page="movie"] .app-mode-content p,
-  body[data-page="serie"] .app-mode-content p,
-  body[data-page="allmovie"] .app-mode-content p,
-  body[data-page="allserie"] .app-mode-content p {
+  /* Forçar tamanhos de texto em pixels - maior especificidade */
+  body[data-page="movie"] .app-mode-content p.text-gray-400,
+  body[data-page="serie"] .app-mode-content p.text-gray-400,
+  body[data-page="allmovie"] .app-mode-content p.text-gray-400,
+  body[data-page="allserie"] .app-mode-content p.text-gray-400 {
     font-size: 20px !important;
     line-height: 1.6 !important;
   }
@@ -1980,7 +1995,15 @@ body {
     font-size: 20px !important;
   }
 
-  /* Botões */
+  /* Forçar todos os textos dentro do content */
+  body[data-page="movie"] .app-mode-content p,
+  body[data-page="serie"] .app-mode-content p,
+  body[data-page="allmovie"] .app-mode-content p,
+  body[data-page="allserie"] .app-mode-content p {
+    font-size: 20px !important;
+  }
+
+  /* Botões - maior especificidade */
   body[data-page="movie"] .app-mode-content button,
   body[data-page="serie"] .app-mode-content button,
   body[data-page="allmovie"] .app-mode-content button,
