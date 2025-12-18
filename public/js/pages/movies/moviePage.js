@@ -128,6 +128,79 @@ async function renderMovieInfo() {
   }
   const isWatched = cachedProgress.watched || false;
 
+  // Detectar app mode
+  const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone || 
+                    (window.innerWidth <= 768);
+
+  if (isAppMode) {
+    // Layout para app mode
+    container.innerHTML = `
+      <!-- Header fixo: Back + Título + Favorito -->
+      <div class="app-mode-header fixed top-0 left-0 right-0 h-16 bg-gray-900/95 backdrop-blur-md border-b border-white/10 z-50 flex items-center justify-between px-4">
+        <a href="javascript:history.back()" class="w-10 h-10 flex items-center justify-center text-white text-2xl">←</a>
+        <h1 class="text-lg font-bold text-center flex-1 px-4 truncate">${movie.title}</h1>
+        <button
+          id="favoriteToggleBtn"
+          class="w-10 h-10 rounded-full border-2 border-yellow-400 flex items-center justify-center text-yellow-400 flex-shrink-0"
+          title="${isFavorite ? "Remove from favorites" : "Add to favorites"}"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5">
+            ${
+              isFavorite
+                ? `
+            <path d="M6 3.5C6 2.67 6.67 2 7.5 2h9a1.5 1.5 0 0 1 1.5 1.5v17.1c0 .8-.88 1.28-1.55.83L12 17.5l-4.45 3.93c-.67.45-1.55-.03-1.55-.83V3.5Z"
+                  fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                `
+                : `
+            <path d="M7.5 3h9A1.5 1.5 0 0 1 18 4.5v17.1c0 .8-.88 1.28-1.55.83L12 18.5l-4.45 3.93c-.67.45-1.55-.03-1.55-.83V4.5A1.5 1.5 0 0 1 7.5 3Z"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                `
+            }
+          </svg>
+        </button>
+      </div>
+
+      <!-- Conteúdo principal (com padding-top para compensar header) -->
+      <div class="app-mode-content pt-20 pb-8">
+        <!-- Poster horizontal -->
+        <div class="mb-6">
+          <img src="${movie.poster}"
+               data-placeholder="${PLACEHOLDER_IMAGE}"
+               class="w-full h-64 object-cover rounded-lg shadow-lg" />
+        </div>
+
+        <!-- Sinopse -->
+        <p class="text-gray-400 mb-6 text-lg leading-relaxed">
+          ${movie.overview || movie.description || "No description available."}
+        </p>
+
+        <!-- Info: Year, Genre -->
+        <div class="mb-6 text-lg text-gray-400 space-y-2">
+          <div><span class="font-semibold text-white">Year:</span> ${movie.year}</div>
+          ${movie.genres && movie.genres.length > 0
+            ? `<div><span class="font-semibold text-white">Genre:</span> ${movie.genres.join(", ")}</div>`
+            : ""}
+        </div>
+
+        <!-- Botão marcar como visto + Rating -->
+        <div class="mb-6 flex items-center gap-4">
+          ${!fromAllMovies ? `
+          <button id="toggleWatchedBtn"
+            class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold text-lg">
+            ${isWatched ? `❌ ${translate("unmark")}` : `✔️ ${translate("markAsViewed")}`}
+          </button>
+          ` : ""}
+          ${movie.rating
+            ? `<span class="w-14 h-14 rounded-full bg-transparent border-2 border-blue-900 flex items-center justify-center text-blue-400 font-bold text-lg">
+                ${movie.rating.toFixed(1)}
+              </span>`
+            : ""}
+        </div>
+      </div>
+    `;
+  } else {
+    // Layout original para desktop
     container.innerHTML = `
       <div class="flex flex-col md:flex-row gap-8">
 
@@ -187,6 +260,7 @@ async function renderMovieInfo() {
 
       </div>
     `;
+  }
 
     // Adicionar handler de erro para imagem após inserir HTML
     const img = container.querySelector('img[data-placeholder]');

@@ -97,64 +97,138 @@ async function renderSerieInfo() {
   const container = document.getElementById("serieInfo");
   if (!container) return;
 
-  container.innerHTML = `
-    <div class="flex flex-col md:flex-row gap-8">
+  // Detectar app mode
+  const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone || 
+                    (window.innerWidth <= 768);
 
-      <img src="${serie.poster}"
-           data-placeholder="${PLACEHOLDER_IMAGE}"
-           class="w-48 h-72 object-cover rounded-lg shadow-lg ring-1 ring-white/10" />
+  if (isAppMode) {
+    // Layout para app mode
+    container.innerHTML = `
+      <!-- Header fixo: Back + Título -->
+      <div class="app-mode-header fixed top-0 left-0 right-0 h-16 bg-gray-900/95 backdrop-blur-md border-b border-white/10 z-50 flex items-center justify-between px-4">
+        <a href="javascript:history.back()" class="w-10 h-10 flex items-center justify-center text-white text-2xl">←</a>
+        <h1 class="text-lg font-bold text-center flex-1 px-4 truncate">${serie.title}</h1>
+        <div class="w-10"></div> <!-- Spacer para centralizar título -->
+      </div>
 
-      <div>
-        <h1 class="text-3xl font-bold mb-2">
-          ${serie.title}
-        </h1>
+      <!-- Conteúdo principal (com padding-top para compensar header) -->
+      <div class="app-mode-content pt-20 pb-8">
+        <!-- Poster horizontal -->
+        <div class="mb-6">
+          <img src="${serie.poster}"
+               data-placeholder="${PLACEHOLDER_IMAGE}"
+               class="w-full h-64 object-cover rounded-lg shadow-lg" />
+        </div>
 
-        <p class="text-gray-400 mb-4 max-w-2xl">
+        <!-- Sinopse -->
+        <p class="text-gray-400 mb-6 text-lg leading-relaxed">
           ${serie.description || "No description available."}
         </p>
 
-        <div class="mt-4 text-sm text-gray-400 flex items-center gap-3">
-          <span><span class="font-semibold text-white">• Year:</span> ${serie.year}</span>
-          <span>
-            <span class="font-semibold text-white">• TV Status:</span>
+        <!-- Info: Year, Status, Genre -->
+        <div class="mb-6 text-lg text-gray-400 space-y-2">
+          <div><span class="font-semibold text-white">Year:</span> ${serie.year}</div>
+          <div>
+            <span class="font-semibold text-white">TV Status:</span>
             <span class="${serie.status === "On Display" ? "text-green-400" : "text-red-500"}"> ${serie.status}</span>
-          </span>
+          </div>
           ${serie.genres && serie.genres.length > 0
-            ? `<span><span class="font-semibold text-white">• Genre:</span> ${serie.genres.join(", ")}</span>`
+            ? `<div><span class="font-semibold text-white">Genre:</span> ${serie.genres.join(", ")}</div>`
             : ""}
         </div>
 
-        <div class="mt-4 flex flex-col gap-3">
-          <div class="flex items-center gap-3">
-            ${!isInCollection ? `
-            <button id="addToCollectionBtn"
-              class="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg font-semibold flex items-center gap-2">
-              <span>+</span>
-              <span>Add to Collection</span>
-            </button>
-            ` : `
-            <span class="px-5 py-2 rounded-lg font-semibold bg-gray-700 text-gray-400">
-              ✓ In Collection
-            </span>
-            `}
-            ${serie.rating
-              ? `<span class="w-12 h-12 rounded-full bg-transparent border border-green-900 flex items-center justify-center text-green-400 font-bold text-sm">
-                  ${serie.rating.toFixed(1)}
-                </span>`
-              : ""}
-          </div>
-          <div>
-            <button id="trailerBtn"
-              class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-lg font-semibold flex items-center gap-2">
-              <span>▶</span>
-              <span>Trailer</span>
-            </button>
-          </div>
+        <!-- Botões: Add to Collection + Rating -->
+        <div class="mb-6 flex items-center gap-4 flex-wrap">
+          ${!isInCollection ? `
+          <button id="addToCollectionBtn"
+            class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold text-lg flex items-center gap-2">
+            <span>+</span>
+            <span>Add to Collection</span>
+          </button>
+          ` : `
+          <span class="px-6 py-3 rounded-lg font-semibold bg-gray-700 text-gray-400 text-lg">
+            ✓ In Collection
+          </span>
+          `}
+          ${serie.rating
+            ? `<span class="w-14 h-14 rounded-full bg-transparent border-2 border-green-900 flex items-center justify-center text-green-400 font-bold text-lg">
+                ${serie.rating.toFixed(1)}
+              </span>`
+            : ""}
+        </div>
+
+        <!-- Botão: Trailer -->
+        <div class="mb-6">
+          <button id="trailerBtn"
+            class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg font-semibold text-lg flex items-center gap-2">
+            <span>▶</span>
+            <span>Trailer</span>
+          </button>
         </div>
       </div>
+    `;
+  } else {
+    // Layout original para desktop
+    container.innerHTML = `
+      <div class="flex flex-col md:flex-row gap-8">
 
-    </div>
-  `;
+        <img src="${serie.poster}"
+             data-placeholder="${PLACEHOLDER_IMAGE}"
+             class="w-48 h-72 object-cover rounded-lg shadow-lg ring-1 ring-white/10" />
+
+        <div>
+          <h1 class="text-3xl font-bold mb-2">
+            ${serie.title}
+          </h1>
+
+          <p class="text-gray-400 mb-4 max-w-2xl">
+            ${serie.description || "No description available."}
+          </p>
+
+          <div class="mt-4 text-sm text-gray-400 flex items-center gap-3">
+            <span><span class="font-semibold text-white">• Year:</span> ${serie.year}</span>
+            <span>
+              <span class="font-semibold text-white">• TV Status:</span>
+              <span class="${serie.status === "On Display" ? "text-green-400" : "text-red-500"}"> ${serie.status}</span>
+            </span>
+            ${serie.genres && serie.genres.length > 0
+              ? `<span><span class="font-semibold text-white">• Genre:</span> ${serie.genres.join(", ")}</span>`
+              : ""}
+          </div>
+
+          <div class="mt-4 flex flex-col gap-3">
+            <div class="flex items-center gap-3">
+              ${!isInCollection ? `
+              <button id="addToCollectionBtn"
+                class="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg font-semibold flex items-center gap-2">
+                <span>+</span>
+                <span>Add to Collection</span>
+              </button>
+              ` : `
+              <span class="px-5 py-2 rounded-lg font-semibold bg-gray-700 text-gray-400">
+                ✓ In Collection
+              </span>
+              `}
+              ${serie.rating
+                ? `<span class="w-12 h-12 rounded-full bg-transparent border border-green-900 flex items-center justify-center text-green-400 font-bold text-sm">
+                    ${serie.rating.toFixed(1)}
+                  </span>`
+                : ""}
+            </div>
+            <div>
+              <button id="trailerBtn"
+                class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-lg font-semibold flex items-center gap-2">
+                <span>▶</span>
+                <span>Trailer</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    `;
+  }
 
   // Adicionar handler de erro para imagem após inserir HTML
   const img = container.querySelector('img[data-placeholder]');

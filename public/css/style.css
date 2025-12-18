@@ -1764,9 +1764,17 @@ body {
   body[data-page="allmovie"] main,
   body[data-page="allserie"] main {
     max-width: 100% !important;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-    padding-top: 16px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  /* Quando há app-mode-content, remover padding do main */
+  body[data-page="movie"] main:has(.app-mode-content),
+  body[data-page="serie"] main:has(.app-mode-content),
+  body[data-page="allmovie"] main:has(.app-mode-content),
+  body[data-page="allserie"] main:has(.app-mode-content) {
+    padding: 0 !important;
   }
 
   /* Aumentar tamanho do poster */
@@ -1898,29 +1906,75 @@ body {
     gap: 12px !important;
   }
 
-  /* Botão de voltar */
-  #backButton {
-    position: fixed !important;
-    top: 16px !important;
-    left: 16px !important;
-    z-index: 1000 !important;
-    width: 44px !important;
-    height: 44px !important;
-    background: rgba(0, 0, 0, 0.7) !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: white !important;
-    font-size: 24px !important;
-    text-decoration: none !important;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    transition: all 0.2s !important;
+  /* Botão de voltar original (esconder em app mode quando há header) */
+  body[data-page="movie"] #backButton,
+  body[data-page="serie"] #backButton,
+  body[data-page="allmovie"] #backButton,
+  body[data-page="allserie"] #backButton {
+    display: none !important;
   }
 
-  #backButton:hover {
-    background: rgba(0, 0, 0, 0.9) !important;
-    transform: scale(1.1) !important;
+  /* Header fixo para app mode */
+  body[data-page="movie"] .app-mode-header,
+  body[data-page="serie"] .app-mode-header,
+  body[data-page="allmovie"] .app-mode-header,
+  body[data-page="allserie"] .app-mode-header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 64px !important;
+    background: rgba(17, 24, 39, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    z-index: 1000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 16px !important;
+  }
+
+  /* Conteúdo principal com padding para header */
+  body[data-page="movie"] .app-mode-content,
+  body[data-page="serie"] .app-mode-content,
+  body[data-page="allmovie"] .app-mode-content,
+  body[data-page="allserie"] .app-mode-content {
+    padding-top: 80px !important;
+    padding-bottom: 32px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Poster horizontal */
+  body[data-page="movie"] .app-mode-content img,
+  body[data-page="serie"] .app-mode-content img,
+  body[data-page="allmovie"] .app-mode-content img,
+  body[data-page="allserie"] .app-mode-content img {
+    width: 100% !important;
+    height: 256px !important;
+    object-fit: cover !important;
+    border-radius: 0.5rem !important;
+  }
+
+  /* Esconder progress bar original quando há app-mode-content */
+  body[data-page="serie"] main:has(.app-mode-content) > #progressBar {
+    display: none !important;
+  }
+
+  /* Progress bar dentro do app-mode-content */
+  body[data-page="serie"] .app-mode-content #progressBar {
+    margin-top: 0 !important;
+    margin-bottom: 24px !important;
+  }
+
+  /* Temporadas e episódios em app mode */
+  body[data-page="serie"] #seasons {
+    padding: 0 16px !important;
+    margin-top: 0 !important;
+  }
+
+  /* Garantir que temporadas aparecem após o conteúdo em app mode */
+  body[data-page="serie"] main:has(.app-mode-content) #seasons {
+    margin-top: 0 !important;
   }
 }

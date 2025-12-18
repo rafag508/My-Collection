@@ -194,25 +194,121 @@ async function renderSerieInfo() {
     progressText = total > 0 ? `Progress: ${watched}/${total} episodes (${percent}%)` : "No episodes available";
   }
 
-  container.innerHTML = `
-    <div class="flex flex-col md:flex-row gap-8">
+  // Detectar app mode
+  const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone || 
+                    (window.innerWidth <= 768);
 
-      <img src="${serie.poster}"
-           data-placeholder="${PLACEHOLDER_IMAGE}"
-           class="w-48 h-72 object-cover rounded-lg shadow-lg ring-1 ring-white/10" />
+  if (isAppMode) {
+    // Layout para app mode
+    container.innerHTML = `
+      <!-- Header fixo: Back + Título + Favorito -->
+      <div class="app-mode-header fixed top-0 left-0 right-0 h-16 bg-gray-900/95 backdrop-blur-md border-b border-white/10 z-50 flex items-center justify-between px-4">
+        <a href="javascript:history.back()" class="w-10 h-10 flex items-center justify-center text-white text-2xl">←</a>
+        <h1 class="text-lg font-bold text-center flex-1 px-4 truncate">${serie.title}</h1>
+        <button
+          id="favoriteToggleBtn"
+          class="w-10 h-10 rounded-full border-2 border-yellow-400 flex items-center justify-center text-yellow-400 flex-shrink-0"
+          title="${isFavorite ? "Remove from favorites" : "Add to favorites"}"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5">
+            ${
+              isFavorite
+                ? `
+            <path d="M6 3.5C6 2.67 6.67 2 7.5 2h9a1.5 1.5 0 0 1 1.5 1.5v17.1c0 .8-.88 1.28-1.55.83L12 17.5l-4.45 3.93c-.67.45-1.55-.03-1.55-.83V3.5Z"
+                  fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                `
+                : `
+            <path d="M7.5 3h9A1.5 1.5 0 0 1 18 4.5v17.1c0 .8-.88 1.28-1.55.83L12 18.5l-4.45 3.93c-.67.45-1.55-.03-1.55-.83V4.5A1.5 1.5 0 0 1 7.5 3Z"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                `
+            }
+          </svg>
+        </button>
+      </div>
 
-      <div class="mt-4 md:mt-0">
-        <h1 class="text-3xl font-bold mb-2 flex items-center gap-3">
-          ${serie.title}
-          <button
-            id="favoriteToggleBtn"
-            class="w-9 h-9 rounded-full border-2 border-yellow-400 flex items-center justify-center text-yellow-400"
-            title="${isFavorite ? "Remove from favorites" : "Add to favorites"}"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6">
-              ${
-                isFavorite
-                  ? `
+      <!-- Conteúdo principal (com padding-top para compensar header) -->
+      <div class="app-mode-content pt-20 pb-8">
+        <!-- Poster horizontal -->
+        <div class="mb-6">
+          <img src="${serie.poster}"
+               data-placeholder="${PLACEHOLDER_IMAGE}"
+               class="w-full h-64 object-cover rounded-lg shadow-lg" />
+        </div>
+
+        <!-- Sinopse -->
+        <p class="text-gray-400 mb-6 text-lg leading-relaxed">
+          ${serie.description || "No description available."}
+        </p>
+
+        <!-- Info: Year, Status, Genre -->
+        <div class="mb-6 text-lg text-gray-400 space-y-2">
+          <div><span class="font-semibold text-white">Year:</span> ${serie.year}</div>
+          <div>
+            <span class="font-semibold text-white">TV Status:</span>
+            <span class="${serie.status === "On Display" ? "text-green-400" : "text-red-500"}"> ${serie.status}</span>
+          </div>
+          ${serie.genres && serie.genres.length > 0
+            ? `<div><span class="font-semibold text-white">Genre:</span> ${serie.genres.join(", ")}</div>`
+            : ""}
+        </div>
+
+        <!-- Botão marcar como visto + Rating -->
+        <div class="mb-6 flex items-center gap-4">
+          ${!fromAllSeries ? `
+          <button id="toggleAllBtn"
+            class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold text-lg">
+            ${fullyWatched ? `❌ ${translate("unmark")}` : `✔️ ${translate("markAsViewed")}`}
+          </button>
+          ` : ""}
+          ${serie.rating
+            ? `<span class="w-14 h-14 rounded-full bg-transparent border-2 border-green-900 flex items-center justify-center text-green-400 font-bold text-lg">
+                ${serie.rating.toFixed(1)}
+              </span>`
+            : ""}
+        </div>
+
+        <!-- Progress text (só para séries da coleção) -->
+        ${!fromAllSeries ? `
+        <div id="progressInfo" class="mb-3 text-lg text-gray-400">
+          ${progressText}
+        </div>
+        ` : ""}
+
+        <!-- Progress bar (só para séries da coleção) -->
+        ${!fromAllSeries ? `
+        <div id="progressBar" class="mb-6">
+          <div class="w-full bg-gray-800 rounded-full h-3">
+            <div id="progressFill"
+                 class="h-3 bg-green-500 rounded-full transition-all duration-300"
+                 style="width: 0%">
+            </div>
+          </div>
+        </div>
+        ` : ""}
+      </div>
+    `;
+  } else {
+    // Layout original para desktop
+    container.innerHTML = `
+      <div class="flex flex-col md:flex-row gap-8">
+
+        <img src="${serie.poster}"
+             data-placeholder="${PLACEHOLDER_IMAGE}"
+             class="w-48 h-72 object-cover rounded-lg shadow-lg ring-1 ring-white/10" />
+
+        <div class="mt-4 md:mt-0">
+          <h1 class="text-3xl font-bold mb-2 flex items-center gap-3">
+            ${serie.title}
+            <button
+              id="favoriteToggleBtn"
+              class="w-9 h-9 rounded-full border-2 border-yellow-400 flex items-center justify-center text-yellow-400"
+              title="${isFavorite ? "Remove from favorites" : "Add to favorites"}"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6">
+                ${
+                  isFavorite
+                    ? `
               <path d="M6 3.5C6 2.67 6.67 2 7.5 2h9a1.5 1.5 0 0 1 1.5 1.5v17.1c0 .8-.88 1.28-1.55.83L12 17.5l-4.45 3.93c-.67.45-1.55-.03-1.55-.83V3.5Z"
                     fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
                   `
@@ -220,53 +316,54 @@ async function renderSerieInfo() {
               <path d="M7.5 3h9A1.5 1.5 0 0 1 18 4.5v17.1c0 .8-.88 1.28-1.55.83L12 18.5l-4.45 3.93c-.67.45-1.55-.03-1.55-.83V4.5A1.5 1.5 0 0 1 7.5 3Z"
                     fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
                   `
-              }
-            </svg>
-          </button>
-        </h1>
+                }
+              </svg>
+            </button>
+          </h1>
 
-        <p class="text-gray-400 mb-4 max-w-2xl">
-          ${serie.description || "No description available."}
-        </p>
+          <p class="text-gray-400 mb-4 max-w-2xl">
+            ${serie.description || "No description available."}
+          </p>
 
-        <div class="mt-4 text-sm text-gray-400 flex items-center gap-3">
-          <span><span class="font-semibold text-white">• Year:</span> ${serie.year}</span>
-          <span>
-            <span class="font-semibold text-white">• TV Status:</span>
-            <span class="${serie.status === "On Display" ? "text-green-400" : "text-red-500"}"> ${serie.status}</span>
-          </span>
-          ${serie.genres && serie.genres.length > 0
-            ? `<span><span class="font-semibold text-white">• Genre:</span> ${serie.genres.join(", ")}</span>`
-            : ""}
+          <div class="mt-4 text-sm text-gray-400 flex items-center gap-3">
+            <span><span class="font-semibold text-white">• Year:</span> ${serie.year}</span>
+            <span>
+              <span class="font-semibold text-white">• TV Status:</span>
+              <span class="${serie.status === "On Display" ? "text-green-400" : "text-red-500"}"> ${serie.status}</span>
+            </span>
+            ${serie.genres && serie.genres.length > 0
+              ? `<span><span class="font-semibold text-white">• Genre:</span> ${serie.genres.join(", ")}</span>`
+              : ""}
+          </div>
+
+          <div class="mt-4 flex items-center gap-3 flex-wrap">
+            ${!fromAllSeries ? `
+            <button id="toggleAllBtn"
+              class="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg font-semibold">
+              ${fullyWatched ? `❌ ${translate("unmark")}` : `✔️ ${translate("markAsViewed")}`}
+            </button>
+            ` : ""}
+
+            ${!fromAllSeries && serie.status === "On Display" ? `
+            <button id="followToggleBtn"
+              class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold">
+              ${isFollowingSerie ? "Unfollow" : "Follow"}
+            </button>
+            ` : ""}
+
+            ${serie.rating
+              ? `<span class="w-12 h-12 rounded-full bg-transparent border border-blue-900 flex items-center justify-center text-blue-400 font-bold text-sm">
+                  ${serie.rating.toFixed(1)}
+                </span>`
+              : ""}
+          </div>
+
+          ${!fromAllSeries ? `<div id="progressInfo" class="mt-5 text-sm text-gray-400" style="display: block !important;">${progressText}</div>` : ""}
         </div>
 
-        <div class="mt-4 flex items-center gap-3 flex-wrap">
-          ${!fromAllSeries ? `
-          <button id="toggleAllBtn"
-            class="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg font-semibold">
-            ${fullyWatched ? `❌ ${translate("unmark")}` : `✔️ ${translate("markAsViewed")}`}
-          </button>
-          ` : ""}
-
-          ${!fromAllSeries && serie.status === "On Display" ? `
-          <button id="followToggleBtn"
-            class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold">
-            ${isFollowingSerie ? "Unfollow" : "Follow"}
-          </button>
-          ` : ""}
-
-          ${serie.rating
-            ? `<span class="w-12 h-12 rounded-full bg-transparent border border-blue-900 flex items-center justify-center text-blue-400 font-bold text-sm">
-                ${serie.rating.toFixed(1)}
-              </span>`
-            : ""}
-        </div>
-
-        ${!fromAllSeries ? `<div id="progressInfo" class="mt-5 text-sm text-gray-400" style="display: block !important;">${progressText}</div>` : ""}
       </div>
-
-    </div>
-  `;
+    `;
+  }
 
   // Adicionar handler de erro para imagem após inserir HTML
   const img = container.querySelector('img[data-placeholder]');
