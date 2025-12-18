@@ -1813,11 +1813,11 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
     margin: 0 auto !important;
   }
 
-  /* Aumentar tamanho do título */
-  body[data-page="movie"] #movieInfo h1,
-  body[data-page="serie"] #serieInfo h1,
-  body[data-page="allmovie"] #movieInfo h1,
-  body[data-page="allserie"] #serieInfo h1 {
+  /* Aumentar tamanho do título - mas NÃO aplicar se estiver em app-mode-header */
+  body[data-page="movie"] #movieInfo:not(:has(.app-mode-header)) h1,
+  body[data-page="serie"] #serieInfo:not(:has(.app-mode-header)) h1,
+  body[data-page="allmovie"] #movieInfo:not(:has(.app-mode-header)) h1,
+  body[data-page="allserie"] #serieInfo:not(:has(.app-mode-header)) h1 {
     font-size: 32px !important;
     margin-bottom: 16px !important;
   }
@@ -1958,11 +1958,20 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
     padding: 0 16px !important;
   }
 
-  /* Título no header - 48px */
+  /* Título no header - 48px - MAIOR ESPECIFICIDADE */
   body[data-page="movie"] .app-mode-header h1,
   body[data-page="serie"] .app-mode-header h1,
   body[data-page="allmovie"] .app-mode-header h1,
   body[data-page="allserie"] .app-mode-header h1 {
+    font-size: 48px !important;
+    margin-top: 8px !important;
+  }
+
+  /* Garantir que o título no header não é afetado pelo CSS de #movieInfo h1 */
+  body[data-page="movie"] #movieInfo .app-mode-header h1,
+  body[data-page="serie"] #serieInfo .app-mode-header h1,
+  body[data-page="allmovie"] #movieInfo .app-mode-header h1,
+  body[data-page="allserie"] #serieInfo .app-mode-header h1 {
     font-size: 48px !important;
     margin-top: 8px !important;
   }

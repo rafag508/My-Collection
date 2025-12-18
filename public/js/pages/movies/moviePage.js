@@ -315,6 +315,17 @@ async function renderMovieInfo() {
             buttonClasses: favoriteBtn.className,
             isAppMode: isAppMode
           });
+          
+          // Verificar se o CSS está a ser aplicado
+          const buttonDataFavorite = favoriteBtn.getAttribute('data-favorite');
+          console.log('🔍 [DEBUG] Favorite Button CSS Check:', {
+            dataFavorite: buttonDataFavorite,
+            pathFillAttribute: path.getAttribute('fill'),
+            computedFill: computedFill,
+            computedStroke: computedStroke,
+            hasDataFavoriteTrue: favoriteBtn.matches('[data-favorite="true"]'),
+            hasDataFavoriteFalse: favoriteBtn.matches('[data-favorite="false"]')
+          });
         }
       }, 100);
     }
