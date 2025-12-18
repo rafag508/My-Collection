@@ -143,7 +143,7 @@ async function renderMovieInfo() {
         <div class="mb-6">
           <img src="${movie.poster}"
                data-placeholder="${PLACEHOLDER_IMAGE}"
-               class="w-full h-64 object-cover rounded-lg shadow-lg" />
+               class="w-full object-cover rounded-lg shadow-lg" />
         </div>
 
         <!-- Sinopse -->
