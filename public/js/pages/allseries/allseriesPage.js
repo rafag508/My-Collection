@@ -221,7 +221,6 @@ export async function initAllSeriesPage() {
   applyAllSeriesGridPadding();
 
   // Adicionar swipe para mudar entre páginas (apenas no modo app)
-  console.log('🔍 [Swipe Debug] Verificando modo app...', isAppMode);
   if (isAppMode) {
     let touchStartX = 0;
     let touchStartY = 0;
@@ -230,25 +229,15 @@ export async function initAllSeriesPage() {
     let isSwipe = false;
     const mainElement = document.querySelector('main');
 
-    console.log('🔍 [Swipe Debug] mainElement:', mainElement ? 'encontrado' : 'NÃO encontrado');
-    console.log('🔍 [Swipe Debug] pagination:', pagination ? 'disponível' : 'NÃO disponível');
-    console.log('🔍 [Swipe Debug] pagination.currentPage:', pagination?.currentPage);
-    console.log('🔍 [Swipe Debug] pagination.getTotalPages():', pagination?.getTotalPages());
-
     if (mainElement && pagination) {
-      console.log('✅ [Swipe Debug] Configurando event listeners...');
-      
       mainElement.addEventListener('touchstart', (e) => {
         const target = e.target;
-        // PERMITIR swipe em cards de séries - só bloquear botões de paginação
         if (target.tagName === 'BUTTON' && !target.closest('.series-card')) {
-          console.log('🔍 [Swipe Debug] touchstart ignorado - botão fora de card:', target.tagName);
           return;
         }
         touchStartX = e.changedTouches[0].screenX;
         touchStartY = e.changedTouches[0].screenY;
         isSwipe = false;
-        console.log('🔍 [Swipe Debug] touchstart:', { x: touchStartX, y: touchStartY, target: target.className || target.tagName, isCard: !!target.closest('.series-card') });
       }, { passive: true });
 
       mainElement.addEventListener('touchmove', (e) => {
@@ -260,15 +249,11 @@ export async function initAllSeriesPage() {
         
         if (diffX > diffY && diffX > 10) {
           isSwipe = true;
-          console.log('🔍 [Swipe Debug] touchmove - swipe detectado:', { diffX, diffY, isSwipe });
         }
       }, { passive: true });
 
       mainElement.addEventListener('touchend', (e) => {
-        console.log('🔍 [Swipe Debug] touchend:', { isSwipe, touchStartX });
-        
         if (!isSwipe || touchStartX === 0) {
-          console.log('🔍 [Swipe Debug] touchend ignorado - não é swipe válido');
           touchStartX = 0;
           touchStartY = 0;
           return;
@@ -281,18 +266,8 @@ export async function initAllSeriesPage() {
         const diffY = Math.abs(touchStartY - touchEndY);
         const swipeThreshold = 80;
 
-        console.log('🔍 [Swipe Debug] touchend - calculando:', { 
-          diffX, 
-          diffY, 
-          swipeThreshold, 
-          absDiffX: Math.abs(diffX),
-          meetsThreshold: Math.abs(diffX) > swipeThreshold,
-          horizontalGreater: Math.abs(diffX) > diffY
-        });
-
         if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > diffY) {
           if (!pagination) {
-            console.warn('❌ [Swipe Debug] Pagination not available');
             return;
           }
           
@@ -300,23 +275,13 @@ export async function initAllSeriesPage() {
           if (target.closest('.series-card-link')) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('🔍 [Swipe Debug] Prevenindo clique no link - foi swipe');
           }
-          
-          console.log('✅ [Swipe Debug] Swipe válido! Direção:', diffX > 0 ? 'esquerda (next)' : 'direita (prev)');
-          console.log('🔍 [Swipe Debug] Página atual:', pagination.currentPage, 'de', pagination.getTotalPages());
           
           if (diffX > 0) {
-            console.log('🔍 [Swipe Debug] Chamando pagination.nextPage()...');
             pagination.nextPage();
           } else {
-            console.log('🔍 [Swipe Debug] Chamando pagination.prevPage()...');
             pagination.prevPage();
           }
-          
-          console.log('🔍 [Swipe Debug] Página após swipe:', pagination.currentPage);
-        } else {
-          console.log('⚠️ [Swipe Debug] Swipe não atendeu aos critérios');
         }
 
         touchStartX = 0;
@@ -325,16 +290,7 @@ export async function initAllSeriesPage() {
         touchEndY = 0;
         isSwipe = false;
       }, { passive: true });
-      
-      console.log('✅ [Swipe Debug] Event listeners adicionados com sucesso!');
-    } else {
-      console.warn('❌ [Swipe Debug] Não foi possível configurar swipe:', {
-        mainElement: !!mainElement,
-        pagination: !!pagination
-      });
     }
-  } else {
-    console.log('🔍 [Swipe Debug] Não está em modo app');
   }
   
   // ✅ PopState já está configurado no PaginationManager.setupPopStateListener()

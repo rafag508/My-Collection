@@ -667,22 +667,6 @@ function setupButtons() {
     deleteMode = false;
     selectedForDelete.clear();
     confirmDeleteBtn.classList.add("hidden");
-    
-    // Debug do emoji quando o botão é mostrado
-    if (editMode && deleteBtn) {
-      setTimeout(() => {
-        const computedStyle = window.getComputedStyle(deleteBtn);
-        const beforeStyle = window.getComputedStyle(deleteBtn, '::before');
-        console.log('🔍 [Emoji Debug] Botão deleteSeriesBtn visível');
-        console.log('🔍 [Emoji Debug] Background:', computedStyle.backgroundColor);
-        console.log('🔍 [Emoji Debug] Color:', computedStyle.color);
-        console.log('🔍 [Emoji Debug] Mix-blend-mode:', computedStyle.mixBlendMode);
-        console.log('🔍 [Emoji Debug] ::before content:', beforeStyle.content);
-        console.log('🔍 [Emoji Debug] ::before background:', beforeStyle.backgroundColor);
-        console.log('🔍 [Emoji Debug] ::before z-index:', beforeStyle.zIndex);
-      }, 100);
-    }
-    
     await renderSeries();
   });
 

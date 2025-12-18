@@ -38,27 +38,17 @@ export function setupAddMoviesModal() {
 }
 
 function openModal() {
-  console.log('🔍 [Zoom Debug] Abrindo modal Add Movies...');
   modal.classList.remove("hidden");
   modal.classList.add("flex");
   searchInput.value = "";
   resultsContainer.innerHTML = "";
   
-  // Verificar font-size atual
-  const currentFontSize = window.getComputedStyle(searchInput).fontSize;
-  console.log('🔍 [Zoom Debug] Font-size ANTES:', currentFontSize);
-  
   // CRÍTICO: Garantir que o font-size está aplicado
   searchInput.style.fontSize = '16px';
   searchInput.style.setProperty('font-size', '16px', 'important');
   
-  // Verificar se foi aplicado
-  const fontSizeAfter = window.getComputedStyle(searchInput).fontSize;
-  console.log('🔍 [Zoom Debug] Font-size DEPOIS:', fontSizeAfter);
-  
   // NÃO fazer focus automático - deixar o utilizador clicar no input
   // Isso evita o zoom porque o font-size já está aplicado quando clicam
-  console.log('🔍 [Zoom Debug] Modal aberto - aguardando clique do utilizador (sem focus automático)');
 }
 
 function closeModal() {
