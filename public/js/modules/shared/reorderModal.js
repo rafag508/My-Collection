@@ -167,13 +167,16 @@ export class ReorderModal {
 
       // Touch events para mobile
       let isDragging = false;
-      let dragThreshold = 10; // Threshold mínimo para iniciar drag
+      let dragThreshold = 15; // Aumentar threshold para evitar drags acidentais
+      let lastHoveredCard = null; // Guardar último card sobre o qual passou
+      let scrollThreshold = 0.7; // 70% do movimento deve ser vertical para ser scroll
       
       card.addEventListener("touchstart", (e) => {
         touchStartElement = card;
         touchStartY = e.touches[0].clientY;
         touchStartX = e.touches[0].clientX;
         isDragging = false;
+        lastHoveredCard = null;
       }, { passive: true });
 
       card.addEventListener("touchmove", (e) => {
@@ -181,18 +184,28 @@ export class ReorderModal {
         
         const touchY = e.touches[0].clientY;
         const touchX = e.touches[0].clientX;
-        const deltaY = touchY - touchStartY;
-        const deltaX = touchX - touchStartX;
+        const deltaY = Math.abs(touchY - touchStartY);
+        const deltaX = Math.abs(touchX - touchStartX);
         const totalDelta = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        const verticalRatio = deltaY / (deltaX + deltaY || 1); // Ratio de movimento vertical
 
-        // Se ainda não iniciou drag e o movimento é significativo, iniciar drag
-        if (!isDragging && totalDelta > dragThreshold) {
-          isDragging = true;
-          card.classList.add("opacity-50");
-          e.preventDefault(); // Prevenir scroll quando inicia drag
+        // Se ainda não iniciou drag
+        if (!isDragging) {
+          // Se o movimento é principalmente vertical (>70%), permitir scroll
+          if (verticalRatio > scrollThreshold && totalDelta > dragThreshold) {
+            return; // Permitir scroll natural
+          }
+          // Se o movimento é principalmente horizontal ou misto, iniciar drag
+          if (totalDelta > dragThreshold) {
+            isDragging = true;
+            card.classList.add("opacity-50");
+            e.preventDefault(); // Prevenir scroll quando inicia drag
+          } else {
+            return; // Movimento ainda muito pequeno
+          }
         }
 
-        // Se está em modo drag, prevenir scroll e fazer drag
+        // Se está em modo drag
         if (isDragging) {
           e.preventDefault();
           
@@ -220,19 +233,19 @@ export class ReorderModal {
             }
           });
 
-          if (!closestCard || closestCard === card) return;
+          // Só mover se o card mais próximo mudou E está suficientemente próximo
+          if (closestCard && closestCard !== card && closestCard !== lastHoveredCard && minDistance < 100) {
+            const dragIndex = items.indexOf(card);
+            const hoverIndex = items.indexOf(closestCard);
 
-          const dragIndex = items.indexOf(card);
-          const hoverIndex = items.indexOf(closestCard);
-
-          if (dragIndex !== hoverIndex && dragIndex !== -1 && hoverIndex !== -1) {
-            if (dragIndex < hoverIndex) {
-              grid.insertBefore(card, closestCard.nextSibling);
-            } else {
-              grid.insertBefore(card, closestCard);
+            if (dragIndex !== hoverIndex && dragIndex !== -1 && hoverIndex !== -1) {
+              if (dragIndex < hoverIndex) {
+                grid.insertBefore(card, closestCard.nextSibling);
+              } else {
+                grid.insertBefore(card, closestCard);
+              }
+              lastHoveredCard = closestCard; // Guardar último card
             }
-            touchStartY = touchY;
-            touchStartX = touchX;
           }
         }
       }, { passive: false });
@@ -244,6 +257,7 @@ export class ReorderModal {
           touchStartY = 0;
           touchStartX = 0;
           isDragging = false;
+          lastHoveredCard = null;
         }
       }, { passive: true });
 
@@ -254,6 +268,7 @@ export class ReorderModal {
           touchStartY = 0;
           touchStartX = 0;
           isDragging = false;
+          lastHoveredCard = null;
         }
       }, { passive: true });
     });
