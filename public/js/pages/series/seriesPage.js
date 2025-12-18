@@ -261,6 +261,87 @@ export async function initSeriesPage() {
   reorderModal.setup();
   setupFilter();
 
+  // Mostrar tabs apenas no modo app
+  const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone === true ||
+                    window.innerWidth <= 768;
+  
+  const tabsElement = document.querySelector('.series-tabs');
+  if (tabsElement) {
+    if (isAppMode) {
+      tabsElement.classList.remove('hidden');
+    } else {
+      tabsElement.classList.add('hidden');
+    }
+  }
+
+  // Adicionar swipe para mudar entre páginas (apenas no modo app)
+  if (isAppMode) {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+    let isSwipe = false;
+    const mainElement = document.querySelector('main');
+
+    if (mainElement && pagination) {
+      mainElement.addEventListener('touchstart', (e) => {
+        const target = e.target;
+        if (target.tagName === 'BUTTON' && !target.closest('.serie-card')) {
+          return;
+        }
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+        isSwipe = false;
+      }, { passive: true });
+
+      mainElement.addEventListener('touchmove', (e) => {
+        if (touchStartX === 0) return;
+        const currentX = e.changedTouches[0].screenX;
+        const currentY = e.changedTouches[0].screenY;
+        const diffX = Math.abs(currentX - touchStartX);
+        const diffY = Math.abs(currentY - touchStartY);
+        
+        if (diffX > diffY && diffX > 10) {
+          isSwipe = true;
+        }
+      }, { passive: true });
+
+      mainElement.addEventListener('touchend', (e) => {
+        if (!isSwipe || touchStartX === 0) {
+          touchStartX = 0;
+          touchStartY = 0;
+          return;
+        }
+
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        
+        const diffX = touchStartX - touchEndX;
+        const diffY = Math.abs(touchStartY - touchEndY);
+        const swipeThreshold = 80;
+
+        if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > diffY) {
+          if (!pagination) {
+            return;
+          }
+          
+          if (diffX > 0) {
+            pagination.nextPage();
+          } else {
+            pagination.prevPage();
+          }
+        }
+
+        touchStartX = 0;
+        touchStartY = 0;
+        touchEndX = 0;
+        touchEndY = 0;
+        isSwipe = false;
+      }, { passive: true });
+    }
+  }
+
   // 2️⃣ SINCRONIZAR EM BACKGROUND (não bloqueia)
   // Versão melhorada: sincroniza apenas na primeira vez, no refresh, ou se não veio de card
   const hasSyncedThisSession = sessionStorage.getItem("seriesSynced") === "true";
@@ -586,6 +667,22 @@ function setupButtons() {
     deleteMode = false;
     selectedForDelete.clear();
     confirmDeleteBtn.classList.add("hidden");
+    
+    // Debug do emoji quando o botão é mostrado
+    if (editMode && deleteBtn) {
+      setTimeout(() => {
+        const computedStyle = window.getComputedStyle(deleteBtn);
+        const beforeStyle = window.getComputedStyle(deleteBtn, '::before');
+        console.log('🔍 [Emoji Debug] Botão deleteSeriesBtn visível');
+        console.log('🔍 [Emoji Debug] Background:', computedStyle.backgroundColor);
+        console.log('🔍 [Emoji Debug] Color:', computedStyle.color);
+        console.log('🔍 [Emoji Debug] Mix-blend-mode:', computedStyle.mixBlendMode);
+        console.log('🔍 [Emoji Debug] ::before content:', beforeStyle.content);
+        console.log('🔍 [Emoji Debug] ::before background:', beforeStyle.backgroundColor);
+        console.log('🔍 [Emoji Debug] ::before z-index:', beforeStyle.zIndex);
+      }, 100);
+    }
+    
     await renderSeries();
   });
 
