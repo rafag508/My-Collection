@@ -202,22 +202,6 @@ async function renderSerieInfo() {
                     window.navigator.standalone || 
                     (window.innerWidth <= 768);
 
-  // DEBUG - Verificar detecção de app mode
-  console.log('🔍 [DEBUG] App Mode Detection:', {
-    isAppMode,
-    displayMode: window.matchMedia('(display-mode: standalone)').matches,
-    standalone: window.navigator.standalone,
-    width: window.innerWidth,
-    isMobile: window.innerWidth <= 768
-  });
-
-  // DEBUG - Verificar se o container existe
-  console.log('🔍 [DEBUG] Container:', {
-    exists: !!container,
-    id: container?.id,
-    className: container?.className
-  });
-
   if (isAppMode) {
     // Layout para app mode
     container.innerHTML = `
@@ -403,119 +387,6 @@ async function renderSerieInfo() {
   const favoriteBtn = document.getElementById("favoriteToggleBtn");
   if (favoriteBtn) {
     favoriteBtn.addEventListener("click", toggleFavorite);
-    
-    // DEBUG - Logs para verificar botão de favoritos
-    setTimeout(() => {
-      const path = favoriteBtn.querySelector('svg path');
-      if (path) {
-        const computedFill = window.getComputedStyle(path).fill;
-        const computedStroke = window.getComputedStyle(path).stroke;
-        
-        console.log('🔍 [DEBUG] Favorite Button:', {
-          isFavorite: isFavorite,
-          dataFavorite: favoriteBtn.getAttribute('data-favorite'),
-          pathFill: path.getAttribute('fill'),
-          pathStroke: path.getAttribute('stroke'),
-          computedFill: computedFill,
-          computedStroke: computedStroke,
-          buttonClasses: favoriteBtn.className,
-          isAppMode: isAppMode
-        });
-        
-        // Verificar se o CSS está a ser aplicado
-        const buttonDataFavorite = favoriteBtn.getAttribute('data-favorite');
-        console.log('🔍 [DEBUG] Favorite Button CSS Check:', {
-          dataFavorite: buttonDataFavorite,
-          pathFillAttribute: path.getAttribute('fill'),
-          computedFill: computedFill,
-          computedStroke: computedStroke,
-          hasDataFavoriteTrue: favoriteBtn.matches('[data-favorite="true"]'),
-          hasDataFavoriteFalse: favoriteBtn.matches('[data-favorite="false"]')
-        });
-      }
-    }, 100);
-    
-    // Logs para tamanhos e visibilidade do bookmark
-    setTimeout(() => {
-      const favoriteBtn = document.getElementById("favoriteToggleBtn");
-      if (favoriteBtn) {
-        const svg = favoriteBtn.querySelector('svg');
-        const path = favoriteBtn.querySelector('svg path');
-        const btnStyles = window.getComputedStyle(favoriteBtn);
-        const btnRect = favoriteBtn.getBoundingClientRect();
-        
-        // Logs de tamanhos
-        if (svg) {
-          const svgStyles = window.getComputedStyle(svg);
-          const svgRect = svg.getBoundingClientRect();
-          
-          console.log('🔍 [DEBUG] Favorite Button Sizes:', {
-            button: {
-              htmlClasses: favoriteBtn.className,
-              computedWidth: btnStyles.width,
-              computedHeight: btnStyles.height,
-              rectWidth: btnRect.width,
-              rectHeight: btnRect.height,
-              borderWidth: btnStyles.borderWidth
-            },
-            svg: {
-              htmlClasses: svg.className,
-              computedWidth: svgStyles.width,
-              computedHeight: svgStyles.height,
-              rectWidth: svgRect.width,
-              rectHeight: svgRect.height
-            },
-            isAppMode: isAppMode
-          });
-        }
-        
-        // Logs de visibilidade do bookmark
-        if (!svg) {
-          console.error('🔍 [DEBUG] Favorite Button - SVG NOT FOUND!');
-        } else if (!path) {
-          console.error('🔍 [DEBUG] Favorite Button - PATH NOT FOUND!');
-        } else {
-          const svgStyles = window.getComputedStyle(svg);
-          const pathStyles = window.getComputedStyle(path);
-          
-          console.log('🔍 [DEBUG] Favorite Button - Bookmark Visibility:', {
-            svg: {
-              exists: !!svg,
-              classes: svg.className,
-              display: svgStyles.display,
-              visibility: svgStyles.visibility,
-              opacity: svgStyles.opacity,
-              width: svgStyles.width,
-              height: svgStyles.height,
-              rectWidth: svg.getBoundingClientRect().width,
-              rectHeight: svg.getBoundingClientRect().height
-            },
-            path: {
-              exists: !!path,
-              d: path.getAttribute('d'),
-              fill: path.getAttribute('fill'),
-              stroke: path.getAttribute('stroke'),
-              display: pathStyles.display,
-              visibility: pathStyles.visibility,
-              opacity: pathStyles.opacity,
-              computedFill: pathStyles.fill,
-              computedStroke: pathStyles.stroke,
-              fillOpacity: pathStyles.fillOpacity,
-              strokeOpacity: pathStyles.strokeOpacity,
-              rectWidth: path.getBoundingClientRect().width,
-              rectHeight: path.getBoundingClientRect().height
-            },
-            button: {
-              color: btnStyles.color,
-              computedColor: btnStyles.color,
-              backgroundColor: btnStyles.backgroundColor
-            },
-            isFavorite: isFavorite,
-            dataFavorite: favoriteBtn.getAttribute('data-favorite')
-          });
-        }
-      }
-    }, 150);
   }
 
   const followBtn = document.getElementById("followToggleBtn");
@@ -531,111 +402,36 @@ async function renderSerieInfo() {
     }, 0);
   }
 
-  // DEBUG - Título e espaçamento do header
+  // Logs para verificar tamanhos dos elementos
   setTimeout(() => {
-    if (isAppMode) {
-      const header = container.querySelector('.app-mode-header');
-      const title = header?.querySelector('h1');
-      
-      if (title && header) {
-        const titleStyles = window.getComputedStyle(title);
-        const headerStyles = window.getComputedStyle(header);
-        const titleRect = title.getBoundingClientRect();
-        const headerRect = header.getBoundingClientRect();
-        
-        console.log('🔍 [DEBUG] Title and Header Spacing:', {
-          title: {
-            fontSize: titleStyles.fontSize,
-            lineHeight: titleStyles.lineHeight,
-            marginTop: titleStyles.marginTop,
-            marginBottom: titleStyles.marginBottom,
-            paddingTop: titleStyles.paddingTop,
-            paddingBottom: titleStyles.paddingBottom,
-            height: titleStyles.height,
-            offsetTop: title.offsetTop,
-            offsetHeight: title.offsetHeight,
-            rectTop: titleRect.top,
-            rectHeight: titleRect.height
-          },
-          header: {
-            height: headerStyles.height,
-            paddingTop: headerStyles.paddingTop,
-            paddingBottom: headerStyles.paddingBottom,
-            rectTop: headerRect.top,
-            rectHeight: headerRect.height
-          },
-          spacing: {
-            titleToHeaderTop: titleRect.top - headerRect.top,
-            titleToHeaderBottom: headerRect.bottom - titleRect.bottom,
-            headerTotalHeight: headerRect.height
-          }
-        });
-      }
-    }
-  }, 150);
-
-  // DEBUG - Após inserir HTML, verificar elementos
-  setTimeout(() => {
-    if (isAppMode) {
-      const poster = container.querySelector('img');
-      const header = container.querySelector('.app-mode-header');
-      const content = container.querySelector('.app-mode-content');
+    const container = document.querySelector('.app-mode-content');
+    if (container) {
+      const title = document.querySelector('.app-mode-header h1');
+      const texts = container.querySelectorAll('p');
       const buttons = container.querySelectorAll('button');
-      const texts = container.querySelectorAll('p, .text-xl');
+      const poster = container.querySelector('img');
       
-      console.log('🔍 [DEBUG] Elements after render:', {
-        poster: {
-          exists: !!poster,
-          classes: poster?.className,
-          computedHeight: poster ? window.getComputedStyle(poster).height : null,
-          computedWidth: poster ? window.getComputedStyle(poster).width : null
-        },
-        header: {
-          exists: !!header,
-          computedHeight: header ? window.getComputedStyle(header).height : null
-        },
-        content: {
-          exists: !!content,
-          computedPaddingTop: content ? window.getComputedStyle(content).paddingTop : null,
-          computedPaddingBottom: content ? window.getComputedStyle(content).paddingBottom : null
-        },
-        buttons: {
-          count: buttons.length,
-          firstButton: {
-            computedFontSize: buttons[0] ? window.getComputedStyle(buttons[0]).fontSize : null,
-            computedPadding: buttons[0] ? window.getComputedStyle(buttons[0]).padding : null
-          }
-        },
-        texts: {
-          count: texts.length,
-          firstText: {
-            computedFontSize: texts[0] ? window.getComputedStyle(texts[0]).fontSize : null
-          }
-        }
-      });
-      
-      // Verificar CSS aplicado
-      if (poster) {
-        const styles = window.getComputedStyle(poster);
-        console.log('🔍 [DEBUG] Poster computed styles:', {
-          height: styles.height,
-          width: styles.width,
-          objectFit: styles.objectFit
-        });
-      }
-      
-      // Verificar main element
-      const main = document.querySelector('main');
-      console.log('🔍 [DEBUG] Main element:', {
-        exists: !!main,
-        computedPadding: main ? window.getComputedStyle(main).padding : null,
-        computedPaddingBottom: main ? window.getComputedStyle(main).paddingBottom : null,
-        computedMaxHeight: main ? window.getComputedStyle(main).maxHeight : null,
-        computedOverflow: main ? window.getComputedStyle(main).overflow : null,
-        className: main?.className
+      console.log('📏 [SIZES] Element Sizes:', {
+        title: title ? {
+          fontSize: window.getComputedStyle(title).fontSize,
+          marginTop: window.getComputedStyle(title).marginTop
+        } : null,
+        texts: Array.from(texts).slice(0, 3).map(p => ({
+          fontSize: window.getComputedStyle(p).fontSize,
+          lineHeight: window.getComputedStyle(p).lineHeight
+        })),
+        buttons: Array.from(buttons).slice(0, 3).map(btn => ({
+          fontSize: window.getComputedStyle(btn).fontSize,
+          padding: window.getComputedStyle(btn).padding,
+          minHeight: window.getComputedStyle(btn).minHeight
+        })),
+        poster: poster ? {
+          width: window.getComputedStyle(poster).width,
+          height: window.getComputedStyle(poster).height
+        } : null
       });
     }
-  }, 100);
+  }, 200);
 }
 
 /* ============================================================
@@ -767,8 +563,31 @@ async function toggleFavorite() {
       toastSuccess(translate("addedToFavorites") || "Added to favorites");
     }
 
-    // Re-renderizar header para atualizar ícone
-    renderSerieInfo();
+    // Atualizar apenas o botão de favoritos em vez de re-renderizar tudo
+    const favoriteBtn = document.getElementById("favoriteToggleBtn");
+    if (favoriteBtn) {
+      // Atualizar atributo data-favorite
+      favoriteBtn.setAttribute('data-favorite', isFavorite);
+      
+      // Atualizar título do botão
+      favoriteBtn.setAttribute('title', isFavorite ? "Remove from favorites" : "Add to favorites");
+      
+      // Atualizar o SVG path
+      const path = favoriteBtn.querySelector('svg path');
+      if (path) {
+        if (isFavorite) {
+          // Path para favorito (preenchido)
+          path.setAttribute('d', 'M6 3.5C6 2.67 6.67 2 7.5 2h9a1.5 1.5 0 0 1 1.5 1.5v17.1c0 .8-.88 1.28-1.55.83L12 17.5l-4.45 3.93c-.67.45-1.55-.03-1.55-.83V3.5Z');
+          path.setAttribute('fill', 'currentColor');
+          path.setAttribute('stroke', 'currentColor');
+        } else {
+          // Path para não favorito (só outline)
+          path.setAttribute('d', 'M7.5 3h9A1.5 1.5 0 0 1 18 4.5v17.1c0 .8-.88 1.28-1.55.83L12 18.5l-4.45 3.93c-.67.45-1.55-.03-1.55-.83V4.5A1.5 1.5 0 0 1 7.5 3Z');
+          path.setAttribute('fill', 'none');
+          path.setAttribute('stroke', 'currentColor');
+        }
+      }
+    }
   } catch (err) {
     console.error("Erro ao alternar favorito da série:", err);
     alert("Error updating favorites. Please try again.");

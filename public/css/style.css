@@ -1878,6 +1878,14 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
     flex-shrink: 0 !important;
   }
 
+  /* Mover botão de favoritos um pouco para a esquerda */
+  body[data-page="movie"] .app-mode-header #favoriteToggleBtn,
+  body[data-page="serie"] .app-mode-header #favoriteToggleBtn,
+  body[data-page="allmovie"] .app-mode-header #favoriteToggleBtn,
+  body[data-page="allserie"] .app-mode-header #favoriteToggleBtn {
+    margin-right: -8px !important;
+  }
+
   /* Aumentar tamanho do rating circle */
   body[data-page="movie"] #movieInfo .w-12,
   body[data-page="serie"] #serieInfo .w-12,
