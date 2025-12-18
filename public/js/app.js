@@ -81,7 +81,7 @@ async function bootstrap() {
   // Na página Home e outras páginas de filmes, deixa o HTML estático fazer o trabalho
   // Isso evita interferir com a captura do favicon pelo Firefox para bookmarks
   if (page === "series" || page === "serie" || page === "allseries" || page === "allserie") {
-    setFavicon();
+  setFavicon();
   }
   // Para todas as outras páginas, NÃO chamar setFavicon() - deixa o HTML estático
 
