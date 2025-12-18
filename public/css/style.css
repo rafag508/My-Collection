@@ -2057,7 +2057,7 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   body[data-page="serie"] .app-mode-content p.text-gray-400,
   body[data-page="allmovie"] .app-mode-content p.text-gray-400,
   body[data-page="allserie"] .app-mode-content p.text-gray-400 {
-    font-size: 28px !important;
+    font-size: 24px !important;
     line-height: 1.6 !important;
   }
 
@@ -2098,7 +2098,7 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   body[data-page="serie"] #serieInfo .app-mode-content p,
   body[data-page="allmovie"] #movieInfo .app-mode-content p,
   body[data-page="allserie"] #serieInfo .app-mode-content p {
-    font-size: 28px !important;
+    font-size: 24px !important;
     line-height: 1.6 !important;
   }
 
