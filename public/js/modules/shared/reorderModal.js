@@ -97,8 +97,12 @@ export class ReorderModal {
     const GAP = 16;
     const VISIBLE_ROWS = 4;
     
+    // Detectar se é mobile (largura <= 768px)
+    const isMobile = window.innerWidth <= 768;
+    const columns = isMobile ? 4 : 6;
+    
     grid.style.display = "grid";
-    grid.style.gridTemplateColumns = "repeat(6, 1fr)";
+    grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
     grid.style.gridAutoRows = `${CARD_HEIGHT}px`;
     grid.style.gap = `${GAP}px`;
     grid.style.padding = "8px";
@@ -124,9 +128,13 @@ export class ReorderModal {
 
   setupDragAndDrop(grid) {
     let draggedCard = null;
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let touchStartElement = null;
 
     // Adicionar listeners a cada card (como no código original que funcionava)
     grid.querySelectorAll(":scope > div").forEach(card => {
+      // Drag & Drop para desktop
       card.addEventListener("dragstart", (e) => {
         draggedCard = card;
         card.classList.add("opacity-50");
@@ -160,6 +168,80 @@ export class ReorderModal {
       card.addEventListener("drop", (e) => {
         e.preventDefault();
       });
+
+      // Touch events para mobile
+      card.addEventListener("touchstart", (e) => {
+        touchStartElement = card;
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
+        card.classList.add("opacity-50");
+      }, { passive: true });
+
+      card.addEventListener("touchmove", (e) => {
+        if (!touchStartElement || touchStartElement !== card) return;
+        
+        const touchY = e.touches[0].clientY;
+        const touchX = e.touches[0].clientX;
+        const deltaY = touchY - touchStartY;
+        const deltaX = touchX - touchStartX;
+
+        // Se o movimento for principalmente vertical, permitir scroll
+        if (Math.abs(deltaY) > Math.abs(deltaX)) {
+          return;
+        }
+
+        // Se o movimento horizontal for significativo, prevenir scroll e fazer drag
+        if (Math.abs(deltaX) > 10) {
+          e.preventDefault();
+        }
+
+        // Encontrar o elemento sobre o qual estamos a passar
+        const elementBelow = document.elementFromPoint(touchX, touchY);
+        if (!elementBelow) return;
+
+        // Procurar o card pai (pode ser o próprio elemento ou um parent)
+        let targetCard = elementBelow;
+        while (targetCard && targetCard !== grid) {
+          if (targetCard.parentElement === grid && targetCard !== card) {
+            break;
+          }
+          targetCard = targetCard.parentElement;
+        }
+
+        if (!targetCard || targetCard === card || !grid.contains(targetCard)) return;
+
+        const items = [...grid.children];
+        const dragIndex = items.indexOf(card);
+        const hoverIndex = items.indexOf(targetCard);
+
+        if (dragIndex !== hoverIndex && dragIndex !== -1 && hoverIndex !== -1) {
+          if (dragIndex < hoverIndex) {
+            grid.insertBefore(card, targetCard.nextSibling);
+          } else {
+            grid.insertBefore(card, targetCard);
+          }
+          touchStartY = touchY;
+          touchStartX = touchX;
+        }
+      }, { passive: false });
+
+      card.addEventListener("touchend", (e) => {
+        if (touchStartElement === card) {
+          card.classList.remove("opacity-50");
+          touchStartElement = null;
+          touchStartY = 0;
+          touchStartX = 0;
+        }
+      }, { passive: true });
+
+      card.addEventListener("touchcancel", (e) => {
+        if (touchStartElement === card) {
+          card.classList.remove("opacity-50");
+          touchStartElement = null;
+          touchStartY = 0;
+          touchStartX = 0;
+        }
+      }, { passive: true });
     });
   }
 

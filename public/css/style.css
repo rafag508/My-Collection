@@ -1334,8 +1334,13 @@ body {
   }
 
   body:has(.series-tabs) #filterSeriesModal .genre-tag {
-    font-size: 22px !important;
-    padding: 16px 24px !important;
+    font-size: 24px !important;
+    padding: 20px 24px !important;
+  }
+
+  body:has(.series-tabs) #filterSeriesModal .list-option-btn {
+    font-size: 24px !important;
+    padding: 20px 24px !important;
   }
 
   body:has(.series-tabs) #filterSeriesModal #applyTopRatingBtn,
@@ -1552,8 +1557,13 @@ body {
   }
 
   body:has(.allseries-tabs) #filterSeriesModal .genre-tag {
-    font-size: 22px !important;
-    padding: 16px 24px !important;
+    font-size: 24px !important;
+    padding: 20px 24px !important;
+  }
+
+  body:has(.allseries-tabs) #filterSeriesModal .list-option-btn {
+    font-size: 24px !important;
+    padding: 20px 24px !important;
   }
 
   body:has(.allseries-tabs) #filterSeriesModal input {
@@ -1729,4 +1739,17 @@ body {
     background: #1a1a2e !important;
   }
 
+}
+
+/* Reorder Modal - Grid Responsivo */
+#reorderMoviesGrid,
+#reorderSeriesGrid {
+  grid-template-columns: repeat(6, 1fr) !important;
+}
+
+@media (max-width: 768px) {
+  #reorderMoviesGrid,
+  #reorderSeriesGrid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
 }
