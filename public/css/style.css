@@ -1798,11 +1798,11 @@ body {
     margin-bottom: 16px !important;
   }
 
-  /* Aumentar tamanho do texto de descrição */
-  body[data-page="movie"] #movieInfo p,
-  body[data-page="serie"] #serieInfo p,
-  body[data-page="allmovie"] #movieInfo p,
-  body[data-page="allserie"] #serieInfo p {
+  /* Aumentar tamanho do texto de descrição - mas não aplicar se estiver em app-mode-content */
+  body[data-page="movie"] #movieInfo:not(:has(.app-mode-content)) p,
+  body[data-page="serie"] #serieInfo:not(:has(.app-mode-content)) p,
+  body[data-page="allmovie"] #movieInfo:not(:has(.app-mode-content)) p,
+  body[data-page="allserie"] #serieInfo:not(:has(.app-mode-content)) p {
     font-size: 18px !important;
     line-height: 1.6 !important;
     margin-bottom: 20px !important;
@@ -1886,9 +1886,9 @@ body {
 
   body[data-page="serie"] #seasons .episode-btn,
   body[data-page="allserie"] #seasons .episode-btn {
-    font-size: 16px !important;
-    padding: 12px 16px !important;
-    min-height: 44px !important;
+    font-size: 20px !important;
+    padding: 16px 20px !important;
+    min-height: 48px !important;
   }
 
   body[data-page="serie"] #seasons .text-lg,
@@ -2009,6 +2009,16 @@ body {
   body[data-page="allmovie"] .app-mode-content p,
   body[data-page="allserie"] .app-mode-content p {
     font-size: 20px !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Sobrescrever CSS antigo que aplica 18px ou 32px aos parágrafos */
+  body[data-page="movie"] #movieInfo .app-mode-content p,
+  body[data-page="serie"] #serieInfo .app-mode-content p,
+  body[data-page="allmovie"] #movieInfo .app-mode-content p,
+  body[data-page="allserie"] #serieInfo .app-mode-content p {
+    font-size: 20px !important;
+    line-height: 1.6 !important;
   }
 
   /* Botões - maior especificidade para sobrepor padding de 14px */
