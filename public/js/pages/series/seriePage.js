@@ -202,6 +202,22 @@ async function renderSerieInfo() {
                     window.navigator.standalone || 
                     (window.innerWidth <= 768);
 
+  // DEBUG - Verificar detecção de app mode
+  console.log('🔍 [DEBUG] App Mode Detection:', {
+    isAppMode,
+    displayMode: window.matchMedia('(display-mode: standalone)').matches,
+    standalone: window.navigator.standalone,
+    width: window.innerWidth,
+    isMobile: window.innerWidth <= 768
+  });
+
+  // DEBUG - Verificar se o container existe
+  console.log('🔍 [DEBUG] Container:', {
+    exists: !!container,
+    id: container?.id,
+    className: container?.className
+  });
+
   if (isAppMode) {
     // Layout para app mode
     container.innerHTML = `

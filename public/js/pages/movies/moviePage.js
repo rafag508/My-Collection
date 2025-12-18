@@ -133,6 +133,22 @@ async function renderMovieInfo() {
                     window.navigator.standalone || 
                     (window.innerWidth <= 768);
 
+  // DEBUG - Verificar detecção de app mode
+  console.log('🔍 [DEBUG] App Mode Detection:', {
+    isAppMode,
+    displayMode: window.matchMedia('(display-mode: standalone)').matches,
+    standalone: window.navigator.standalone,
+    width: window.innerWidth,
+    isMobile: window.innerWidth <= 768
+  });
+
+  // DEBUG - Verificar se o container existe
+  console.log('🔍 [DEBUG] Container:', {
+    exists: !!container,
+    id: container?.id,
+    className: container?.className
+  });
+
   if (isAppMode) {
     // Layout para app mode
     container.innerHTML = `
@@ -280,6 +296,69 @@ async function renderMovieInfo() {
     if (favoriteBtn) {
       favoriteBtn.addEventListener("click", toggleFavorite);
     }
+
+  // DEBUG - Após inserir HTML, verificar elementos
+  setTimeout(() => {
+    if (isAppMode) {
+      const poster = container.querySelector('img');
+      const header = container.querySelector('.app-mode-header');
+      const content = container.querySelector('.app-mode-content');
+      const buttons = container.querySelectorAll('button');
+      const texts = container.querySelectorAll('p, .text-xl');
+      
+      console.log('🔍 [DEBUG] Elements after render:', {
+        poster: {
+          exists: !!poster,
+          classes: poster?.className,
+          computedHeight: poster ? window.getComputedStyle(poster).height : null,
+          computedWidth: poster ? window.getComputedStyle(poster).width : null
+        },
+        header: {
+          exists: !!header,
+          computedHeight: header ? window.getComputedStyle(header).height : null
+        },
+        content: {
+          exists: !!content,
+          computedPaddingTop: content ? window.getComputedStyle(content).paddingTop : null,
+          computedPaddingBottom: content ? window.getComputedStyle(content).paddingBottom : null
+        },
+        buttons: {
+          count: buttons.length,
+          firstButton: {
+            computedFontSize: buttons[0] ? window.getComputedStyle(buttons[0]).fontSize : null,
+            computedPadding: buttons[0] ? window.getComputedStyle(buttons[0]).padding : null
+          }
+        },
+        texts: {
+          count: texts.length,
+          firstText: {
+            computedFontSize: texts[0] ? window.getComputedStyle(texts[0]).fontSize : null
+          }
+        }
+      });
+      
+      // Verificar CSS aplicado
+      if (poster) {
+        const styles = window.getComputedStyle(poster);
+        console.log('🔍 [DEBUG] Poster computed styles:', {
+          height: styles.height,
+          width: styles.width,
+          objectFit: styles.objectFit
+        });
+      }
+      
+      // Verificar main element
+      const main = document.querySelector('main');
+      console.log('🔍 [DEBUG] Main element:', {
+        exists: !!main,
+        computedPadding: main ? window.getComputedStyle(main).padding : null,
+        computedPaddingBottom: main ? window.getComputedStyle(main).paddingBottom : null,
+        computedMaxHeight: main ? window.getComputedStyle(main).maxHeight : null,
+        computedOverflow: main ? window.getComputedStyle(main).overflow : null,
+        className: main?.className
+      });
+    }
+  }, 100);
 }
 
 async function toggleWatched() {
