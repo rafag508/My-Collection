@@ -167,11 +167,11 @@ async function renderMovieInfo() {
               isFavorite
                 ? `
             <path d="M6 3.5C6 2.67 6.67 2 7.5 2h9a1.5 1.5 0 0 1 1.5 1.5v17.1c0 .8-.88 1.28-1.55.83L12 17.5l-4.45 3.93c-.67.45-1.55-.03-1.55-.83V3.5Z"
-                  stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                  fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
                 `
                 : `
             <path d="M7.5 3h9A1.5 1.5 0 0 1 18 4.5v17.1c0 .8-.88 1.28-1.55.83L12 18.5l-4.45 3.93c-.67.45-1.55-.03-1.55-.83V4.5A1.5 1.5 0 0 1 7.5 3Z"
-                  stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
                 `
             }
           </svg>
@@ -239,11 +239,11 @@ async function renderMovieInfo() {
                   isFavorite
                     ? `
                 <path d="M6 3.5C6 2.67 6.67 2 7.5 2h9a1.5 1.5 0 0 1 1.5 1.5v17.1c0 .8-.88 1.28-1.55.83L12 17.5l-4.45 3.93c-.67.45-1.55-.03-1.55-.83V3.5Z"
-                      stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                      fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
                     `
                     : `
                 <path d="M7.5 3h9A1.5 1.5 0 0 1 18 4.5v17.1c0 .8-.88 1.28-1.55.83L12 18.5l-4.45 3.93c-.67.45-1.55-.03-1.55-.83V4.5A1.5 1.5 0 0 1 7.5 3Z"
-                      stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                      fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
                     `
                 }
               </svg>
