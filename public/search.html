@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <!-- Favicon DEVE estar no início, antes de qualquer script/CSS para Firefox bookmarks -->
   <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="any">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -59,16 +59,16 @@
   <!-- App Mode Layout (novo) -->
   <main id="appLayout" class="flex-1 flex flex-col overflow-hidden" style="height: calc(100vh - 120px); display: none;">
     <!-- Search Bar fixa no topo -->
-    <div class="fixed top-0 left-0 right-0 px-6 py-4 bg-gray-950 border-b border-white/10 z-10">
+    <div class="fixed top-0 left-0 right-0 px-6 py-5 bg-gray-950 border-b border-white/10 z-10">
       <div class="max-w-7xl mx-auto relative">
         <input 
           id="searchInput" 
           type="search" 
           placeholder="Search movies and series..."
-          class="w-full rounded-xl bg-white/5 pl-10 pr-3 py-3 outline-none ring-0 focus:bg-white/10 placeholder:text-gray-400 transition-all duration-200 text-lg"
+          class="w-full rounded-xl bg-white/5 pl-14 pr-3 py-4 outline-none ring-0 focus:bg-white/10 placeholder:text-gray-400 transition-all duration-200 text-xl"
           autofocus
         />
-        <svg class="absolute left-9 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none"
+        <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400 pointer-events-none"
           viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
@@ -79,7 +79,7 @@
     <div class="flex-1 flex flex-col overflow-hidden" style="margin-top: 80px;">
       <!-- Movies Section - Metade superior -->
       <section class="flex-1 flex flex-col overflow-hidden" style="height: 50%;">
-        <div class="px-6 py-3 border-b border-white/10 flex items-center justify-between">
+        <div class="px-6 py-3 flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="text-red-500 text-xl">🎬</span>
             <h2 class="text-xl font-bold">MOVIES</h2>
@@ -91,8 +91,8 @@
       </section>
 
       <!-- Series Section - Metade inferior -->
-      <section class="flex-1 flex flex-col overflow-hidden border-t border-white/10" style="height: 50%;">
-        <div class="px-6 py-3 border-b border-white/10 flex items-center justify-between">
+      <section class="flex-1 flex flex-col overflow-hidden" style="height: 50%;">
+        <div class="px-6 py-3 flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="text-white text-xl">📺</span>
             <h2 class="text-xl font-bold">TV SHOWS</h2>
