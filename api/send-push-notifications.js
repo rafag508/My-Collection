@@ -23,6 +23,25 @@ export default async function handler(req, res) {
     console.log('[DEBUG] Testing Firestore connection...');
     console.log('[DEBUG] Firebase Admin initialized:', admin.apps.length > 0);
     
+    // Verificar informações do projeto
+    const app = admin.apps[0];
+    if (app) {
+      console.log('[DEBUG] Firebase App name:', app.name);
+      console.log('[DEBUG] Firebase Project ID:', app.options.projectId);
+    }
+    
+    // Verificar se consegue aceder ao Firestore
+    console.log('[DEBUG] Firestore instance created');
+    
+    // Tentar listar coleções (pode não funcionar, mas vamos tentar)
+    try {
+      // Nota: listCollections() pode não estar disponível em todos os contextos
+      // Mas vamos tentar outras formas de verificar
+      console.log('[DEBUG] Attempting to query users collection...');
+    } catch (e) {
+      console.log('[DEBUG] Note: Cannot list collections directly');
+    }
+    
     // Tentar ler uma coleção de teste
     const testSnapshot = await db.collection('users').limit(1).get();
     console.log(`[DEBUG] Firestore test query: Found ${testSnapshot.size} users (limited to 1)`);
@@ -42,12 +61,30 @@ export default async function handler(req, res) {
       console.log('[DEBUG]   1. Collection is empty');
       console.log('[DEBUG]   2. Wrong database/project');
       console.log('[DEBUG]   3. Permission issues');
+      console.log('[DEBUG]   4. Firestore is in Datastore mode instead of Native mode');
+      
+      // Tentar verificar se há outras coleções
+      console.log('[DEBUG] Attempting to check if Firestore is accessible...');
+      
+      // Tentar criar um documento de teste (e depois apagar)
+      try {
+        const testRef = db.collection('_test_connection').doc('test');
+        await testRef.set({ test: true, timestamp: Date.now() });
+        console.log('[DEBUG] Successfully wrote test document - Firestore is accessible');
+        await testRef.delete();
+        console.log('[DEBUG] Successfully deleted test document');
+      } catch (writeError) {
+        console.error('[DEBUG] Failed to write test document:', writeError.message);
+        console.error('[DEBUG] This suggests permission or access issues');
+      }
     }
   } catch (testError) {
     console.error('[DEBUG] Firestore connection test FAILED:', testError);
     console.error('[DEBUG] Error code:', testError.code);
     console.error('[DEBUG] Error message:', testError.message);
-    console.error('[DEBUG] Full error:', JSON.stringify(testError, Object.getOwnPropertyNames(testError)));
+    if (testError.stack) {
+      console.error('[DEBUG] Stack trace:', testError.stack);
+    }
   }
   // Permitir CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
