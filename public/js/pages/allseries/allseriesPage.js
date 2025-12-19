@@ -312,8 +312,11 @@ function setupSearch() {
       isSearchMode = false;
       currentSearchQuery = "";
       currentPage = 1;
+      // Atualizar URL e estado sem disparar callbacks
+      updateURL(1);
       if (pagination) {
-        pagination.setPage(1);
+        pagination.currentPage = 1;
+        pagination.ensureCurrentPageInRange();
       }
       if (isFilterMode) {
         loadFilteredSeries(1);
@@ -326,8 +329,11 @@ function setupSearch() {
     currentSearchQuery = query;
     currentPage = 1;
     isFilterMode = false; // Desativar filtros quando pesquisar
+    // Atualizar URL e estado sem disparar callbacks (performSearch será chamado pelo setTimeout)
+    updateURL(1);
     if (pagination) {
-      pagination.setPage(1);
+      pagination.currentPage = 1;
+      pagination.ensureCurrentPageInRange();
     }
     searchTimeout = setTimeout(() => performSearch(query, 1), 350);
   });
@@ -341,8 +347,14 @@ async function performSearch(query, page = 1) {
   grid.innerHTML = `<p class="text-gray-400">Searching...</p>`;
   isSearchMode = true;
   currentPage = page;
+  
+  // Atualizar URL sem disparar onPageChange (evitar loop infinito)
+  updateURL(page);
+  
+  // Atualizar estado interno da paginação sem disparar callbacks
   if (pagination) {
-    pagination.setPage(page);
+    pagination.currentPage = page;
+    pagination.ensureCurrentPageInRange();
   }
 
   const data = await searchSeries(query, page);
