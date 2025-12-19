@@ -1,20 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
 
-html {
-  background-color: #0b0b0f !important;
-  min-height: 100vh;
-  height: 100%;
-}
-
 body {
   font-family: 'Inter', sans-serif;
   background: linear-gradient(180deg, #101624 0%, #0b0b0f 80%);
-  background-color: #0b0b0f; /* Fallback sólido */
-  background-attachment: fixed; /* Garantir que o background não se move */
   color: white;
-  min-height: 100vh;
-  position: relative;
-  z-index: 1;
 }
 
 /* Corta o texto em 1 linha com compatibilidade total */
