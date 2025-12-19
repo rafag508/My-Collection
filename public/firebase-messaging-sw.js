@@ -18,7 +18,7 @@ firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
 // Receber mensagens em background (quando a app está fechada)
-messaging.onBackgroundMessage((payload) => {
+messaging.onBackgroundMessage(async (payload) => {
   console.log('Background message received:', payload);
   
   const notificationTitle = payload.notification?.title || 'My Collection';
@@ -30,6 +30,30 @@ messaging.onBackgroundMessage((payload) => {
     data: payload.data
   };
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  // Atualizar badge quando recebe notificação (mesmo com app fechada)
+  try {
+    if ('setAppBadge' in navigator) {
+      // Tentar obter o badge atual
+      let currentBadge = 0;
+      try {
+        // Nota: getAppBadge() pode não estar disponível em todos os browsers
+        // Se não estiver, assumimos 0 e incrementamos
+        if ('getAppBadge' in navigator && typeof navigator.getAppBadge === 'function') {
+          currentBadge = await navigator.getAppBadge() || 0;
+        }
+      } catch (e) {
+        // Se não conseguir obter, assume 0
+        currentBadge = 0;
+      }
+      
+      // Incrementar badge em 1
+      await navigator.setAppBadge(currentBadge + 1);
+      console.log('[Service Worker] Badge updated to:', currentBadge + 1);
+    }
+  } catch (badgeError) {
+    console.warn('[Service Worker] Failed to update badge:', badgeError);
+  }
+
+  await self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
