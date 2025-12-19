@@ -753,11 +753,15 @@ export function setupGlobalSearch(selector, itemSelector = "h3") {
     }
   });
 
-  // Pesquisa local (se não estiver na página de pesquisa)
-  if (window.location.pathname.includes("search.html")) {
-    return; // Não fazer pesquisa local na página de pesquisa
+  // Não fazer pesquisa local em páginas que têm sua própria pesquisa
+  const currentPage = window.location.pathname.split("/").pop();
+  if (currentPage === "search.html" || 
+      currentPage === "allmovies.html" || 
+      currentPage === "allseries.html") {
+    return; // Não fazer pesquisa local - essas páginas têm sua própria pesquisa
   }
 
+  // Pesquisa local (apenas em páginas que não têm pesquisa própria)
   searchInput.addEventListener("input", e => {
     const query = e.target.value.toLowerCase().trim();
     document.querySelectorAll(selector).forEach(card => {
