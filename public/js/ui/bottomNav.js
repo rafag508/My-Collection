@@ -13,7 +13,7 @@ export function renderBottomNav() {
   
   const items = [
     { id: 'home', label: 'Home', icon: 'home', href: '/index.html', pages: ['index', ''] },
-    { id: 'search', label: 'Search', icon: 'search', href: '/movies.html', pages: ['search'] },
+    { id: 'search', label: 'Search', icon: 'search', href: '/search.html', pages: ['search'] },
     { id: 'movies', label: 'Movies', icon: 'movies', href: '/movies.html', pages: ['movies', 'movie', 'allmovie'] },
     { id: 'series', label: 'TV Shows', icon: 'tv', href: '/series.html', pages: ['series', 'serie', 'allserie', 'allseries'] },
     { id: 'profile', label: 'Profile', icon: 'profile', href: '/profile.html', pages: ['profile', 'settings', 'notifications'] }

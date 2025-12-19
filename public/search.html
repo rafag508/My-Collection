@@ -9,14 +9,55 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
   <link rel="manifest" href="/favicons/site.webmanifest">
-  <title>Search</title>
+  <title>Search Results</title>
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen flex flex-col bg-gray-950 text-white font-inter">
   <header id="navbar"></header>
 
-  <main class="flex-1 flex flex-col overflow-hidden" style="height: calc(100vh - 120px);">
+  <!-- Desktop Layout (exatamente como estava) -->
+  <main id="desktopLayout" class="flex-1 hidden md:block">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+      <!-- Query display -->
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-300">
+          Search results for: <span id="searchQuery" class="text-white"></span>
+        </h1>
+      </div>
+
+      <!-- MOVIES Section -->
+      <section class="mb-12">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-red-500 text-xl">🎬</span>
+            <h2 class="text-xl font-bold">MOVIES</h2>
+          </div>
+          <div id="moviesPagination" class="flex items-center gap-2"></div>
+        </div>
+        <div id="moviesGrid" class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+          <p class="text-gray-400">Loading movies...</p>
+        </div>
+      </section>
+
+      <!-- TV SHOWS Section -->
+      <section class="mb-12">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-white text-xl">📺</span>
+            <h2 class="text-xl font-bold">TV SHOWS</h2>
+          </div>
+          <div id="seriesPagination" class="flex items-center gap-2"></div>
+        </div>
+        <div id="seriesGrid" class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+          <p class="text-gray-400">Loading series...</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- App Mode Layout (novo) -->
+  <main id="appLayout" class="flex-1 flex flex-col overflow-hidden md:hidden" style="height: calc(100vh - 120px);">
     <!-- Search Bar fixa no topo -->
     <div class="fixed top-16 left-0 right-0 px-6 py-4 bg-gray-950 border-b border-white/10 z-10">
       <div class="max-w-7xl mx-auto relative">
@@ -44,7 +85,7 @@
             <h2 class="text-xl font-bold">MOVIES</h2>
           </div>
         </div>
-        <div id="moviesGrid" class="flex-1 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide px-6" style="display: flex; gap: 1rem; align-items: flex-start; padding-top: 1rem;">
+        <div id="moviesGridApp" class="flex-1 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide px-6" style="display: flex; gap: 1rem; align-items: flex-start; padding-top: 1rem;">
           <p class="text-gray-400 self-center">Start typing to search...</p>
         </div>
       </section>
@@ -57,7 +98,7 @@
             <h2 class="text-xl font-bold">TV SHOWS</h2>
           </div>
         </div>
-        <div id="seriesGrid" class="flex-1 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide px-6" style="display: flex; gap: 1rem; align-items: flex-start; padding-top: 1rem;">
+        <div id="seriesGridApp" class="flex-1 overflow-x-auto overflow-y-hidden pb-4 scrollbar-hide px-6" style="display: flex; gap: 1rem; align-items: flex-start; padding-top: 1rem;">
           <p class="text-gray-400 self-center">Start typing to search...</p>
         </div>
       </section>
