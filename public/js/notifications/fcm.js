@@ -84,13 +84,14 @@ async function requestPermission() {
  * Mostra uma notificação quando a app está aberta
  */
 function showNotification(payload) {
-  const { title, body, icon } = payload.notification || {};
+  const { title, body, icon, image } = payload.notification || {};
   
   if (title && body) {
     new Notification(title, {
       body,
-      icon: icon || '/favicon.ico',
-      badge: '/favicon.ico',
+      icon: icon || '/favicons/apple-touch-icon.png', // Ícone padrão (quadrado azul com MC)
+      badge: '/favicons/favicon-32x32.png', // Badge pequeno
+      image: image || null, // Imagem grande (poster do filme)
       tag: 'my-collection-notification'
     });
   }

@@ -52,24 +52,11 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// Receber push notifications
-self.addEventListener('push', (event) => {
-  const data = event.data ? event.data.json() : {};
-  const title = data.notification?.title || 'My Collection';
-  const options = {
-    body: data.notification?.body || 'You have a new notification',
-    icon: data.notification?.icon || '/favicon.ico',
-    badge: '/favicon.ico',
-    tag: 'my-collection-notification',
-    data: data
-  };
+// ❌ REMOVIDO: Listener push removido para evitar duplicação
+// O firebase-messaging-sw.js já processa push notifications via FCM
+// Deixar apenas o FCM processar para evitar 2 notificações
 
-  event.waitUntil(
-    self.registration.showNotification(title, options)
-  );
-});
-
-// Lidar com cliques em notificações
+// Lidar com cliques em notificações (mantido para compatibilidade)
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   

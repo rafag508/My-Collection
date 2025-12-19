@@ -211,7 +211,9 @@ export default async function handler(req, res) {
               const message = {
                 notification: {
                   title: '🎬 Movie Released Today!',
-                  body: `${movie.title} is now available!`
+                  body: `${movie.title} is now available!`,
+                  icon: '/favicons/apple-touch-icon.png', // Ícone para notificações (quadrado azul com MC)
+                  image: movie.poster || null // Imagem grande do poster (opcional)
                 },
                 data: {
                   type: 'movie_release',
