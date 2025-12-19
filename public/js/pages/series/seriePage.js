@@ -213,7 +213,7 @@ async function renderSerieInfo() {
           id="favoriteToggleBtn"
           class="w-14 h-14 rounded-full border-2 border-yellow-400 flex items-center justify-center text-yellow-400 flex-shrink-0"
           data-favorite="${isFavorite}"
-          title="${isFavorite ? "Remove from favorites" : "Add to favorites"}"
+          title="${isFavorite ? translate("removeFromFavorites") : translate("addToFavorites")}"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7">
             ${
@@ -308,7 +308,7 @@ async function renderSerieInfo() {
               id="favoriteToggleBtn"
               class="w-9 h-9 rounded-full border-2 border-yellow-400 flex items-center justify-center text-yellow-400"
               data-favorite="${isFavorite}"
-              title="${isFavorite ? "Remove from favorites" : "Add to favorites"}"
+              title="${isFavorite ? translate("removeFromFavorites") : translate("addToFavorites")}"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6">
                 ${
@@ -540,7 +540,7 @@ async function toggleFavorite() {
       favoriteBtn.setAttribute('data-favorite', isFavorite);
       
       // Atualizar título do botão
-      favoriteBtn.setAttribute('title', isFavorite ? "Remove from favorites" : "Add to favorites");
+      favoriteBtn.setAttribute('title', isFavorite ? translate("removeFromFavorites") : translate("addToFavorites"));
       
       // Atualizar o SVG path
       const path = favoriteBtn.querySelector('svg path');

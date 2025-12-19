@@ -6,6 +6,7 @@ import { storageService } from "../modules/storageService.js";
 import { getSerieById } from "../modules/series/seriesDataManager.js";
 import { getMovieById } from "../modules/movies/moviesDataManager.js";
 import { PaginationManager } from "../modules/shared/pagination.js";
+import { t as translate } from "../modules/idioma.js";
 
 // Paginação
 const PAGE_SIZE = 5;
@@ -40,6 +41,7 @@ export async function initNotificationsPage() {
     initialPage: 1,
     buttonPrefix: 'notifications',
     activeColor: 'bg-blue-600',
+    translate,
     updateURL: () => {}, // Notifications não usa URL para paginação
     getTotalItems: () => allNotifications.length,
     onPageChange: async () => {

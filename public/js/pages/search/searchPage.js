@@ -2,6 +2,7 @@
 import { renderNavbar } from "../../ui/navbar.js";
 import { renderFooter } from "../../ui/footer.js";
 import { searchMovies, searchSeries } from "../../modules/tmdbApi.js";
+import { t as translate } from "../../modules/idioma.js";
 
 const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='750'%3E%3Crect fill='%23374151' width='500' height='750'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='24' font-family='Arial'%3ENo Image%3C/text%3E%3C/svg%3E";
 
@@ -159,7 +160,7 @@ async function loadMoviesPage(page) {
   const moviesGrid = document.getElementById("moviesGrid");
   if (!moviesGrid) return;
   
-  moviesGrid.innerHTML = `<p class="text-gray-400">Loading...</p>`;
+  moviesGrid.innerHTML = `<p class="text-gray-400">${translate('loading')}</p>`;
 
   // Se já temos os dados desta página, usar cache
   const startIdx = (page - 1) * ITEMS_PER_PAGE;
@@ -199,11 +200,11 @@ async function loadMoviesPage(page) {
       attachImageHandlers(moviesGrid);
       saveState();
     } else {
-      moviesGrid.innerHTML = `<p class="text-gray-400">No more movies found.</p>`;
+      moviesGrid.innerHTML = `<p class="text-gray-400">${translate('noMoreMoviesFound')}</p>`;
     }
   } catch (err) {
     console.error("Error loading movies page:", err);
-    moviesGrid.innerHTML = `<p class="text-gray-400">Error loading movies.</p>`;
+    moviesGrid.innerHTML = `<p class="text-gray-400">${translate('errorLoadingMovies')}</p>`;
   }
 }
 
@@ -213,7 +214,7 @@ async function loadSeriesPage(page) {
   const seriesGrid = document.getElementById("seriesGrid");
   if (!seriesGrid) return;
   
-  seriesGrid.innerHTML = `<p class="text-gray-400">Loading...</p>`;
+  seriesGrid.innerHTML = `<p class="text-gray-400">${translate('loading')}</p>`;
 
   // Se já temos os dados desta página, usar cache
   const startIdx = (page - 1) * ITEMS_PER_PAGE;
@@ -253,11 +254,11 @@ async function loadSeriesPage(page) {
       attachImageHandlers(seriesGrid);
       saveState();
     } else {
-      seriesGrid.innerHTML = `<p class="text-gray-400">No more series found.</p>`;
+      seriesGrid.innerHTML = `<p class="text-gray-400">${translate('noMoreSeriesFound')}</p>`;
     }
   } catch (err) {
     console.error("Error loading series page:", err);
-    seriesGrid.innerHTML = `<p class="text-gray-400">Error loading series.</p>`;
+    seriesGrid.innerHTML = `<p class="text-gray-400">${translate('errorLoadingSeries')}</p>`;
   }
 }
 
@@ -278,16 +279,16 @@ async function performSearchApp(query) {
   if (!moviesGrid || !seriesGrid) return;
 
   if (!query || query.trim() === "") {
-    moviesGrid.innerHTML = '<p class="text-gray-400 self-center">Start typing to search...</p>';
-    seriesGrid.innerHTML = '<p class="text-gray-400 self-center">Start typing to search...</p>';
+    moviesGrid.innerHTML = `<p class="text-gray-400 self-center">${translate('startTypingToSearch')}</p>`;
+    seriesGrid.innerHTML = `<p class="text-gray-400 self-center">${translate('startTypingToSearch')}</p>`;
     allMovies = [];
     allSeries = [];
     return;
   }
 
   // Mostrar loading
-  moviesGrid.innerHTML = '<p class="text-gray-400 self-center">Searching movies...</p>';
-  seriesGrid.innerHTML = '<p class="text-gray-400 self-center">Searching series...</p>';
+  moviesGrid.innerHTML = `<p class="text-gray-400 self-center">${translate('searchingMovies')}</p>`;
+  seriesGrid.innerHTML = `<p class="text-gray-400 self-center">${translate('searchingSeries')}</p>`;
 
   try {
     // Pesquisar filmes e séries em paralelo
@@ -309,19 +310,19 @@ async function performSearchApp(query) {
       moviesGrid.innerHTML = allMovies.map(movie => renderMovieCard(movie)).join("");
       attachImageHandlers(moviesGrid);
     } else {
-      moviesGrid.innerHTML = '<p class="text-gray-400 self-center">No movies found.</p>';
+      moviesGrid.innerHTML = `<p class="text-gray-400 self-center">${translate('noMoviesFound')}</p>`;
     }
 
     if (allSeries.length > 0) {
       seriesGrid.innerHTML = allSeries.map(show => renderSeriesCard(show)).join("");
       attachImageHandlers(seriesGrid);
     } else {
-      seriesGrid.innerHTML = '<p class="text-gray-400 self-center">No series found.</p>';
+      seriesGrid.innerHTML = `<p class="text-gray-400 self-center">${translate('noSeriesFound')}</p>`;
     }
   } catch (err) {
     console.error("Error performing search:", err);
-    moviesGrid.innerHTML = '<p class="text-gray-400 self-center">Error searching movies.</p>';
-    seriesGrid.innerHTML = '<p class="text-gray-400 self-center">Error searching series.</p>';
+    moviesGrid.innerHTML = `<p class="text-gray-400 self-center">${translate('errorSearchingMovies')}</p>`;
+    seriesGrid.innerHTML = `<p class="text-gray-400 self-center">${translate('errorSearchingSeries')}</p>`;
   }
 }
 
@@ -330,8 +331,8 @@ async function performSearch(query, isNewSearch = false) {
   if (!query || query.trim() === "") {
     const moviesGrid = document.getElementById("moviesGrid");
     const seriesGrid = document.getElementById("seriesGrid");
-    if (moviesGrid) moviesGrid.innerHTML = `<p class="text-gray-400">No search query provided.</p>`;
-    if (seriesGrid) seriesGrid.innerHTML = `<p class="text-gray-400">No search query provided.</p>`;
+    if (moviesGrid) moviesGrid.innerHTML = `<p class="text-gray-400">${translate('noSearchQueryProvided')}</p>`;
+    if (seriesGrid) seriesGrid.innerHTML = `<p class="text-gray-400">${translate('noSearchQueryProvided')}</p>`;
     return;
   }
 
@@ -429,8 +430,8 @@ export async function initSearchPage() {
       if (!query) {
         const moviesGrid = document.getElementById("moviesGridApp");
         const seriesGrid = document.getElementById("seriesGridApp");
-        if (moviesGrid) moviesGrid.innerHTML = '<p class="text-gray-400 self-center">Start typing to search...</p>';
-        if (seriesGrid) seriesGrid.innerHTML = '<p class="text-gray-400 self-center">Start typing to search...</p>';
+        if (moviesGrid) moviesGrid.innerHTML = `<p class="text-gray-400 self-center">${translate('startTypingToSearch')}</p>`;
+        if (seriesGrid) seriesGrid.innerHTML = `<p class="text-gray-400 self-center">${translate('startTypingToSearch')}</p>`;
         window.history.replaceState({}, '', 'search.html');
         return;
       }

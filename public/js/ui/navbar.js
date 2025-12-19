@@ -64,7 +64,7 @@ export function renderNavbar() {
   <div class="sticky top-0 z-50 bg-yellow-600/90 backdrop-blur border-b border-yellow-500/30">
     <div class="max-w-[1600px] mx-auto px-4 py-2 text-center">
       <p class="text-sm font-semibold text-yellow-900">
-        ⚠️ You are in guest mode. Progress will not be saved.
+        ⚠️ ${translate('guestModeWarning')}
       </p>
     </div>
   </div>
@@ -80,7 +80,7 @@ export function renderNavbar() {
           </div>
           ${
             showTitle
-              ? `<span class="font-extrabold tracking-tight text-lg">My Collection</span>`
+              ? `<span class="font-extrabold tracking-tight text-lg">${translate('myCollection')}</span>`
               : ""
           }
         </a>
@@ -210,12 +210,12 @@ export function renderNavbar() {
     <button
       id="installAppBtn"
       class="hidden w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-800 text-blue-400"
-      title="Instalar App"
+      title="${translate('installApp')}"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
       </svg>
-      <span>Instalar App</span>
+      <span>${translate('installApp')}</span>
     </button>
     
     <button

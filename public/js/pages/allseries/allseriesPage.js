@@ -2,6 +2,7 @@ import { renderNavbar } from "../../ui/navbar.js";
 import { renderFooter } from "../../ui/footer.js";
 import { getPopularSeries, searchSeries, discoverSeries } from "../../modules/tmdbApi.js";
 import { PaginationManager } from "../../modules/shared/pagination.js";
+import { t as translate } from "../../modules/idioma.js";
 
 // Placeholder SVG para imagens que falham ao carregar
 const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='750'%3E%3Crect fill='%23374151' width='500' height='750'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='24' font-family='Arial'%3ENo Image%3C/text%3E%3C/svg%3E";
@@ -162,6 +163,7 @@ export async function initAllSeriesPage() {
     initialPage: currentPage,
     buttonPrefix: 'allseries',
     activeColor: 'bg-green-600',
+    translate,
     updateURL: (page) => {
       updateURL(page);
       currentPage = page;
@@ -202,6 +204,10 @@ export async function initAllSeriesPage() {
   
   setupSearch();
   setupFilter();
+  
+  // Atualizar textos quando idioma muda
+  updatePageTexts();
+  document.addEventListener("languageChanged", updatePageTexts);
 
   // Mostrar tabs apenas no modo app
   const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
@@ -403,7 +409,7 @@ async function loadSeries() {
   const paginator = document.getElementById("seriesPagination");
   const paginatorTop = document.getElementById("seriesPaginationTop");
 
-  grid.innerHTML = `<p class="text-gray-400">Loading...</p>`;
+  grid.innerHTML = `<p class="text-gray-400">${translate('loading')}</p>`;
 
   const data = await getPopularSeries(currentPage);
   const series = data.results || [];
@@ -690,14 +696,14 @@ async function loadFilteredSeries(page = 1) {
   const paginator = document.getElementById("seriesPagination");
   const paginatorTop = document.getElementById("seriesPaginationTop");
 
-  grid.innerHTML = `<p class="text-gray-400">Loading...</p>`;
+  grid.innerHTML = `<p class="text-gray-400">${translate('loading')}</p>`;
 
   const data = await discoverSeries(page, currentFilters);
   const series = data.results || [];
   totalPages = Math.min(data.totalPages || 0, 500);
 
   if (series.length === 0) {
-    grid.innerHTML = `<p class="text-gray-400">No series found with these filters.</p>`;
+    grid.innerHTML = `<p class="text-gray-400">${translate('noSeriesFoundWithFilters')}</p>`;
     if (pagination) {
       pagination.render("seriesPaginationTop", "seriesPagination");
     }
@@ -731,5 +737,93 @@ async function loadFilteredSeries(page = 1) {
   if (pagination) {
     pagination.render("seriesPaginationTop", "seriesPagination");
   }
+}
+
+function updatePageTexts() {
+  // Atualizar título
+  const titleEl = document.querySelector('h1.text-3xl');
+  if (titleEl) titleEl.textContent = translate('allSeries');
+  
+  // Atualizar tabs
+  const tabMySeries = document.querySelector('.allseries-tabs a[href="/series.html"]');
+  const tabAllSeries = document.querySelector('.allseries-tabs a[href="/allseries.html"]');
+  if (tabMySeries) tabMySeries.textContent = translate('mySeries');
+  if (tabAllSeries) tabAllSeries.textContent = translate('allSeries');
+  
+  // Atualizar botão filter
+  const filterBtn = document.getElementById('filterSeriesBtn');
+  if (filterBtn) {
+    const svg = filterBtn.querySelector('svg');
+    filterBtn.innerHTML = '';
+    if (svg) filterBtn.appendChild(svg);
+    filterBtn.appendChild(document.createTextNode(translate('filter')));
+  }
+  
+  // Atualizar modal de filtros
+  const filterModalTitle = document.querySelector('#filterSeriesModal h2');
+  if (filterModalTitle) filterModalTitle.textContent = translate('filterSeries');
+  
+  const topRatingBtn = document.getElementById('filterTopRatingBtn');
+  if (topRatingBtn) topRatingBtn.textContent = translate('topRating');
+  
+  const genreBtn = document.getElementById('filterGenreBtn');
+  if (genreBtn) genreBtn.textContent = translate('genre');
+  
+  const yearBtn = document.getElementById('filterYearBtn');
+  if (yearBtn) yearBtn.textContent = translate('year');
+  
+  const topRatingDesc = document.querySelector('#topRatingSection p');
+  if (topRatingDesc) topRatingDesc.textContent = translate('seriesSortedByRating');
+  
+  const applyTopRatingBtn = document.getElementById('applyTopRatingBtn');
+  if (applyTopRatingBtn) applyTopRatingBtn.textContent = translate('applyTopRatingFilter');
+  
+  const selectYearLabel = document.querySelector('#yearSection label');
+  if (selectYearLabel) selectYearLabel.textContent = translate('selectYear');
+  
+  const yearInput = document.getElementById('yearInput');
+  if (yearInput) yearInput.placeholder = translate('enterYear');
+  
+  const applyYearBtn = document.getElementById('applyYearBtn');
+  if (applyYearBtn) applyYearBtn.textContent = translate('applyYearFilter');
+  
+  const selectGenresLabel = document.querySelector('#genreSection label');
+  if (selectGenresLabel) selectGenresLabel.textContent = translate('selectGenres');
+  
+  const applyGenreBtn = document.getElementById('applyGenreBtn');
+  if (applyGenreBtn) applyGenreBtn.textContent = translate('applyGenreFilter');
+  
+  const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+  if (clearFiltersBtn) clearFiltersBtn.textContent = translate('clearAllFilters');
+  
+  // Atualizar géneros de séries
+  const seriesGenreMap = {
+    'Action & Adventure': translate('genreActionAdventure'),
+    'Animation': translate('genreAnimation'),
+    'Comedy': translate('genreComedy'),
+    'Crime': translate('genreCrime'),
+    'Documentary': translate('genreDocumentary'),
+    'Drama': translate('genreDrama'),
+    'Family': translate('genreFamily'),
+    'Kids': translate('genreKids'),
+    'Mystery': translate('genreMystery'),
+    'News': translate('genreNews'),
+    'Reality': translate('genreReality'),
+    'Sci-Fi & Fantasy': translate('genreSciFiFantasy'),
+    'Soap': translate('genreSoap'),
+    'Talk': translate('genreTalk'),
+    'War & Politics': translate('genreWarPolitics'),
+    'Western': translate('genreWestern')
+  };
+  
+  document.querySelectorAll('#filterSeriesModal .genre-tag').forEach(btn => {
+    const originalText = btn.textContent.trim();
+    if (seriesGenreMap[originalText]) {
+      btn.textContent = seriesGenreMap[originalText];
+    }
+  });
+  
+  // Atualizar título da página
+  document.title = translate('allSeries');
 }
 

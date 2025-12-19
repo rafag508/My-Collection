@@ -237,6 +237,7 @@ export async function initSeriesPage() {
     initialPage: savedPage,
     buttonPrefix: 'series',
     activeColor: 'bg-green-600',
+    translate,
     updateURL: (page) => urlState.updateURL(page),
     getTotalItems: () => {
       let seriesToRender = isSearchMode ? filteredSeries : series;
@@ -260,6 +261,10 @@ export async function initSeriesPage() {
   setupAddSeriesModal();
   reorderModal.setup();
   setupFilter();
+  
+  // Atualizar textos quando idioma muda
+  updatePageTexts();
+  document.addEventListener("languageChanged", updatePageTexts);
 
   // Mostrar tabs apenas no modo app
   const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
@@ -1094,4 +1099,109 @@ window.onSeriesCardClick = function (id) {
     console.warn("seriesPage: erro ao guardar estado antes de ir para serie.html:", err);
   }
 };
+
+function updatePageTexts() {
+  // Atualizar título
+  const titleEl = document.querySelector('h1.text-3xl');
+  if (titleEl) titleEl.textContent = `📺 ${translate('mySeries')}`;
+  
+  // Atualizar tabs
+  const tabMySeries = document.querySelector('.series-tabs a[href="/series.html"]');
+  const tabAllSeries = document.querySelector('.series-tabs a[href="/allseries.html"]');
+  if (tabMySeries) tabMySeries.textContent = translate('mySeries');
+  if (tabAllSeries) tabAllSeries.textContent = translate('allSeries');
+  
+  // Atualizar botões
+  const filterBtn = document.getElementById('filterSeriesBtn');
+  if (filterBtn) {
+    const svg = filterBtn.querySelector('svg');
+    filterBtn.innerHTML = '';
+    if (svg) filterBtn.appendChild(svg);
+    filterBtn.appendChild(document.createTextNode(translate('filter')));
+  }
+  
+  const addBtn = document.getElementById('addSeriesBtn');
+  if (addBtn) {
+    const svg = addBtn.querySelector('svg');
+    addBtn.innerHTML = '';
+    if (svg) addBtn.appendChild(svg);
+    addBtn.appendChild(document.createTextNode(translate('addSeries')));
+  }
+  
+  // Atualizar modal de filtros
+  const filterModalTitle = document.querySelector('#filterSeriesModal h2');
+  if (filterModalTitle) filterModalTitle.textContent = translate('filterSeries');
+  
+  const topRatingBtn = document.querySelector('#filterSeriesModal #filterTopRatingBtn');
+  if (topRatingBtn) topRatingBtn.textContent = translate('topRating');
+  
+  const genreBtn = document.querySelector('#filterSeriesModal #filterGenreBtn');
+  if (genreBtn) genreBtn.textContent = translate('genre');
+  
+  const listBtn = document.querySelector('#filterSeriesModal #filterListBtn');
+  if (listBtn) listBtn.textContent = translate('lists');
+  
+  const topRatingDesc = document.querySelector('#filterSeriesModal #topRatingSection p');
+  if (topRatingDesc) topRatingDesc.textContent = translate('seriesSortedByRating');
+  
+  const applyTopRatingBtn = document.querySelector('#filterSeriesModal #applyTopRatingBtn');
+  if (applyTopRatingBtn) applyTopRatingBtn.textContent = translate('applyTopRatingFilter');
+  
+  const selectGenresLabel = document.querySelector('#filterSeriesModal #genreSection label');
+  if (selectGenresLabel) selectGenresLabel.textContent = translate('selectGenres');
+  
+  const applyGenreBtn = document.querySelector('#filterSeriesModal #applyGenreBtn');
+  if (applyGenreBtn) applyGenreBtn.textContent = translate('applyGenreFilter');
+  
+  const selectListLabel = document.querySelector('#filterSeriesModal #listSection label');
+  if (selectListLabel) selectListLabel.textContent = translate('selectList');
+  
+  const listPorVerBtn = document.getElementById('listPorVer');
+  if (listPorVerBtn) listPorVerBtn.textContent = translate('toWatch');
+  
+  const listEstouAVerBtn = document.getElementById('listEstouAVer');
+  if (listEstouAVerBtn) listEstouAVerBtn.textContent = translate('watching');
+  
+  const listJaViBtn = document.getElementById('listJaVi');
+  if (listJaViBtn) listJaViBtn.textContent = translate('watched');
+  
+  const listFavoritesBtn = document.getElementById('listFavoritesBtn');
+  if (listFavoritesBtn) listFavoritesBtn.textContent = translate('favorites');
+  
+  const applyListBtn = document.querySelector('#filterSeriesModal #applyListBtn');
+  if (applyListBtn) applyListBtn.textContent = translate('applyListFilter');
+  
+  const clearFiltersBtn = document.querySelector('#filterSeriesModal #clearFiltersBtn');
+  if (clearFiltersBtn) clearFiltersBtn.textContent = translate('clearAllFilters');
+  
+  // Atualizar géneros de séries
+  const seriesGenreMap = {
+    'Action & Adventure': translate('genreActionAdventure'),
+    'Animation': translate('genreAnimation'),
+    'Comedy': translate('genreComedy'),
+    'Crime': translate('genreCrime'),
+    'Documentary': translate('genreDocumentary'),
+    'Drama': translate('genreDrama'),
+    'Family': translate('genreFamily'),
+    'Kids': translate('genreKids'),
+    'Mystery': translate('genreMystery'),
+    'News': translate('genreNews'),
+    'Reality': translate('genreReality'),
+    'Sci-Fi & Fantasy': translate('genreSciFiFantasy'),
+    'Soap': translate('genreSoap'),
+    'Talk': translate('genreTalk'),
+    'War & Politics': translate('genreWarPolitics'),
+    'Western': translate('genreWestern')
+  };
+  
+  document.querySelectorAll('#filterSeriesModal .genre-tag').forEach(btn => {
+    const originalText = btn.textContent.trim();
+    if (seriesGenreMap[originalText]) {
+      btn.textContent = seriesGenreMap[originalText];
+    }
+  });
+  
+  // Atualizar título da página
+  document.title = translate('mySeries');
+}
 

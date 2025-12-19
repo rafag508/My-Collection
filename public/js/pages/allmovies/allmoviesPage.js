@@ -3,6 +3,7 @@ import { renderFooter } from "../../ui/footer.js";
 import { getPopularMovies, searchMovies, discoverMovies } from "../../modules/tmdbApi.js";
 import { toastSuccess } from "../../ui/toast.js";
 import { PaginationManager } from "../../modules/shared/pagination.js";
+import { t as translate } from "../../modules/idioma.js";
 
 // Placeholder SVG para imagens que falham ao carregar
 const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='750'%3E%3Crect fill='%23374151' width='500' height='750'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='24' font-family='Arial'%3ENo Image%3C/text%3E%3C/svg%3E";
@@ -193,6 +194,7 @@ export async function initAllMoviesPage() {
     initialPage: currentPage,
     buttonPrefix: 'allmovies',
     activeColor: 'bg-blue-600',
+    translate,
     updateURL: (page) => {
       updateURL(page);
       currentPage = page;
@@ -235,6 +237,10 @@ export async function initAllMoviesPage() {
   
   setupSearch();
   setupFilter();
+  
+  // Atualizar textos quando idioma muda
+  updatePageTexts();
+  document.addEventListener("languageChanged", updatePageTexts);
 
   // Mostrar tabs apenas no modo app
   const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
@@ -683,14 +689,14 @@ async function loadFilteredMovies(page = 1) {
   const paginator = document.getElementById("moviesPagination");
   const paginatorTop = document.getElementById("moviesPaginationTop");
 
-  grid.innerHTML = `<p class="text-gray-400">Loading...</p>`;
+  grid.innerHTML = `<p class="text-gray-400">${translate('loading')}</p>`;
 
   const data = await discoverMovies(page, currentFilters);
   const movies = data.results || [];
   totalPages = Math.min(data.totalPages || 0, 500);
 
   if (movies.length === 0) {
-    grid.innerHTML = `<p class="text-gray-400">No movies found with these filters.</p>`;
+    grid.innerHTML = `<p class="text-gray-400">${translate('noMoviesFoundWithFilters')}</p>`;
     if (pagination) {
       pagination.render("moviesPaginationTop", "moviesPagination");
     }
@@ -830,7 +836,7 @@ async function loadMovies() {
   const paginator = document.getElementById("moviesPagination");
   const paginatorTop = document.getElementById("moviesPaginationTop");
 
-  grid.innerHTML = `<p class="text-gray-400">Loading...</p>`;
+  grid.innerHTML = `<p class="text-gray-400">${translate('loading')}</p>`;
 
   const data = await getPopularMovies(currentPage);
   const movies = data.results || [];
@@ -879,6 +885,125 @@ function renderMovieCard(movie) {
       </a>
     </div>
   `;
+}
+
+function updatePageTexts() {
+  // Atualizar título
+  const titleEl = document.querySelector('h1.text-3xl');
+  if (titleEl) titleEl.textContent = translate('allMovies');
+  
+  // Atualizar tabs
+  const tabMyMovies = document.querySelector('.allmovies-tabs a[href="/movies.html"]');
+  const tabAllMovies = document.querySelector('.allmovies-tabs a[href="/allmovies.html"]');
+  if (tabMyMovies) tabMyMovies.textContent = translate('myMovies');
+  if (tabAllMovies) tabAllMovies.textContent = translate('allMovies');
+  
+  // Atualizar botão filter
+  const filterBtn = document.getElementById('filterMoviesBtn');
+  if (filterBtn) {
+    const svg = filterBtn.querySelector('svg');
+    filterBtn.innerHTML = '';
+    if (svg) filterBtn.appendChild(svg);
+    filterBtn.appendChild(document.createTextNode(translate('filter')));
+  }
+  
+  // Atualizar modal de filtros
+  const filterModalTitle = document.querySelector('#filterMoviesModal h2');
+  if (filterModalTitle) filterModalTitle.textContent = translate('filterMovies');
+  
+  const topRatingBtn = document.getElementById('filterTopRatingBtn');
+  if (topRatingBtn) topRatingBtn.textContent = translate('topRating');
+  
+  const genreBtn = document.getElementById('filterGenreBtn');
+  if (genreBtn) genreBtn.textContent = translate('genre');
+  
+  const yearBtn = document.getElementById('filterYearBtn');
+  if (yearBtn) yearBtn.textContent = translate('year');
+  
+  const upcomingBtn = document.getElementById('filterUpcomingBtn');
+  if (upcomingBtn) upcomingBtn.textContent = translate('upcoming');
+  
+  const topRatingDesc = document.querySelector('#topRatingSection p');
+  if (topRatingDesc) topRatingDesc.textContent = translate('moviesSortedByRating');
+  
+  const applyTopRatingBtn = document.getElementById('applyTopRatingBtn');
+  if (applyTopRatingBtn) applyTopRatingBtn.textContent = translate('applyTopRatingFilter');
+  
+  const selectYearLabel = document.querySelector('#yearSection label');
+  if (selectYearLabel) selectYearLabel.textContent = translate('selectYear');
+  
+  const yearInput = document.getElementById('yearInput');
+  if (yearInput) yearInput.placeholder = translate('enterYear');
+  
+  const applyYearBtn = document.getElementById('applyYearBtn');
+  if (applyYearBtn) applyYearBtn.textContent = translate('applyYearFilter');
+  
+  const selectGenresLabel = document.querySelector('#genreSection label');
+  if (selectGenresLabel) selectGenresLabel.textContent = translate('selectGenres');
+  
+  const applyGenreBtn = document.getElementById('applyGenreBtn');
+  if (applyGenreBtn) applyGenreBtn.textContent = translate('applyGenreFilter');
+  
+  const releaseTypeLabel = document.querySelector('#upcomingSection label');
+  if (releaseTypeLabel) releaseTypeLabel.textContent = translate('releaseType');
+  
+  const releaseLimitedBtn = document.getElementById('releaseTypeLimited');
+  if (releaseLimitedBtn) releaseLimitedBtn.textContent = translate('releaseTheatricalLimited');
+  
+  const releaseTheatricalBtn = document.getElementById('releaseTypeTheatrical');
+  if (releaseTheatricalBtn) releaseTheatricalBtn.textContent = translate('releaseTheatrical');
+  
+  const releasePremiereBtn = document.getElementById('releaseTypePremiere');
+  if (releasePremiereBtn) releasePremiereBtn.textContent = translate('releasePremiere');
+  
+  const dateRangeLabel = document.querySelector('#upcomingSection label:has(+ div)');
+  const dateRangeLabel2 = document.querySelectorAll('#upcomingSection label')[1];
+  if (dateRangeLabel2) dateRangeLabel2.textContent = translate('dateRange');
+  
+  const dateFromLabel = document.querySelector('#upcomingSection label:has(+ input#upcomingDateFrom)');
+  if (dateFromLabel) dateFromLabel.textContent = translate('from');
+  
+  const dateToLabel = document.querySelector('#upcomingSection label:has(+ input#upcomingDateTo)');
+  if (dateToLabel) dateToLabel.textContent = translate('to');
+  
+  const applyUpcomingBtn = document.getElementById('applyUpcomingBtn');
+  if (applyUpcomingBtn) applyUpcomingBtn.textContent = translate('applyUpcomingFilter');
+  
+  const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+  if (clearFiltersBtn) clearFiltersBtn.textContent = translate('clearAllFilters');
+  
+  // Atualizar géneros
+  const genreMap = {
+    'Action': translate('genreAction'),
+    'Adventure': translate('genreAdventure'),
+    'Animation': translate('genreAnimation'),
+    'Comedy': translate('genreComedy'),
+    'Crime': translate('genreCrime'),
+    'Documentary': translate('genreDocumentary'),
+    'Drama': translate('genreDrama'),
+    'Family': translate('genreFamily'),
+    'Fantasy': translate('genreFantasy'),
+    'History': translate('genreHistory'),
+    'Horror': translate('genreHorror'),
+    'Music': translate('genreMusic'),
+    'Mystery': translate('genreMystery'),
+    'Romance': translate('genreRomance'),
+    'Science Fiction': translate('genreScienceFiction'),
+    'Thriller': translate('genreThriller'),
+    'TV Movie': translate('genreTVMovie'),
+    'War': translate('genreWar'),
+    'Western': translate('genreWestern')
+  };
+  
+  document.querySelectorAll('#filterMoviesModal .genre-tag').forEach(btn => {
+    const originalText = btn.textContent.trim();
+    if (genreMap[originalText]) {
+      btn.textContent = genreMap[originalText];
+    }
+  });
+  
+  // Atualizar título da página
+  document.title = translate('allMovies');
 }
 
 // ✅ PAGINATION agora é gerido pelo PaginationManager (já configurado no início)

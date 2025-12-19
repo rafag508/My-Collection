@@ -224,6 +224,7 @@ export async function initMoviesPage() {
     initialPage: currentPage,
     buttonPrefix: 'movies',
     activeColor: 'bg-blue-600',
+    translate,
     updateURL: (page) => urlState.updateURL(page),
     getTotalItems: () => {
       let moviesToRender = isSearchMode ? filteredMovies : movies;
@@ -247,6 +248,10 @@ export async function initMoviesPage() {
   setupAddMoviesModal();
   reorderModal.setup();
   setupFilter();
+  
+  // Atualizar textos quando idioma muda
+  updatePageTexts();
+  document.addEventListener("languageChanged", updatePageTexts);
 
   // Adicionar swipe para mudar entre páginas (apenas no modo app)
   if (isAppMode) {
@@ -1048,6 +1053,110 @@ window.onMovieCardClick = function (id) {
   window.location.href = `movie.html?id=${id}`;
 };
 
+function updatePageTexts() {
+  // Atualizar título
+  const titleEl = document.querySelector('h1.text-3xl');
+  if (titleEl) titleEl.textContent = `🎬 ${translate('myMovies')}`;
+  
+  // Atualizar tabs
+  const tabMyMovies = document.querySelector('.movies-tabs a[href="/movies.html"]');
+  const tabAllMovies = document.querySelector('.movies-tabs a[href="/allmovies.html"]');
+  if (tabMyMovies) tabMyMovies.textContent = translate('myMovies');
+  if (tabAllMovies) tabAllMovies.textContent = translate('allMovies');
+  
+  // Atualizar botões
+  const filterBtn = document.getElementById('filterMoviesBtn');
+  if (filterBtn) {
+    const svg = filterBtn.querySelector('svg');
+    filterBtn.innerHTML = '';
+    if (svg) filterBtn.appendChild(svg);
+    filterBtn.appendChild(document.createTextNode(translate('filter')));
+  }
+  
+  const addBtn = document.getElementById('addMoviesBtn');
+  if (addBtn) {
+    const svg = addBtn.querySelector('svg');
+    addBtn.innerHTML = '';
+    if (svg) addBtn.appendChild(svg);
+    addBtn.appendChild(document.createTextNode(translate('addMovie')));
+  }
+  
+  // Atualizar modal de filtros
+  const filterModalTitle = document.querySelector('#filterMoviesModal h2');
+  if (filterModalTitle) filterModalTitle.textContent = translate('filterMovies');
+  
+  const topRatingBtn = document.getElementById('filterTopRatingBtn');
+  if (topRatingBtn) topRatingBtn.textContent = translate('topRating');
+  
+  const genreBtn = document.getElementById('filterGenreBtn');
+  if (genreBtn) genreBtn.textContent = translate('genre');
+  
+  const listBtn = document.getElementById('filterListBtn');
+  if (listBtn) listBtn.textContent = translate('lists');
+  
+  const topRatingDesc = document.querySelector('#topRatingSection p');
+  if (topRatingDesc) topRatingDesc.textContent = translate('moviesSortedByRating');
+  
+  const applyTopRatingBtn = document.getElementById('applyTopRatingBtn');
+  if (applyTopRatingBtn) applyTopRatingBtn.textContent = translate('applyTopRatingFilter');
+  
+  const selectGenresLabel = document.querySelector('#genreSection label');
+  if (selectGenresLabel) selectGenresLabel.textContent = translate('selectGenres');
+  
+  const applyGenreBtn = document.getElementById('applyGenreBtn');
+  if (applyGenreBtn) applyGenreBtn.textContent = translate('applyGenreFilter');
+  
+  const selectListLabel = document.querySelector('#listSection label');
+  if (selectListLabel) selectListLabel.textContent = translate('selectList');
+  
+  const listToWatchBtn = document.getElementById('listToWatch');
+  if (listToWatchBtn) listToWatchBtn.textContent = translate('toWatch');
+  
+  const listWatchedBtn = document.getElementById('listWatched');
+  if (listWatchedBtn) listWatchedBtn.textContent = translate('watched');
+  
+  const listFavoritesBtn = document.getElementById('listFavoritesBtn');
+  if (listFavoritesBtn) listFavoritesBtn.textContent = translate('favorites');
+  
+  const applyListBtn = document.getElementById('applyListBtn');
+  if (applyListBtn) applyListBtn.textContent = translate('applyListFilter');
+  
+  const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+  if (clearFiltersBtn) clearFiltersBtn.textContent = translate('clearAllFilters');
+  
+  // Atualizar géneros (usar um mapa de tradução)
+  const genreMap = {
+    'Action': translate('genreAction'),
+    'Adventure': translate('genreAdventure'),
+    'Animation': translate('genreAnimation'),
+    'Comedy': translate('genreComedy'),
+    'Crime': translate('genreCrime'),
+    'Documentary': translate('genreDocumentary'),
+    'Drama': translate('genreDrama'),
+    'Family': translate('genreFamily'),
+    'Fantasy': translate('genreFantasy'),
+    'History': translate('genreHistory'),
+    'Horror': translate('genreHorror'),
+    'Music': translate('genreMusic'),
+    'Mystery': translate('genreMystery'),
+    'Romance': translate('genreRomance'),
+    'Science Fiction': translate('genreScienceFiction'),
+    'Thriller': translate('genreThriller'),
+    'TV Movie': translate('genreTVMovie'),
+    'War': translate('genreWar'),
+    'Western': translate('genreWestern')
+  };
+  
+  document.querySelectorAll('.genre-tag').forEach(btn => {
+    const originalText = btn.textContent.trim();
+    if (genreMap[originalText]) {
+      btn.textContent = genreMap[originalText];
+    }
+  });
+  
+  // Atualizar título da página
+  document.title = translate('myMovies');
+}
 
 // ✅ REORDER MODAL agora é gerido pelo ReorderModal (já configurado no início)
 

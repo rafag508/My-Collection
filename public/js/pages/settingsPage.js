@@ -304,7 +304,7 @@ export async function initSettingsPage() {
     // Atualizar título da página
     const settingsTitle = document.querySelector("h1[data-i18n='settings']");
     if (settingsTitle) {
-      document.title = t("settings") + " - My Collection";
+      document.title = t("settingsTitle");
     }
   }
   
