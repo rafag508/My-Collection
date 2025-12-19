@@ -1,10 +1,6 @@
 // Service Worker para PWA
 // Cacheia apenas assets estáticos, NUNCA dados do Firestore
 
-// ✅ IMPORTAR Firebase Messaging Service Worker
-// Isto permite que o FCM processe push notifications em background
-importScripts('/firebase-messaging-sw.js');
-
 const CACHE_NAME = 'my-collection-v1';
 const STATIC_ASSETS = [
   '/',

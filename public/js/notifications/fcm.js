@@ -58,30 +58,9 @@ async function requestPermission() {
   try {
     const permission = await Notification.requestPermission();
     if (permission === 'granted') {
-      // Obter Service Worker registration para o FCM usar
-      let serviceWorkerRegistration = null;
-      if ('serviceWorker' in navigator) {
-        try {
-          // Tentar obter o Service Worker já registado
-          const registration = await navigator.serviceWorker.ready;
-          serviceWorkerRegistration = registration;
-          console.log('[FCM] Using Service Worker:', registration.scope);
-        } catch (swError) {
-          console.warn('[FCM] Could not get Service Worker registration:', swError);
-        }
-      }
-      
-      // Obter token FCM com Service Worker registration
-      const tokenOptions = {
+      fcmToken = await getToken(messaging, {
         vapidKey: 'BCyOXQ4udAZhBEZpdDG_Ky_Uxfs5Zsq6P0Lm7M1-V6VBHlWXketvL3UxY7ogzoWY5ylXEW-BCqnIYvnwKLHfm-g'
-      };
-      
-      // Se tivermos Service Worker registration, usar
-      if (serviceWorkerRegistration) {
-        tokenOptions.serviceWorkerRegistration = serviceWorkerRegistration;
-      }
-      
-      fcmToken = await getToken(messaging, tokenOptions);
+      });
       
       if (fcmToken) {
         // Gerar deviceId e guardar token
@@ -92,8 +71,6 @@ async function requestPermission() {
         } catch (err) {
           console.warn('Failed to save FCM token to Firestore:', err);
         }
-      } else {
-        console.warn('[FCM] No token received. Check Service Worker registration and permissions.');
       }
     } else {
       console.warn('Notification permission denied');
