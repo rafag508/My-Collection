@@ -134,7 +134,7 @@ export function renderNavbar() {
         <label class="relative w-72">
           <input id="search" type="search" placeholder="${searchPlaceholder}"
             class="w-full rounded-xl bg-white/5 pl-10 pr-3 py-2 outline-none ring-0 focus:bg-white/10 placeholder:text-gray-400 transition-all duration-200" />
-          <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none"
             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="7"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -740,6 +740,23 @@ function setupCreateAccountModal() {
 export function setupGlobalSearch(selector, itemSelector = "h3") {
   const searchInput = document.getElementById("search");
   if (!searchInput) return;
+
+  // Redirecionar para search.html quando pressionar Enter
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const query = e.target.value.trim();
+      if (query) {
+        window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+      } else {
+        window.location.href = "search.html";
+      }
+    }
+  });
+
+  // Pesquisa local (se não estiver na página de pesquisa)
+  if (window.location.pathname.includes("search.html")) {
+    return; // Não fazer pesquisa local na página de pesquisa
+  }
 
   searchInput.addEventListener("input", e => {
     const query = e.target.value.toLowerCase().trim();
