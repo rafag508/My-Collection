@@ -89,9 +89,21 @@ export async function searchMovies(query, page = 1) {
 // =====================================================
 export async function getMovieDetails(movieId) {
   try {
-    const data = await callTmdbProxy(`movie/${movieId}`, {
-      language: getTmdbLanguage(),
-    });
+    // Fazer duas chamadas: uma em inglês para poster/título original, outra no idioma do utilizador para descrição
+    const [dataEn, dataTranslated] = await Promise.all([
+      callTmdbProxy(`movie/${movieId}`, {
+        language: "en-US", // Sempre inglês para poster e título original
+      }),
+      getTmdbLanguage() !== "en-US" 
+        ? callTmdbProxy(`movie/${movieId}`, {
+            language: getTmdbLanguage(), // Idioma do utilizador para descrição traduzida
+          })
+        : null
+    ]);
+
+    // Usar dados em inglês para poster/título, e dados traduzidos para descrição
+    const data = dataEn;
+    const translated = dataTranslated;
 
     const posterPath = data.poster_path || null;
     const backdropPath = data.backdrop_path || null;
@@ -102,13 +114,15 @@ export async function getMovieDetails(movieId) {
       year: data.release_date ? data.release_date.split("-")[0] : "—",
       release_date: data.release_date || null,
       // URL de poster em resolução média (compatível com código antigo)
+      // Sempre usar poster em inglês
       poster: posterPath
         ? `${IMAGE_BASE}${posterPath}`
         : "./assets/default.jpg",
       // Novos campos: apenas os paths, para poderes construir URLs noutras resoluções
       posterPath,
       backdropPath,
-      overview: data.overview || "",
+      // Usar descrição traduzida se disponível, senão usar inglês
+      overview: (translated && translated.overview) ? translated.overview : data.overview || "",
       status: data.status || "Released",
       genres: (data.genres || []).map(g => g.name),
       rating: data.vote_average || 0,
@@ -494,9 +508,21 @@ export async function searchSeries(query, page = 1) {
 // =====================================================
 export async function getSeriesDetails(seriesId) {
   try {
-    const data = await callTmdbProxy(`tv/${seriesId}`, {
-      language: getTmdbLanguage(),
-    });
+    // Fazer duas chamadas: uma em inglês para poster/título original, outra no idioma do utilizador para descrição
+    const [dataEn, dataTranslated] = await Promise.all([
+      callTmdbProxy(`tv/${seriesId}`, {
+        language: "en-US", // Sempre inglês para poster e título original
+      }),
+      getTmdbLanguage() !== "en-US" 
+        ? callTmdbProxy(`tv/${seriesId}`, {
+            language: getTmdbLanguage(), // Idioma do utilizador para descrição traduzida
+          })
+        : null
+    ]);
+
+    // Usar dados em inglês para poster/título, e dados traduzidos para descrição
+    const data = dataEn;
+    const translated = dataTranslated;
 
     const posterPath = data.poster_path || null;
     const backdropPath = data.backdrop_path || null;
@@ -506,11 +532,13 @@ export async function getSeriesDetails(seriesId) {
       id: seriesId.toString(),
       title: data.original_name || data.name || "Untitled",
       year: data.first_air_date ? data.first_air_date.split("-")[0] : "—",
+      // Sempre usar poster em inglês
       poster: posterPath ? `${IMAGE_BASE}${posterPath}` : "./assets/default.jpg",
       // Paths crus para poder gerar outras resoluções
       posterPath,
       backdropPath,
-      description: data.overview || "",
+      // Usar descrição traduzida se disponível, senão usar inglês
+      description: (translated && translated.overview) ? translated.overview : data.overview || "",
       // Tratar séries "Canceled" como terminadas (Ended) no TV Status
       status:
         data.status === "Ended" || data.status === "Canceled"
