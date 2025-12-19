@@ -5,6 +5,23 @@ import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12
 import { getMessaging, getToken, onMessage, isSupported } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
 import { saveFCMTokenToFirestore, getFCMTokenFromFirestore } from "../firebase/firestore.js";
 
+/**
+ * Gera um ID único para o dispositivo
+ */
+async function generateDeviceId() {
+  // Usar localStorage para guardar deviceId persistente
+  let deviceId = localStorage.getItem('fcm_device_id');
+  if (!deviceId) {
+    // Gerar novo ID baseado em user agent + timestamp
+    const userAgent = navigator.userAgent;
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 15);
+    deviceId = btoa(`${userAgent}-${timestamp}-${random}`).substring(0, 32);
+    localStorage.setItem('fcm_device_id', deviceId);
+  }
+  return deviceId;
+}
+
 const firebaseConfig = {
   apiKey: "AIzaSyCEC0LA90DIsZIAXdfbqhFgnI9_h_upKjE",
   authDomain: "my-collection-c8bf6.firebaseapp.com",
