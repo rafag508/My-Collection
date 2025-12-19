@@ -197,24 +197,27 @@ new MutationObserver(() => {
 
 // Registrar Service Worker para PWA
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/pwa/service-worker.js')
-      .then((registration) => {
-        console.log('[Service Worker] Registered successfully:', registration.scope);
-        
-        // Verificar atualizações periodicamente
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('[Service Worker] New version available');
-            }
-          });
+  window.addEventListener('load', async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('/pwa/service-worker.js');
+      console.log('[Service Worker] Registered successfully:', registration.scope);
+      
+      // Aguardar Service Worker estar pronto antes de inicializar FCM
+      await navigator.serviceWorker.ready;
+      console.log('[Service Worker] Ready');
+      
+      // Verificar atualizações periodicamente
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            console.log('[Service Worker] New version available');
+          }
         });
-      })
-      .catch((error) => {
-        console.warn('[Service Worker] Registration failed:', error);
       });
+    } catch (error) {
+      console.warn('[Service Worker] Registration failed:', error);
+    }
   });
 }
 
@@ -249,8 +252,19 @@ async function initNotifications() {
 window.addEventListener("DOMContentLoaded", async () => {
   setFavicon();
   renderBottomNav(); // Renderizar bottom navigation para app mode
-  initNotifications(); // Inicializar Badge API e FCM
   initDebugButton(); // Inicializar botão de debug
+  
+  // Aguardar Service Worker estar pronto antes de inicializar FCM
+  if ('serviceWorker' in navigator) {
+    try {
+      await navigator.serviceWorker.ready;
+      console.log('[App] Service Worker ready, initializing FCM...');
+    } catch (swError) {
+      console.warn('[App] Service Worker not ready, initializing FCM anyway:', swError);
+    }
+  }
+  
+  initNotifications(); // Inicializar Badge API e FCM
   
   // Verificar lançamentos de filmes e séries em todas as páginas
   // Executar após um pequeno delay para garantir que tudo está carregado
