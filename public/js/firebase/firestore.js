@@ -31,6 +31,19 @@ export const db = getFirestore(app);
 const auth = getAuth(app);
 
 // ===============================
+// 🔍 Debug de leituras Firestore
+// ===============================
+
+let FS_DEBUG_READS_TOTAL = 0;
+function logReads(label, count) {
+  if (!count) return;
+  FS_DEBUG_READS_TOTAL += count;
+  console.log(
+    `[FS-READ] ${label}: +${count} (esta aba: ~${FS_DEBUG_READS_TOTAL} docs lidos)`
+  );
+}
+
+// ===============================
 // 🔐 Garantir que UID existe
 // ===============================
 
@@ -83,6 +96,7 @@ export async function saveSerieFirestore(serie) {
 export async function getAllSeriesFirestore() {
   const col = await userCollection("series");
   const snap = await getDocs(col);
+  logReads("getAllSeriesFirestore", snap.size);
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
@@ -103,6 +117,7 @@ export async function getSeriesOrderFirestore() {
   const uid = await getUID();
   const ref = doc(db, `users/${uid}/meta/series_order`);
   const snap = await getDoc(ref);
+  logReads("getSeriesOrderFirestore", snap.exists() ? 1 : 0);
   return snap.exists() ? snap.data().order : [];
 }
 
@@ -118,6 +133,7 @@ export async function saveSerieProgressFirestore(id, progress) {
 export async function getSerieProgressFirestore(id) {
   const ref = await userDoc("series_progress", id);
   const snap = await getDoc(ref);
+  logReads("getSerieProgressFirestore", snap.exists() ? 1 : 0);
   return snap.exists() ? snap.data() : { watched: {} };
 }
 
@@ -129,6 +145,7 @@ export async function deleteSerieProgressFirestore(id) {
 export async function getAllSeriesProgressFirestore() {
   const col = await userCollection("series_progress");
   const snap = await getDocs(col);
+  logReads("getAllSeriesProgressFirestore", snap.size);
   const progress = {};
   snap.docs.forEach(d => {
     progress[d.id] = d.data();
@@ -149,6 +166,7 @@ export async function saveMovieFirestore(movie) {
 export async function getAllMoviesFirestore() {
   const col = await userCollection("movies");
   const snap = await getDocs(col);
+  logReads("getAllMoviesFirestore", snap.size);
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
@@ -169,6 +187,7 @@ export async function getMoviesOrderFirestore() {
   const uid = await getUID();
   const ref = doc(db, `users/${uid}/meta/movies_order`);
   const snap = await getDoc(ref);
+  logReads("getMoviesOrderFirestore", snap.exists() ? 1 : 0);
   return snap.exists() ? snap.data().order : [];
 }
 
@@ -182,12 +201,14 @@ export async function saveMovieProgressFirestore(id, progress) {
 export async function getMovieProgressFirestore(id) {
   const ref = await userDoc("movies_progress", id);
   const snap = await getDoc(ref);
+  logReads("getMovieProgressFirestore", snap.exists() ? 1 : 0);
   return snap.exists() ? snap.data() : { watched: false };
 }
 
 export async function getAllMoviesProgressFirestore() {
   const col = await userCollection("movies_progress");
   const snap = await getDocs(col);
+  logReads("getAllMoviesProgressFirestore", snap.size);
   const progress = {};
   snap.docs.forEach(d => {
     progress[d.id] = d.data();
@@ -213,6 +234,7 @@ export async function saveNotificationFirestore(notif) {
 export async function getNotificationsFirestore() {
   const col = await userCollection("notifications");
   const snap = await getDocs(col);
+  logReads("getNotificationsFirestore", snap.size);
   return snap.docs.map(d => d.data());
 }
 
@@ -242,6 +264,7 @@ export async function getUserPreferencesFirestore() {
     const uid = await getUID();
     const ref = doc(db, `users/${uid}/meta/preferences`);
     const snap = await getDoc(ref);
+    logReads("getUserPreferencesFirestore", snap.exists() ? 1 : 0);
     return snap.exists() ? snap.data() : null;
   } catch (err) {
     console.warn("Could not load user preferences from Firestore:", err);
