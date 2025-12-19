@@ -7,6 +7,49 @@ import { loadProgress as loadMoviesProgress } from "../modules/movies/moviesProg
 import { storageService } from "../modules/storageService.js";
 import { t as translate } from "../modules/idioma.js";
 
+// Mapeamento de géneros do TMDB para chaves de tradução
+const genreTranslationMap = {
+  // Movie genres
+  "Action": "genreAction",
+  "Adventure": "genreAdventure",
+  "Animation": "genreAnimation",
+  "Comedy": "genreComedy",
+  "Crime": "genreCrime",
+  "Documentary": "genreDocumentary",
+  "Drama": "genreDrama",
+  "Family": "genreFamily",
+  "Fantasy": "genreFantasy",
+  "History": "genreHistory",
+  "Horror": "genreHorror",
+  "Music": "genreMusic",
+  "Mystery": "genreMystery",
+  "Romance": "genreRomance",
+  "Science Fiction": "genreScienceFiction",
+  "Thriller": "genreThriller",
+  "TV Movie": "genreTVMovie",
+  "War": "genreWar",
+  "Western": "genreWestern",
+  // Series genres
+  "Action & Adventure": "genreActionAdventure",
+  "Kids": "genreKids",
+  "News": "genreNews",
+  "Reality": "genreReality",
+  "Sci-Fi & Fantasy": "genreSciFiFantasy",
+  "Soap": "genreSoap",
+  "Talk": "genreTalk",
+  "War & Politics": "genreWarPolitics",
+};
+
+// Função para traduzir nome de género
+function translateGenre(genreName) {
+  if (!genreName) return genreName;
+  const translationKey = genreTranslationMap[genreName];
+  if (translationKey) {
+    return translate(translationKey) || genreName;
+  }
+  return genreName; // Se não houver tradução, retornar o nome original
+}
+
 // rough averages for time estimates
 const EPISODE_AVG_MIN = 45;
 const MOVIE_AVG_MIN = 120;
@@ -224,7 +267,7 @@ function renderStats(root, seriesStats, movieStats) {
                 ${s.genres
                   .map(
                     g => `
-                <div>${g.name}</div>
+                <div>${translateGenre(g.name)}</div>
                 <div class="text-right">${g.count}</div>`
                   )
                   .join("")}
@@ -274,7 +317,7 @@ function renderStats(root, seriesStats, movieStats) {
                 ${m.genres
                   .map(
                     g => `
-                <div>${g.name}</div>
+                <div>${translateGenre(g.name)}</div>
                 <div class="text-right">${g.count}</div>`
                   )
                   .join("")}

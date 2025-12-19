@@ -121,9 +121,11 @@ export async function syncSerieFromTMDB(serieId) {
     }
 
     // Sempre atualizar os campos mesmo sem novos episódios
+    // IMPORTANTE: Não atualizar o título durante sync para preservar o nome original
+    // O título só deve ser atualizado quando a série é adicionada pela primeira vez
     const updatedSerie = {
       ...local,
-      title: remote.title || local.title,
+      // title: NÃO atualizar - preservar o título original que já existe
       poster: remote.poster || local.poster,
       description: remote.description || local.description,
       year: remote.year || local.year,

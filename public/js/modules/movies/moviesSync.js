@@ -19,9 +19,11 @@ export async function syncMovieFromTMDB(movieId) {
     if (!remote) return { updated: false };
 
     // Sempre atualizar todos os campos, mesmo sem mudanças aparentes
+    // IMPORTANTE: Não atualizar o título durante sync para preservar o nome original
+    // O título só deve ser atualizado quando o filme é adicionado pela primeira vez
     const updatedMovie = {
       ...local,
-      title: remote.title || local.title,
+      // title: NÃO atualizar - preservar o título original que já existe
       // Atualizar poster + paths de imagem
       poster: remote.poster || local.poster,
       posterPath: remote.posterPath || local.posterPath,
