@@ -66,13 +66,15 @@ export default async function handler(req, res) {
           continue; // Token vazio
         }
 
-        // Buscar filmes seguidos pelo utilizador
-        const moviesSnapshot = await db.collection(`users/${uid}/movies`).get();
+        // Buscar filmes seguidos pelo utilizador (following_movies, não movies)
+        const moviesSnapshot = await db.collection(`users/${uid}/following_movies`).get();
         const movies = moviesSnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-        // Filtrar filmes que saem hoje
+        // Filtrar filmes que saem hoje e ainda não foram notificados
         const moviesReleasingToday = movies.filter(movie => {
           if (!movie.release_date) return false;
+          // Se já foi notificado, não enviar novamente
+          if (movie.releaseNotified) return false;
           const releaseDate = movie.release_date.split('T')[0];
           return releaseDate === todayStr;
         });
@@ -96,16 +98,31 @@ export default async function handler(req, res) {
             await admin.messaging().send(message);
             notificationsSent++;
             console.log(`[Push Notifications] Sent notification to ${uid} for movie: ${movie.title}`);
+            
+            // Marcar como notificado no Firestore
+            try {
+              const movieRef = db.doc(`users/${uid}/following_movies/${movie.id}`);
+              await movieRef.update({ releaseNotified: true });
+            } catch (markError) {
+              console.warn(`[Push Notifications] Failed to mark movie ${movie.id} as notified:`, markError);
+            }
           } catch (sendError) {
             console.error(`[Push Notifications] Error sending notification for movie ${movie.id}:`, sendError);
             errors.push({ uid, movieId: movie.id, error: sendError.message });
           }
         }
 
-        // TODO: Implementar para séries quando necessário
-        // Buscar séries seguidas (se tiveres uma coleção similar)
-        // const seriesSnapshot = await db.collection(`users/${uid}/series`).get();
-        // ...
+        // Buscar séries seguidas pelo utilizador (following_series)
+        const seriesSnapshot = await db.collection(`users/${uid}/following_series`).get();
+        const series = seriesSnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        // Para séries, precisamos verificar next_episode_to_air via TMDB API
+        // Por agora, vamos apenas verificar se há séries com episódios que saem hoje
+        // (A lógica completa requer chamada à API TMDB, que pode ser implementada depois)
+        // Por enquanto, vamos apenas logar que há séries para processar
+        if (series.length > 0) {
+          console.log(`[Push Notifications] Found ${series.length} series to check for ${uid} (series push notifications require TMDB API call)`);
+        }
 
       } catch (err) {
         console.error(`[Push Notifications] Error processing user ${uid}:`, err);
