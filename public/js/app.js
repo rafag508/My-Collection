@@ -12,6 +12,7 @@ import { protectPage } from "./firebase/auth.js";
 import { loadUserPreferences } from "./modules/idioma.js";
 import { isGuestMode, isProtectedPage } from "./modules/guestMode.js";
 import { renderBottomNav } from "./ui/bottomNav.js";
+import "./ui/debugConsole.js";
 
 // Evita misturar com outras implementações antigas: usamos apenas a modular app
 function getPageName() {

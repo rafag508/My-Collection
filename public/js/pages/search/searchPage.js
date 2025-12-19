@@ -391,11 +391,58 @@ export async function initSearchPage() {
   renderFooter();
 
   const appMode = isAppMode();
+  
+  console.log('🔍 [SEARCH DEBUG] Initialization:', {
+    appMode,
+    windowWidth: window.innerWidth,
+    displayMode: window.matchMedia('(display-mode: standalone)').matches,
+    navigatorStandalone: window.navigator.standalone,
+    currentPage: window.location.pathname
+  });
 
   if (appMode) {
     // App Mode: pesquisa em tempo real
+    const appLayout = document.getElementById("appLayout");
+    const desktopLayout = document.getElementById("desktopLayout");
     const searchInput = document.getElementById("searchInput");
-    if (!searchInput) return;
+    const searchBarContainer = searchInput?.closest('.fixed');
+    
+    console.log('🔍 [SEARCH DEBUG] App Mode Elements:', {
+      appLayout: {
+        exists: !!appLayout,
+        visible: appLayout ? window.getComputedStyle(appLayout).display !== 'none' : false,
+        classes: appLayout?.className,
+        computedDisplay: appLayout ? window.getComputedStyle(appLayout).display : null
+      },
+      desktopLayout: {
+        exists: !!desktopLayout,
+        visible: desktopLayout ? window.getComputedStyle(desktopLayout).display !== 'none' : false,
+        computedDisplay: desktopLayout ? window.getComputedStyle(desktopLayout).display : null
+      },
+      searchInput: {
+        exists: !!searchInput,
+        value: searchInput?.value,
+        placeholder: searchInput?.placeholder
+      },
+      searchBarContainer: {
+        exists: !!searchBarContainer,
+        classes: searchBarContainer?.className,
+        computedTop: searchBarContainer ? window.getComputedStyle(searchBarContainer).top : null,
+        computedZIndex: searchBarContainer ? window.getComputedStyle(searchBarContainer).zIndex : null,
+        computedPosition: searchBarContainer ? window.getComputedStyle(searchBarContainer).position : null,
+        computedDisplay: searchBarContainer ? window.getComputedStyle(searchBarContainer).display : null,
+        computedVisibility: searchBarContainer ? window.getComputedStyle(searchBarContainer).visibility : null
+      }
+    });
+    
+    if (!searchInput) {
+      console.error('🔍 [SEARCH DEBUG] ERROR: searchInput not found!');
+      console.log('🔍 [SEARCH DEBUG] Available elements:', {
+        allInputs: document.querySelectorAll('input').length,
+        allElementsWithId: Array.from(document.querySelectorAll('[id]')).map(el => el.id)
+      });
+      return;
+    }
 
     const query = getQueryFromURL();
     if (query) {
