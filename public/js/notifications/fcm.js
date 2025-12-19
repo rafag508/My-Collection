@@ -3,6 +3,7 @@
 
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getMessaging, getToken, onMessage, isSupported } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
+import { saveFCMTokenToFirestore } from "../firebase/firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCEC0LA90DIsZIAXdfbqhFgnI9_h_upKjE",
@@ -63,8 +64,13 @@ async function requestPermission() {
       
       if (fcmToken) {
         console.log('FCM Token:', fcmToken);
-        // Aqui podes guardar o token no Firestore para enviar notificações
-        // await saveFCMTokenToFirestore(fcmToken);
+        // Guardar o token no Firestore para enviar notificações
+        try {
+          await saveFCMTokenToFirestore(fcmToken);
+          console.log('FCM Token saved to Firestore');
+        } catch (err) {
+          console.warn('Failed to save FCM token to Firestore:', err);
+        }
       }
     } else {
       console.warn('Notification permission denied');

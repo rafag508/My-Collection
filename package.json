@@ -1,0 +1,10 @@
+{
+  "name": "my-collection",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "My Collection - Movie and TV Series Tracker",
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  }
+}
+

@@ -271,3 +271,29 @@ export async function getUserPreferencesFirestore() {
     return null;
   }
 }
+
+// ===============================
+// FCM TOKEN
+// ===============================
+
+export async function saveFCMTokenToFirestore(token) {
+  const uid = await getUID();
+  const ref = doc(db, `users/${uid}/meta/fcmToken`);
+  return setDoc(ref, { 
+    token: token,
+    updatedAt: Date.now()
+  }, { merge: true });
+}
+
+export async function getFCMTokenFromFirestore() {
+  try {
+    const uid = await getUID();
+    const ref = doc(db, `users/${uid}/meta/fcmToken`);
+    const snap = await getDoc(ref);
+    logReads("getFCMTokenFromFirestore", snap.exists() ? 1 : 0);
+    return snap.exists() ? snap.data().token : null;
+  } catch (err) {
+    console.warn("Could not get FCM token from Firestore:", err);
+    return null;
+  }
+}
