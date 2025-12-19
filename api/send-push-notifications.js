@@ -45,43 +45,83 @@ export default async function handler(req, res) {
     const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
 
     console.log(`[Push Notifications] Checking for releases on ${todayStr}`);
+    console.log(`[DEBUG] Server time: ${today.toISOString()}, Today string: ${todayStr}`);
 
     // Buscar todos os utilizadores
     const usersSnapshot = await db.collection('users').get();
+    console.log(`[DEBUG] Total users found: ${usersSnapshot.size}`);
+    
     let notificationsSent = 0;
     let errors = [];
+    let usersWithFCMToken = 0;
+    let usersWithMovies = 0;
+    let totalMoviesChecked = 0;
 
     for (const userDoc of usersSnapshot.docs) {
       const uid = userDoc.id;
+      console.log(`[DEBUG] Processing user: ${uid}`);
       
       try {
         // Buscar FCM token do utilizador
         const fcmTokenDoc = await db.doc(`users/${uid}/meta/fcmToken`).get();
         if (!fcmTokenDoc.exists) {
+          console.log(`[DEBUG] User ${uid}: No FCM token document found, skipping`);
           continue; // Utilizador sem FCM token
         }
         
         const fcmToken = fcmTokenDoc.data().token;
         if (!fcmToken) {
+          console.log(`[DEBUG] User ${uid}: FCM token document exists but token is empty, skipping`);
           continue; // Token vazio
         }
+
+        usersWithFCMToken++;
+        console.log(`[DEBUG] User ${uid}: FCM token found (${fcmToken.substring(0, 20)}...)`);
 
         // Buscar filmes seguidos pelo utilizador (following_movies, não movies)
         const moviesSnapshot = await db.collection(`users/${uid}/following_movies`).get();
         const movies = moviesSnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        
+        console.log(`[DEBUG] User ${uid}: Found ${movies.length} movies in following_movies`);
+        
+        if (movies.length === 0) {
+          console.log(`[DEBUG] User ${uid}: No movies to check, skipping`);
+          continue;
+        }
+
+        usersWithMovies++;
+        totalMoviesChecked += movies.length;
+
+        // Log detalhado de cada filme
+        console.log(`[DEBUG] User ${uid}: Checking ${movies.length} movies:`);
+        movies.forEach(movie => {
+          console.log(`[DEBUG]   - Movie ${movie.id} (${movie.title}): release_date="${movie.release_date}", releaseNotified=${movie.releaseNotified || false}`);
+        });
 
         // Filtrar filmes que saem hoje e ainda não foram notificados
         const moviesReleasingToday = movies.filter(movie => {
-          if (!movie.release_date) return false;
+          if (!movie.release_date) {
+            console.log(`[DEBUG]   Movie ${movie.id}: No release_date, skipping`);
+            return false;
+          }
           // Se já foi notificado, não enviar novamente
-          if (movie.releaseNotified) return false;
+          if (movie.releaseNotified) {
+            console.log(`[DEBUG]   Movie ${movie.id}: Already notified (releaseNotified=true), skipping`);
+            return false;
+          }
           const releaseDate = movie.release_date.split('T')[0];
-          return releaseDate === todayStr;
+          const matches = releaseDate === todayStr;
+          console.log(`[DEBUG]   Movie ${movie.id}: releaseDate="${releaseDate}" === todayStr="${todayStr}" ? ${matches}`);
+          return matches;
         });
+
+        console.log(`[DEBUG] User ${uid}: Found ${moviesReleasingToday.length} movies releasing today`);
 
         // Enviar notificação para cada filme
         for (const movie of moviesReleasingToday) {
           try {
+            console.log(`[DEBUG] User ${uid}: Preparing to send notification for movie ${movie.id} (${movie.title})`);
+            
             const message = {
               notification: {
                 title: '🎬 Movie Released Today!',
@@ -103,6 +143,7 @@ export default async function handler(req, res) {
             try {
               const movieRef = db.doc(`users/${uid}/following_movies/${movie.id}`);
               await movieRef.update({ releaseNotified: true });
+              console.log(`[DEBUG] User ${uid}: Marked movie ${movie.id} as notified in Firestore`);
             } catch (markError) {
               console.warn(`[Push Notifications] Failed to mark movie ${movie.id} as notified:`, markError);
             }
@@ -130,11 +171,24 @@ export default async function handler(req, res) {
       }
     }
 
+    // Log resumo final
+    console.log(`[DEBUG] Summary:`);
+    console.log(`[DEBUG]   - Total users: ${usersSnapshot.size}`);
+    console.log(`[DEBUG]   - Users with FCM token: ${usersWithFCMToken}`);
+    console.log(`[DEBUG]   - Users with movies: ${usersWithMovies}`);
+    console.log(`[DEBUG]   - Total movies checked: ${totalMoviesChecked}`);
+    console.log(`[DEBUG]   - Notifications sent: ${notificationsSent}`);
+
     const response = {
       success: true,
       date: todayStr,
       notificationsSent,
-      usersProcessed: usersSnapshot.size
+      usersProcessed: usersSnapshot.size,
+      debug: {
+        usersWithFCMToken,
+        usersWithMovies,
+        totalMoviesChecked
+      }
     };
 
     if (errors.length > 0) {
