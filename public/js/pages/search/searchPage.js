@@ -400,10 +400,25 @@ export async function initSearchPage() {
     currentPage: window.location.pathname
   });
 
+  // Mostrar/esconder layouts baseado no app mode
+  const appLayout = document.getElementById("appLayout");
+  const desktopLayout = document.getElementById("desktopLayout");
+  
   if (appMode) {
+    // Mostrar app layout e esconder desktop layout
+    if (appLayout) {
+      appLayout.style.display = 'flex';
+    }
+    if (desktopLayout) {
+      desktopLayout.style.display = 'none';
+    }
+    
+    console.log('🔍 [SEARCH DEBUG] App Mode - Layouts switched:', {
+      appLayoutDisplay: appLayout ? appLayout.style.display : null,
+      desktopLayoutDisplay: desktopLayout ? desktopLayout.style.display : null
+    });
+    
     // App Mode: pesquisa em tempo real
-    const appLayout = document.getElementById("appLayout");
-    const desktopLayout = document.getElementById("desktopLayout");
     const searchInput = document.getElementById("searchInput");
     const searchBarContainer = searchInput?.closest('.fixed');
     
@@ -486,6 +501,19 @@ export async function initSearchPage() {
       }
     });
   } else {
+    // Mostrar desktop layout e esconder app layout
+    if (appLayout) {
+      appLayout.style.display = 'none';
+    }
+    if (desktopLayout) {
+      desktopLayout.style.display = 'block';
+    }
+    
+    console.log('🔍 [SEARCH DEBUG] Desktop Mode - Layouts switched:', {
+      appLayoutDisplay: appLayout ? appLayout.style.display : null,
+      desktopLayoutDisplay: desktopLayout ? desktopLayout.style.display : null
+    });
+    
     // Desktop: código original exatamente como estava
     const query = getQueryFromURL();
     const queryDisplay = document.getElementById("searchQuery");
