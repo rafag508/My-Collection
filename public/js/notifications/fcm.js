@@ -82,11 +82,19 @@ async function requestPermission() {
       if (fcmToken) {
         // Gerar deviceId e guardar token
         try {
+          // Verificar se não está em modo convidado antes de guardar
+          const { isGuestMode } = await import("../modules/guestMode.js");
+          if (isGuestMode()) {
+            console.warn('[FCM] Guest mode - token not saved to Firestore');
+            return;
+          }
+          
           const deviceId = await generateDeviceId();
           await saveFCMTokenToFirestore(fcmToken, deviceId);
-          console.log(`FCM Token saved to Firestore (device: ${deviceId.substring(0, 8)}...)`);
+          console.log(`[FCM] Token saved to Firestore (device: ${deviceId.substring(0, 8)}...)`);
         } catch (err) {
-          console.warn('Failed to save FCM token to Firestore:', err);
+          console.error('[FCM] Failed to save FCM token to Firestore:', err);
+          console.error('[FCM] Error details:', err.message, err.stack);
         }
       }
     } else {
