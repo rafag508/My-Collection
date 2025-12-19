@@ -1,6 +1,8 @@
 // src/ui/bottomNav.js
 // Bottom Navigation para modo app (PWA standalone)
 
+import { getNotifications } from "../modules/notifications.js";
+
 export function renderBottomNav() {
   // Só renderizar se ainda não existe
   if (document.getElementById('bottom-nav')) return;
@@ -21,15 +23,45 @@ export function renderBottomNav() {
 
   nav.innerHTML = items.map(item => {
     const isActive = item.pages.includes(currentPage);
+    const hasBadge = item.id === 'profile';
     return `
       <a href="${item.href}" class="bottom-nav-item ${isActive ? 'active' : ''}" data-nav="${item.id}">
-        ${getIcon(item.icon, isActive)}
+        <div class="relative">
+          ${getIcon(item.icon, isActive)}
+          ${hasBadge ? '<span id="bottomNavProfileBadge" class="hidden absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-red-500 text-[10px] leading-4 text-center font-semibold text-white">0</span>' : ''}
+        </div>
         <span>${item.label}</span>
       </a>
     `;
   }).join('');
 
   document.body.appendChild(nav);
+  
+  // Atualizar badge do Profile
+  updateProfileBadge();
+  
+  // Escutar eventos de atualização de notificações
+  document.addEventListener("notificationsUpdated", updateProfileBadge);
+  document.addEventListener("notificationsSynced", updateProfileBadge);
+}
+
+/**
+ * Atualiza o badge do Profile no bottomNav
+ */
+async function updateProfileBadge() {
+  try {
+    const badge = document.getElementById('bottomNavProfileBadge');
+    if (!badge) return;
+    
+    const list = await getNotifications();
+    const unreadCount = list.filter(n => !n.read).length;
+    const show = unreadCount > 0;
+    
+    badge.textContent = String(unreadCount);
+    badge.classList.toggle('hidden', !show);
+  } catch (err) {
+    console.warn('Failed to update profile badge:', err);
+  }
 }
 
 function getIcon(type, isActive) {

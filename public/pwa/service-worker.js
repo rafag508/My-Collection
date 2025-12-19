@@ -52,6 +52,45 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
+// Receber push notifications
+self.addEventListener('push', (event) => {
+  const data = event.data ? event.data.json() : {};
+  const title = data.notification?.title || 'My Collection';
+  const options = {
+    body: data.notification?.body || 'You have a new notification',
+    icon: data.notification?.icon || '/favicon.ico',
+    badge: '/favicon.ico',
+    tag: 'my-collection-notification',
+    data: data
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
+
+// Lidar com cliques em notificações
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  
+  const urlToOpen = '/notifications.html';
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      // Se já há uma janela aberta, focar nela
+      for (const client of clientList) {
+        if (client.url === urlToOpen && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      // Se não há janela aberta, abrir uma nova
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
+  );
+});
+
 // Interceptar requests
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);

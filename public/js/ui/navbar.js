@@ -4,6 +4,7 @@ import { getNotifications } from "../modules/notifications.js";
 import { t as translate } from "../modules/idioma.js";
 import { getUserPreferencesFirestore } from "../firebase/firestore.js";
 import { isGuestMode, disableGuestMode } from "../modules/guestMode.js";
+import { setBadge } from "../notifications/index.js";
 
 // ✅ Import dinâmico do módulo PWA (para compatibilidade com Firefox)
 let initInstallButton, setupInstallPrompt, isInstalled;
@@ -382,6 +383,9 @@ export function renderNavbar() {
         menuBadge.textContent = text;
         menuBadge.classList.toggle("hidden", !show);
       }
+      
+      // Atualizar Badge API (ícone da app instalada)
+      await setBadge(unreadCount);
     } catch (err) {
       console.warn("Failed to load notifications count:", err);
     }

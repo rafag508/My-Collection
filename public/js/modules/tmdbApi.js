@@ -1,7 +1,17 @@
 // public/js/modules/tmdbApi.js
 // ✅ API KEY removida - agora usa Vercel Serverless Functions proxy
 
-const LANGUAGE = "en-US";
+import { getLanguage } from "./idioma.js";
+
+// Função para obter o código de idioma do TMDB baseado no idioma do utilizador
+function getTmdbLanguage() {
+  const userLang = getLanguage();
+  // Mapear idioma do utilizador para código do TMDB
+  if (userLang === "pt") {
+    return "pt-PT"; // Português de Portugal
+  }
+  return "en-US"; // Padrão: inglês
+}
 
 // Base genérico para construir URLs de imagem em diferentes resoluções
 export const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p";
@@ -47,7 +57,7 @@ async function callTmdbProxy(endpoint, params = {}) {
 export async function searchMovies(query, page = 1) {
   try {
     const data = await callTmdbProxy("search/movie", {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
       query: encodeURIComponent(query),
       page: page.toString(),
     });
@@ -80,7 +90,7 @@ export async function searchMovies(query, page = 1) {
 export async function getMovieDetails(movieId) {
   try {
     const data = await callTmdbProxy(`movie/${movieId}`, {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
     });
 
     const posterPath = data.poster_path || null;
@@ -115,7 +125,7 @@ export async function getMovieDetails(movieId) {
 export async function getMovieVideos(movieId) {
   try {
     const data = await callTmdbProxy(`movie/${movieId}/videos`, {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
     });
     
     if (!data.results || !Array.isArray(data.results)) {
@@ -148,7 +158,7 @@ export async function getMovieVideos(movieId) {
 export async function getSeriesVideos(seriesId) {
   try {
     const data = await callTmdbProxy(`tv/${seriesId}/videos`, {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
     });
     
     if (!data.results || !Array.isArray(data.results)) {
@@ -181,7 +191,7 @@ export async function getSeriesVideos(seriesId) {
 export async function getPopularMovies(page = 1) {
   try {
     const data = await callTmdbProxy("movie/popular", {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
       page: page.toString(),
     });
     
@@ -224,7 +234,7 @@ export async function getUpcomingMovies(page = 1, dateFrom = null, dateTo = null
       // Buscar páginas até ter filmes suficientes para a página solicitada
       while (allFilteredResults.length < (page * PAGE_SIZE) && currentApiPage <= maxApiPages) {
         const upcomingParams = {
-          language: LANGUAGE,
+          language: getTmdbLanguage(),
           region: 'US',
           page: currentApiPage.toString(),
         };
@@ -305,7 +315,7 @@ export async function getUpcomingMovies(page = 1, dateFrom = null, dateTo = null
     // Fallback para discover/movie se /movie/upcoming não devolver resultados suficientes
     const today = dateFrom || new Date().toISOString().split('T')[0];
     const discoverParams = {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
       region: 'US',
       page: page.toString(),
       sort_by: 'primary_release_date.asc',
@@ -386,7 +396,7 @@ export async function discoverMovies(page = 1, filters = {}) {
     }
 
     const params = {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
       page: page.toString(),
       sort_by: 'popularity.desc',
     };
@@ -452,7 +462,7 @@ export async function discoverMovies(page = 1, filters = {}) {
 export async function searchSeries(query, page = 1) {
   try {
     const data = await callTmdbProxy("search/tv", {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
       query: encodeURIComponent(query),
       page: page.toString(),
     });
@@ -485,7 +495,7 @@ export async function searchSeries(query, page = 1) {
 export async function getSeriesDetails(seriesId) {
   try {
     const data = await callTmdbProxy(`tv/${seriesId}`, {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
     });
 
     const posterPath = data.poster_path || null;
@@ -536,7 +546,7 @@ export async function getSeriesDetails(seriesId) {
 export async function getSeasonEpisodes(seriesId, seasonNumber) {
   try {
     const data = await callTmdbProxy(`tv/${seriesId}/season/${seasonNumber}`, {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
     });
     if (!data.episodes || !Array.isArray(data.episodes)) return [];
 
@@ -614,7 +624,7 @@ export async function importFullSeries(seriesId) {
 export async function getPopularSeries(page = 1) {
   try {
     const params = {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
       page: page.toString(),
       sort_by: "popularity.desc",
       without_genres: "99,10770",
@@ -651,7 +661,7 @@ export async function getPopularSeries(page = 1) {
 export async function getSeriesGenres() {
   try {
     const data = await callTmdbProxy("genre/tv/list", {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
     });
     return data.genres || [];
   } catch (err) {
@@ -666,7 +676,7 @@ export async function getSeriesGenres() {
 export async function discoverSeries(page = 1, filters = {}) {
   try {
     const params = {
-      language: LANGUAGE,
+      language: getTmdbLanguage(),
       page: page.toString(),
       sort_by: "popularity.desc",
     };

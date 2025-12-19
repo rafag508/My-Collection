@@ -12,6 +12,8 @@ import { protectPage } from "./firebase/auth.js";
 import { loadUserPreferences } from "./modules/idioma.js";
 import { isGuestMode, isProtectedPage } from "./modules/guestMode.js";
 import { renderBottomNav } from "./ui/bottomNav.js";
+import { setBadge, initFCM } from "./notifications/index.js";
+import { getNotifications } from "./modules/notifications.js";
 
 // Evita misturar com outras implementações antigas: usamos apenas a modular app
 function getPageName() {
@@ -215,9 +217,38 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Inicializar Badge API e FCM
+async function initNotifications() {
+  // Inicializar FCM (Push Notifications)
+  try {
+    await initFCM();
+  } catch (err) {
+    console.warn('Failed to initialize FCM:', err);
+  }
+  
+  // Atualizar Badge API quando notificações mudarem
+  const updateBadge = async () => {
+    try {
+      const list = await getNotifications();
+      const unreadCount = list.filter(n => !n.read).length;
+      await setBadge(unreadCount);
+    } catch (err) {
+      console.warn('Failed to update badge:', err);
+    }
+  };
+  
+  // Atualizar badge inicialmente
+  updateBadge();
+  
+  // Escutar eventos de atualização de notificações
+  document.addEventListener("notificationsUpdated", updateBadge);
+  document.addEventListener("notificationsSynced", updateBadge);
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   setFavicon();
   renderBottomNav(); // Renderizar bottom navigation para app mode
+  initNotifications(); // Inicializar Badge API e FCM
   bootstrap();
 });
 

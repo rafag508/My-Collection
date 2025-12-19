@@ -37,9 +37,9 @@ export default async function handler(req, res) {
 
     // Adicionar parâmetros fixos
     queryParams.append("api_key", TMDB_API_KEY);
-    queryParams.append("language", "en-US");
 
     // Adicionar parâmetros do cliente (suporta chaves com pontos como "vote_count.gte")
+    // O idioma virá do cliente através do parâmetro 'language'
     if (params && typeof params === "object") {
       Object.keys(params).forEach((key) => {
         const value = params[key];
@@ -47,6 +47,11 @@ export default async function handler(req, res) {
           queryParams.append(key, String(value));
         }
       });
+    }
+    
+    // Se o cliente não enviou parâmetro de idioma, usar inglês como padrão
+    if (!params || !params.language) {
+      queryParams.append("language", "en-US");
     }
 
     const tmdbUrl = `${baseUrl}/${endpoint}?${queryParams.toString()}`;
