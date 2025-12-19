@@ -4,6 +4,7 @@ import { renderHero } from "../ui/hero.js";
 import { checkMovieReleases, getFollowingMovies } from "../modules/movies/followingMovies.js";
 import { getFollowingSeries, checkSeriesReleases } from "../modules/series/followingSeries.js";
 import { TMDB_IMAGE_BASE, getMovieDetails, getSeriesDetails } from "../modules/tmdbApi.js";
+import { t as translate } from "../modules/idioma.js";
 
 // Placeholder SVG para imagens que falham ao carregar
 const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='750'%3E%3Crect fill='%23374151' width='500' height='750'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='24' font-family='Arial'%3ENo Image%3C/text%3E%3C/svg%3E";
@@ -183,7 +184,7 @@ async function renderUpcomingHero() {
                 data-hero-more
                 class="inline-flex items-center gap-2 rounded-full bg-transparent border border-white/50 px-4 py-2 text-sm font-semibold text-white/90 hover:bg-white/10 transition-colors"
               >
-                Ver detalhes
+                ${translate("viewDetails")}
               </button>
             </div>
           </div>

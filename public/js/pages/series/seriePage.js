@@ -194,7 +194,7 @@ async function renderSerieInfo() {
     const total = seasons.reduce((a, s) => a + (Array.isArray(s.episodes) ? s.episodes.length : 0), 0);
     const watched = Object.values(progress?.watched || {}).filter(Boolean).length;
     const percent = total > 0 ? Math.round((watched / total) * 100) : 0;
-    progressText = total > 0 ? `Progress: ${watched}/${total} episodes (${percent}%)` : "No episodes available";
+    progressText = total > 0 ? `${translate("progress")}: ${watched}/${total} ${translate("episodes")} (${percent}%)` : translate("noEpisodesAvailable");
   }
 
   // Detectar app mode
@@ -242,18 +242,18 @@ async function renderSerieInfo() {
 
         <!-- Sinopse -->
         <p class="text-gray-400 mb-6 text-xl leading-relaxed">
-          ${serie.description || "No description available."}
+          ${serie.description || translate("noDescriptionAvailable")}
         </p>
 
         <!-- Info: Year, Status, Genre -->
         <div class="mb-6 text-xl text-gray-400 space-y-2">
-          <div><span class="font-semibold text-white">Year:</span> ${serie.year}</div>
+          <div><span class="font-semibold text-white">${translate("year")}:</span> ${serie.year}</div>
           <div>
-            <span class="font-semibold text-white">TV Status:</span>
+            <span class="font-semibold text-white">${translate("tvStatus")}:</span>
             <span class="${serie.status === "On Display" ? "text-green-400" : "text-red-500"}"> ${serie.status}</span>
           </div>
           ${serie.genres && serie.genres.length > 0
-            ? `<div><span class="font-semibold text-white">Genre:</span> ${serie.genres.join(", ")}</div>`
+            ? `<div><span class="font-semibold text-white">${translate("genre")}:</span> ${serie.genres.join(", ")}</div>`
             : ""}
         </div>
 
@@ -327,17 +327,17 @@ async function renderSerieInfo() {
           </h1>
 
           <p class="text-gray-400 mb-4 max-w-2xl">
-            ${serie.description || "No description available."}
+            ${serie.description || translate("noDescriptionAvailable")}
           </p>
 
           <div class="mt-4 text-sm text-gray-400 flex items-center gap-3">
-            <span><span class="font-semibold text-white">• Year:</span> ${serie.year}</span>
+            <span><span class="font-semibold text-white">• ${translate("year")}:</span> ${serie.year}</span>
             <span>
-              <span class="font-semibold text-white">• TV Status:</span>
+              <span class="font-semibold text-white">• ${translate("tvStatus")}:</span>
               <span class="${serie.status === "On Display" ? "text-green-400" : "text-red-500"}"> ${serie.status}</span>
             </span>
             ${serie.genres && serie.genres.length > 0
-              ? `<span><span class="font-semibold text-white">• Genre:</span> ${serie.genres.join(", ")}</span>`
+              ? `<span><span class="font-semibold text-white">• ${translate("genre")}:</span> ${serie.genres.join(", ")}</span>`
               : ""}
           </div>
 
@@ -352,7 +352,7 @@ async function renderSerieInfo() {
             ${!fromAllSeries && serie.status === "On Display" ? `
             <button id="followToggleBtn"
               class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold">
-              ${isFollowingSerie ? "Unfollow" : "Follow"}
+              ${isFollowingSerie ? translate("unfollow") : translate("follow")}
             </button>
             ` : ""}
 
@@ -402,6 +402,13 @@ async function renderSerieInfo() {
     }, 0);
   }
 
+  // Atualizar textos quando o idioma mudar
+  document.addEventListener("languageChanged", () => {
+    renderSerieInfo();
+    if (!fromAllSeries) {
+      renderSeasons();
+    }
+  });
 }
 
 /* ============================================================
@@ -415,7 +422,7 @@ function renderSeasons() {
   const seasons = Array.isArray(serie.seasons) ? serie.seasons : [];
   
   if (seasons.length === 0) {
-    container.innerHTML = `<p class="text-gray-400 text-center py-8">No seasons available. The series data will be loaded from TMDB.</p>`;
+    container.innerHTML = `<p class="text-gray-400 text-center py-8">${translate("noSeasonsAvailable")}</p>`;
     return;
   }
 
@@ -430,7 +437,7 @@ function renderSeasons() {
             class="w-full flex justify-between items-center px-4 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg"
             onclick="toggleSeason(${season.number})"
           >
-            <span class="text-lg font-semibold">Season ${season.number}</span>
+            <span class="text-lg font-semibold">${translate("season")} ${season.number}</span>
             <span class="text-2xl">${isOpen ? "↑" : "↓"}</span>
           </button>
 
@@ -502,7 +509,7 @@ function updateProgressInfo() {
 
   const el = document.getElementById("progressInfo");
   if (el) {
-    el.innerText = `Progress: ${watched}/${total} episodes (${percent}%)`;
+    el.innerText = `${translate("progress")}: ${watched}/${total} ${translate("episodes")} (${percent}%)`;
     el.style.display = "block"; // Garantir que está visível
     el.style.visibility = "visible"; // Garantir visibilidade
     el.style.opacity = "1"; // Garantir opacidade
@@ -560,7 +567,7 @@ async function toggleFavorite() {
     }
   } catch (err) {
     console.error("Erro ao alternar favorito da série:", err);
-    alert("Error updating favorites. Please try again.");
+    alert(translate("errorUpdatingFavorites"));
   }
 }
 
@@ -573,18 +580,18 @@ async function toggleFollowSerie() {
     if (isFollowingSerie) {
       await removeSerieFromFollowing(followKey);
       isFollowingSerie = false;
-      toastSuccess("Removed from following");
+      toastSuccess(translate("removedFromFollowing"));
     } else {
       await addSerieToFollowing(serie);
       isFollowingSerie = true;
-      toastSuccess("Added to following");
+      toastSuccess(translate("addedToFollowing"));
     }
 
     // Re-renderizar header para atualizar texto do botão
     renderSerieInfo();
   } catch (err) {
     console.error("Erro ao alternar following da série:", err);
-    alert("Error updating following list. Please try again.");
+    alert(translate("errorUpdatingFollowing"));
   }
 }
 

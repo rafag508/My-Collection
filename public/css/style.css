@@ -2156,20 +2156,3 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
 
 }
 
-/* Debug indicator - temporário */
-@media (display-mode: standalone), (max-width: 768px) {
-  body[data-page="serie"]::before,
-  body[data-page="movie"]::before,
-  body[data-page="allmovie"]::before,
-  body[data-page="allserie"]::before {
-    content: 'APP MODE ACTIVE' !important;
-    position: fixed !important;
-    top: 100px !important;
-    left: 10px !important;
-    background: red !important;
-    color: white !important;
-    padding: 10px !important;
-    z-index: 9999 !important;
-    font-size: 20px !important;
-  }
-}

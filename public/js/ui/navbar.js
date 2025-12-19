@@ -44,8 +44,8 @@ export function renderNavbar() {
   if (currentPage === "movies.html") searchPlaceholder = translate("searchMovies");
   else if (currentPage === "series.html") searchPlaceholder = translate("searchSeries");
 
-  const showSearch = currentPage !== "serie.html";
-  const showTitle = currentPage !== "serie.html";
+  const showSearch = currentPage !== "serie.html" && currentPage !== "movie.html";
+  const showTitle = currentPage !== "serie.html" && currentPage !== "movie.html";
   
   // Determinar cor do botão "More" baseado na origem
   let moreButtonColor = "hover:text-blue-400";

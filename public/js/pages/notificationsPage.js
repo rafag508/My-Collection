@@ -58,6 +58,10 @@ export async function initNotificationsPage() {
   await renderNotifications(listEl, allNotifications);
   pagination.render("notificationsPaginationTop", "notificationsPagination");
 
+  // Atualizar textos do HTML quando o idioma mudar
+  updatePageTexts();
+  document.addEventListener("languageChanged", updatePageTexts);
+
   // 1.5️⃣ Marcar como lidas ao abrir
   const updatedNotifications = await markAllAsRead();
   if (updatedNotifications && updatedNotifications.length > 0) {
@@ -139,11 +143,23 @@ export async function initNotificationsPage() {
   }
 }
 
+function updatePageTexts() {
+  const titleEl = document.querySelector('h1[data-i18n="notificationsTitle"]');
+  if (titleEl) {
+    titleEl.textContent = translate("notificationsTitle");
+  }
+  
+  const clearBtn = document.getElementById("clearNotificationsBtn");
+  if (clearBtn) {
+    clearBtn.textContent = translate("clearAll");
+  }
+}
+
 async function renderNotifications(container, notifs) {
   if (!notifs || notifs.length === 0) {
     container.innerHTML = `
       <p class="text-gray-400 text-sm">
-        No notifications yet. When new episodes are added to your series, they will appear here.
+        ${translate("noNotificationsYet")}
       </p>`;
     return;
   }
@@ -174,7 +190,7 @@ async function renderNotifications(container, notifs) {
           }
         }
 
-        const movieTitle = n.movieTitle || movie?.title || "Unknown movie";
+        const movieTitle = n.movieTitle || movie?.title || translate("unknownMovie");
 
         return `
           <article class="bg-gray-900 border border-white/10 rounded-xl overflow-hidden hover:border-blue-500/50 transition-all duration-200">
@@ -214,20 +230,16 @@ async function renderNotifications(container, notifs) {
 
         const FALLBACK_POSTER = "./assets/icons/mc-icon-green.svg";
         const posterUrl = n.seriePoster || poster || FALLBACK_POSTER;
-        const serieName = n.serieName || serie?.title || "Unknown series";
+        const serieName = n.serieName || serie?.title || translate("unknownSeries");
 
         const seasonNum = n.season != null ? n.season : null;
         const episodeNum = n.episode != null ? n.episode : null;
 
-        // Detetar idioma atual (definido pelo módulo de idioma)
-        const htmlLang = (document.documentElement && document.documentElement.lang) || "en";
-        const isPT = htmlLang.startsWith("pt");
-
         // Palavra "Season" traduzida conforme idioma
-        const seasonWord = isPT ? "Temporada" : "Season";
+        const seasonWord = translate("season");
         const seasonLabel = seasonNum != null ? `${seasonWord} ${seasonNum}` : `${seasonWord} ?`;
 
-        const episodeTitle = n.episodeName || (episodeNum != null ? `Episode ${episodeNum}` : "Episode");
+        const episodeTitle = n.episodeName || (episodeNum != null ? `${translate("episodeTitle")} ${episodeNum}` : translate("episodeTitle"));
         const episodeLine =
           episodeNum != null ? `Ep.${episodeNum} - ${episodeTitle}` : episodeTitle;
 
@@ -322,7 +334,7 @@ async function renderNotifications(container, notifs) {
 
           return `
             <div class="mt-3">
-              <p class="text-sm font-semibold text-blue-300 mb-2">Season ${season}</p>
+              <p class="text-sm font-semibold text-blue-300 mb-2">${translate("season")} ${season}</p>
               <div class="grid grid-cols-2 gap-4">
                 <ul class="space-y-0">
                   ${firstColHtml}
@@ -351,12 +363,12 @@ async function renderNotifications(container, notifs) {
                 onerror="this.onerror=null;this.src='${FALLBACK_POSTER}'"
               />
               <h2 class="font-bold text-lg text-white mb-1 line-clamp-2">${serieName}</h2>
-              <p class="text-xs text-gray-400 mb-2">${episodeCount} ${episodeCount === 1 ? "episode" : "episodes"} added</p>
+              <p class="text-xs text-gray-400 mb-2">${episodeCount} ${episodeCount === 1 ? translate("episode") : translate("episodes")} ${translate("episodesAdded")}</p>
               <p class="text-xs text-gray-500">${date || ""}</p>
             </div>
 
             <div class="w-full md:w-3/4 p-4">
-              ${seasonsHtml || `<p class="text-gray-400 text-sm">No episodes listed.</p>`}
+              ${seasonsHtml || `<p class="text-gray-400 text-sm">${translate("noEpisodesListed")}</p>`}
             </div>
           </div>
         </article>`;

@@ -5,10 +5,14 @@ import { getAllMovies } from "../modules/movies/moviesDataManager.js";
 import { loadProgress as loadSeriesProgress, countWatchedEpisodes, isSerieCompletelyWatched } from "../modules/series/seriesProgress.js";
 import { loadProgress as loadMoviesProgress } from "../modules/movies/moviesProgress.js";
 import { storageService } from "../modules/storageService.js";
+import { t as translate } from "../modules/idioma.js";
 
 // rough averages for time estimates
 const EPISODE_AVG_MIN = 45;
 const MOVIE_AVG_MIN = 120;
+
+let currentSeriesStats = null;
+let currentMovieStats = null;
 
 export async function initStatsPage() {
   renderNavbar();
@@ -32,6 +36,9 @@ export async function initStatsPage() {
   const seriesStats = await computeSeriesStats(Array.isArray(localSeries) ? localSeries : [], localSeriesProgress || {});
   const movieStats = await computeMovieStats(Array.isArray(localMovies) ? localMovies : [], moviesWatchedMap);
 
+  currentSeriesStats = seriesStats;
+  currentMovieStats = movieStats;
+
   renderStats(root, seriesStats, movieStats);  // ⚡ Renderiza IMEDIATAMENTE
 
   // 2️⃣ SINCRONIZAR EM BACKGROUND E ATUALIZAR (não bloqueia)
@@ -52,11 +59,21 @@ export async function initStatsPage() {
     const updatedSeriesStats = await computeSeriesStats(series || [], progressMap || {});
     const updatedMovieStats = await computeMovieStats(movies || [], updatedMoviesWatchedMap);
 
+    currentSeriesStats = updatedSeriesStats;
+    currentMovieStats = updatedMovieStats;
+
     renderStats(root, updatedSeriesStats, updatedMovieStats);
   } catch (err) {
     console.error("Error loading stats:", err);
     // Não substituir a UI - já está renderizada com cache
   }
+
+  // Atualizar textos quando o idioma mudar
+  document.addEventListener("languageChanged", () => {
+    if (currentSeriesStats && currentMovieStats) {
+      renderStats(root, currentSeriesStats, currentMovieStats);
+    }
+  });
 }
 
 async function computeSeriesStats(series, progressMap) {
@@ -164,46 +181,46 @@ function renderStats(root, seriesStats, movieStats) {
   const m = movieStats;
 
   root.innerHTML = `
-    <h1 class="text-3xl font-extrabold mb-6">Stats</h1>
+    <h1 class="text-3xl font-extrabold mb-6">${translate("statsTitle")}</h1>
 
     <div class="grid md:grid-cols-2 gap-6">
       <!-- Series -->
       <section class="bg-gray-900 border border-white/10 rounded-2xl p-5">
-        <h2 class="text-xl font-bold mb-4 text-green-400">Series</h2>
+        <h2 class="text-xl font-bold mb-4 text-green-400">${translate("tvShows")}</h2>
 
         <div class="space-y-4 text-sm">
           <div class="border-t border-white/10 pt-3">
-            <p class="font-semibold mb-1">Total added</p>
+            <p class="font-semibold mb-1">${translate("totalAdded")}</p>
             <p class="text-2xl font-extrabold">${s.totalSeries}</p>
-            <p class="mt-1 text-gray-300">${s.stillWatching} still watching</p>
+            <p class="mt-1 text-gray-300">${s.stillWatching} ${translate("stillWatching")}</p>
           </div>
 
           <div class="border-t border-white/10 pt-3">
-            <p class="font-semibold mb-1">Total episodes watched</p>
+            <p class="font-semibold mb-1">${translate("totalEpisodesWatched")}</p>
             <p class="text-2xl font-extrabold">${s.episodesWatched}</p>
-            <p class="mt-1 text-gray-400">${s.episodesLast7Days} in the last 7 days</p>
+            <p class="mt-1 text-gray-400">${s.episodesLast7Days} ${translate("inTheLast7Days")}</p>
           </div>
 
           <div class="border-t border-white/10 pt-3">
-            <p class="font-semibold mb-1">Time spent watching episodes</p>
+            <p class="font-semibold mb-1">${translate("timeSpentWatchingEpisodes")}</p>
             <p class="text-lg">
-              ${s.timeBreakdown.months} months
-              ${s.timeBreakdown.days} days
-              ${s.timeBreakdown.hours} hours
-              <span class="text-gray-400 ml-2">(${s.timeBreakdown.totalHours} hours)</span>
+              ${s.timeBreakdown.months} ${translate("months") || "meses"}
+              ${s.timeBreakdown.days} ${translate("days") || "dias"}
+              ${s.timeBreakdown.hours} ${translate("hours")}
+              <span class="text-gray-400 ml-2">(${s.timeBreakdown.totalHours} ${translate("hours")})</span>
             </p>
-            <p class="mt-1 text-gray-400">${s.hoursLast7Days} hours in the last 7 days</p>
+            <p class="mt-1 text-gray-400">${s.hoursLast7Days} ${translate("hours")} ${translate("inTheLast7Days")}</p>
           </div>
 
           <div class="border-t border-white/10 pt-3">
-            <p class="font-semibold mb-2">Main genres of series</p>
+            <p class="font-semibold mb-2">${translate("mainGenresOfSeries")}</p>
             ${
               s.genres.length === 0
-                ? `<p class="text-gray-400 text-xs">No genre data available yet.</p>`
+                ? `<p class="text-gray-400 text-xs">${translate("noGenreDataAvailable")}</p>`
                 : `
               <div class="grid grid-cols-[1fr_auto] gap-y-1 text-xs md:text-sm">
-                <div class="text-gray-400">Genre</div>
-                <div class="text-gray-400 text-right">Series</div>
+                <div class="text-gray-400">${translate("genreLabel")}</div>
+                <div class="text-gray-400 text-right">${translate("seriesLabel")}</div>
                 ${s.genres
                   .map(
                     g => `
@@ -219,41 +236,41 @@ function renderStats(root, seriesStats, movieStats) {
 
       <!-- Movies -->
       <section class="bg-gray-900 border border-white/10 rounded-2xl p-5">
-        <h2 class="text-xl font-bold mb-4 text-blue-400">Movies</h2>
+        <h2 class="text-xl font-bold mb-4 text-blue-400">${translate("movies")}</h2>
 
         <div class="space-y-4 text-sm">
           <div class="border-t border-white/10 pt-3">
-            <p class="font-semibold mb-1">Total added</p>
+            <p class="font-semibold mb-1">${translate("totalAdded")}</p>
             <p class="text-2xl font-extrabold">${m.totalMovies}</p>
             <p class="mt-1 text-gray-300">&nbsp;</p>
           </div>
 
           <div class="border-t border-white/10 pt-3">
-            <p class="font-semibold mb-1">Total movies watched</p>
+            <p class="font-semibold mb-1">${translate("totalMoviesWatched")}</p>
             <p class="text-2xl font-extrabold">${m.watchedMovies}</p>
-            <p class="mt-1 text-gray-400">${m.watchedLast7Days} in the last 7 days</p>
+            <p class="mt-1 text-gray-400">${m.watchedLast7Days} ${translate("inTheLast7Days")}</p>
           </div>
 
           <div class="border-t border-white/10 pt-3">
-            <p class="font-semibold mb-1">Time spent watching movies</p>
+            <p class="font-semibold mb-1">${translate("timeSpentWatchingMovies")}</p>
             <p class="text-lg">
-              ${m.timeBreakdown.months} months
-              ${m.timeBreakdown.days} days
-              ${m.timeBreakdown.hours} hours
-              <span class="text-gray-400 ml-2">(${m.timeBreakdown.totalHours} hours)</span>
+              ${m.timeBreakdown.months} ${translate("months") || "meses"}
+              ${m.timeBreakdown.days} ${translate("days") || "dias"}
+              ${m.timeBreakdown.hours} ${translate("hours")}
+              <span class="text-gray-400 ml-2">(${m.timeBreakdown.totalHours} ${translate("hours")})</span>
             </p>
-            <p class="mt-1 text-gray-400">${m.hoursLast7Days} hours in the last 7 days</p>
+            <p class="mt-1 text-gray-400">${m.hoursLast7Days} ${translate("hours")} ${translate("inTheLast7Days")}</p>
           </div>
 
           <div class="border-t border-white/10 pt-3">
-            <p class="font-semibold mb-2">Main genres of movies</p>
+            <p class="font-semibold mb-2">${translate("mainGenresOfMovies")}</p>
             ${
               m.genres.length === 0
-                ? `<p class="text-gray-400 text-xs">No genre data available yet.</p>`
+                ? `<p class="text-gray-400 text-xs">${translate("noGenreDataAvailable")}</p>`
                 : `
               <div class="grid grid-cols-[1fr_auto] gap-y-1 text-xs md:text-sm">
-                <div class="text-gray-400">Genre</div>
-                <div class="text-gray-400 text-right">Movies</div>
+                <div class="text-gray-400">${translate("genreLabel")}</div>
+                <div class="text-gray-400 text-right">${translate("moviesLabel")}</div>
                 ${m.genres
                   .map(
                     g => `

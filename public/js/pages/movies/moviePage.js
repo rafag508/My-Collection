@@ -173,14 +173,14 @@ async function renderMovieInfo() {
 
         <!-- Sinopse -->
         <p class="text-gray-400 mb-6 text-xl leading-relaxed">
-          ${movie.overview || movie.description || "No description available."}
+          ${movie.overview || movie.description || translate("noDescriptionAvailable")}
         </p>
 
         <!-- Info: Year, Genre -->
         <div class="mb-6 text-xl text-gray-400 space-y-2">
-          <div><span class="font-semibold text-white">Year:</span> ${movie.year}</div>
+          <div><span class="font-semibold text-white">${translate("year")}:</span> ${movie.year}</div>
           ${movie.genres && movie.genres.length > 0
-            ? `<div><span class="font-semibold text-white">Genre:</span> ${movie.genres.join(", ")}</div>`
+            ? `<div><span class="font-semibold text-white">${translate("genre")}:</span> ${movie.genres.join(", ")}</div>`
             : ""}
         </div>
 
@@ -235,13 +235,13 @@ async function renderMovieInfo() {
           </h1>
 
           <p class="text-gray-400 mb-4 max-w-2xl">
-            ${movie.overview || movie.description || "No description available."}
+            ${movie.overview || movie.description || translate("noDescriptionAvailable")}
           </p>
 
           <div class="mt-4 text-sm text-gray-400 flex items-center gap-3">
-            <span><span class="font-semibold text-white">• Year:</span> ${movie.year}</span>
+            <span><span class="font-semibold text-white">• ${translate("year")}:</span> ${movie.year}</span>
             ${movie.genres && movie.genres.length > 0
-              ? `<span><span class="font-semibold text-white">• Genre:</span> ${movie.genres.join(", ")}</span>`
+              ? `<span><span class="font-semibold text-white">• ${translate("genre")}:</span> ${movie.genres.join(", ")}</span>`
               : ""}
           </div>
 
@@ -283,6 +283,10 @@ async function renderMovieInfo() {
       favoriteBtn.addEventListener("click", toggleFavorite);
     }
 
+  // Atualizar textos quando o idioma mudar
+  document.addEventListener("languageChanged", () => {
+    renderMovieInfo();
+  });
 }
 
 async function toggleWatched() {
@@ -342,7 +346,7 @@ async function toggleFavorite() {
     }
   } catch (err) {
     console.error("Erro ao alternar favorito do filme:", err);
-    alert("Error updating favorites. Please try again.");
+    alert(translate("errorUpdatingFavorites"));
   }
 }
 
