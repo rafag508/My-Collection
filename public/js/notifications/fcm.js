@@ -63,16 +63,11 @@ async function requestPermission() {
       });
       
       if (fcmToken) {
-        // Verificar se o token já existe no Firestore
+        // Gerar deviceId e guardar token
         try {
-          const existingToken = await getFCMTokenFromFirestore();
-          
-          // Só guardar se for a primeira vez ou se o token mudou
-          if (!existingToken || existingToken !== fcmToken) {
-            await saveFCMTokenToFirestore(fcmToken);
-            console.log('FCM Token saved to Firestore' + (existingToken ? ' (token updated)' : ' (first time)'));
-          }
-          // Se o token for o mesmo, não fazer nada (evita writes desnecessários)
+          const deviceId = await generateDeviceId();
+          await saveFCMTokenToFirestore(fcmToken, deviceId);
+          console.log(`FCM Token saved to Firestore (device: ${deviceId.substring(0, 8)}...)`);
         } catch (err) {
           console.warn('Failed to save FCM token to Firestore:', err);
         }

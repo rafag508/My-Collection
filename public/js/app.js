@@ -246,11 +246,25 @@ async function initNotifications() {
   document.addEventListener("notificationsSynced", updateBadge);
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
   setFavicon();
   renderBottomNav(); // Renderizar bottom navigation para app mode
   initNotifications(); // Inicializar Badge API e FCM
   initDebugButton(); // Inicializar botão de debug
+  
+  // Verificar lançamentos de filmes e séries em todas as páginas
+  // Executar após um pequeno delay para garantir que tudo está carregado
+  setTimeout(async () => {
+    try {
+      const { checkMovieReleases } = await import("./modules/movies/followingMovies.js");
+      const { checkSeriesReleases } = await import("./modules/series/followingSeries.js");
+      await checkMovieReleases();
+      await checkSeriesReleases();
+    } catch (err) {
+      console.warn("Failed to check movie/series releases:", err);
+    }
+  }, 1000);
+  
   bootstrap();
 });
 

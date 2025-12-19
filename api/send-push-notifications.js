@@ -130,21 +130,35 @@ export default async function handler(req, res) {
       console.log(`[DEBUG] Processing user: ${uid}`);
       
       try {
-        // Buscar FCM token do utilizador
-        const fcmTokenDoc = await db.doc(`users/${uid}/meta/fcmToken`).get();
-        if (!fcmTokenDoc.exists) {
-          console.log(`[DEBUG] User ${uid}: No FCM token document found, skipping`);
-          continue; // Utilizador sem FCM token
+        // Buscar FCM tokens do utilizador (novo formato: array de tokens)
+        const fcmTokensDoc = await db.doc(`users/${uid}/meta/fcmTokens`).get();
+        
+        // Fallback para formato antigo (compatibilidade)
+        let fcmTokens = [];
+        if (fcmTokensDoc.exists) {
+          const tokensData = fcmTokensDoc.data();
+          if (Array.isArray(tokensData.tokens)) {
+            fcmTokens = tokensData.tokens.map(t => t.token).filter(Boolean);
+          }
+        } else {
+          // Tentar formato antigo (fcmToken singular)
+          const fcmTokenDocOld = await db.doc(`users/${uid}/meta/fcmToken`).get();
+          if (fcmTokenDocOld.exists) {
+            const oldToken = fcmTokenDocOld.data().token;
+            if (oldToken) {
+              fcmTokens = [oldToken];
+              console.log(`[DEBUG] User ${uid}: Using old format FCM token (migration needed)`);
+            }
+          }
         }
         
-        const fcmToken = fcmTokenDoc.data().token;
-        if (!fcmToken) {
-          console.log(`[DEBUG] User ${uid}: FCM token document exists but token is empty, skipping`);
-          continue; // Token vazio
+        if (fcmTokens.length === 0) {
+          console.log(`[DEBUG] User ${uid}: No FCM tokens found, skipping`);
+          continue; // Utilizador sem FCM tokens
         }
 
         usersWithFCMToken++;
-        console.log(`[DEBUG] User ${uid}: FCM token found (${fcmToken.substring(0, 20)}...)`);
+        console.log(`[DEBUG] User ${uid}: Found ${fcmTokens.length} FCM token(s)`);
 
         // Buscar filmes seguidos pelo utilizador (following_movies, não movies)
         const moviesSnapshot = await db.collection(`users/${uid}/following_movies`).get();
@@ -185,39 +199,71 @@ export default async function handler(req, res) {
 
         console.log(`[DEBUG] User ${uid}: Found ${moviesReleasingToday.length} movies releasing today`);
 
-        // Enviar notificação para cada filme
+        // Enviar notificação para cada filme (para todos os tokens)
         for (const movie of moviesReleasingToday) {
-          try {
-            console.log(`[DEBUG] User ${uid}: Preparing to send notification for movie ${movie.id} (${movie.title})`);
-            
-            const message = {
-              notification: {
-                title: '🎬 Movie Released Today!',
-                body: `${movie.title} is now available!`
-              },
-              data: {
-                type: 'movie_release',
-                movieId: movie.id,
-                url: `/allmovie.html?id=${movie.id}`
-              },
-              token: fcmToken
-            };
-
-            await admin.messaging().send(message);
-            notificationsSent++;
-            console.log(`[Push Notifications] Sent notification to ${uid} for movie: ${movie.title}`);
-            
-            // Marcar como notificado no Firestore
+          console.log(`[DEBUG] User ${uid}: Preparing to send notification for movie ${movie.id} (${movie.title}) to ${fcmTokens.length} device(s)`);
+          
+          const invalidTokens = [];
+          
+          // Enviar para todos os tokens do utilizador
+          for (const fcmToken of fcmTokens) {
             try {
-              const movieRef = db.doc(`users/${uid}/following_movies/${movie.id}`);
-              await movieRef.update({ releaseNotified: true });
-              console.log(`[DEBUG] User ${uid}: Marked movie ${movie.id} as notified in Firestore`);
-            } catch (markError) {
-              console.warn(`[Push Notifications] Failed to mark movie ${movie.id} as notified:`, markError);
+              const message = {
+                notification: {
+                  title: '🎬 Movie Released Today!',
+                  body: `${movie.title} is now available!`
+                },
+                data: {
+                  type: 'movie_release',
+                  movieId: movie.id,
+                  url: `/allmovie.html?id=${movie.id}`
+                },
+                token: fcmToken
+              };
+
+              await admin.messaging().send(message);
+              notificationsSent++;
+              console.log(`[Push Notifications] Sent notification to ${uid} (device: ${fcmToken.substring(0, 20)}...) for movie: ${movie.title}`);
+            } catch (sendError) {
+              console.error(`[Push Notifications] Error sending to token ${fcmToken.substring(0, 20)}...:`, sendError.message);
+              
+              // Se token inválido, marcar para remoção
+              if (sendError.code === 'messaging/invalid-registration-token' || 
+                  sendError.code === 'messaging/registration-token-not-registered' ||
+                  sendError.code === 'messaging/invalid-argument') {
+                invalidTokens.push(fcmToken);
+                console.log(`[Push Notifications] Marking token as invalid for removal: ${fcmToken.substring(0, 20)}...`);
+              } else {
+                errors.push({ uid, movieId: movie.id, token: fcmToken.substring(0, 20) + '...', error: sendError.message });
+              }
             }
-          } catch (sendError) {
-            console.error(`[Push Notifications] Error sending notification for movie ${movie.id}:`, sendError);
-            errors.push({ uid, movieId: movie.id, error: sendError.message });
+          }
+          
+          // Remover tokens inválidos do Firestore
+          if (invalidTokens.length > 0) {
+            try {
+              const tokensRef = db.doc(`users/${uid}/meta/fcmTokens`);
+              const tokensSnap = await tokensRef.get();
+              if (tokensSnap.exists) {
+                const tokensData = tokensSnap.data();
+                if (Array.isArray(tokensData.tokens)) {
+                  const validTokens = tokensData.tokens.filter(t => !invalidTokens.includes(t.token));
+                  await tokensRef.update({ tokens: validTokens });
+                  console.log(`[Push Notifications] Removed ${invalidTokens.length} invalid token(s) for user ${uid}`);
+                }
+              }
+            } catch (cleanupError) {
+              console.warn(`[Push Notifications] Failed to remove invalid tokens:`, cleanupError);
+            }
+          }
+          
+          // Marcar como notificado no Firestore (apenas uma vez por filme)
+          try {
+            const movieRef = db.doc(`users/${uid}/following_movies/${movie.id}`);
+            await movieRef.update({ releaseNotified: true });
+            console.log(`[DEBUG] User ${uid}: Marked movie ${movie.id} as notified in Firestore`);
+          } catch (markError) {
+            console.warn(`[Push Notifications] Failed to mark movie ${movie.id} as notified:`, markError);
           }
         }
 

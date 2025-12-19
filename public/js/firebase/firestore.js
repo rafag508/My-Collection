@@ -273,27 +273,123 @@ export async function getUserPreferencesFirestore() {
 }
 
 // ===============================
-// FCM TOKEN
+// FCM TOKEN (Múltiplos tokens por dispositivo)
 // ===============================
 
-export async function saveFCMTokenToFirestore(token) {
+/**
+ * Gera um ID único para o dispositivo
+ */
+async function generateDeviceId() {
+  // Usar localStorage para guardar deviceId persistente
+  let deviceId = localStorage.getItem('fcm_device_id');
+  if (!deviceId) {
+    // Gerar novo ID baseado em user agent + timestamp
+    const userAgent = navigator.userAgent;
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 15);
+    deviceId = btoa(`${userAgent}-${timestamp}-${random}`).substring(0, 32);
+    localStorage.setItem('fcm_device_id', deviceId);
+  }
+  return deviceId;
+}
+
+/**
+ * Guarda múltiplos tokens FCM (um por dispositivo) com limite de 5 dispositivos
+ * @param {string} token - Token FCM
+ * @param {string|null} deviceId - ID do dispositivo (gerado automaticamente se não fornecido)
+ */
+export async function saveFCMTokenToFirestore(token, deviceId = null) {
   const uid = await getUID();
-  const ref = doc(db, `users/${uid}/meta/fcmToken`);
+  const ref = doc(db, `users/${uid}/meta/fcmTokens`);
+  
+  const MAX_DEVICES = 5; // Limite máximo de dispositivos
+  const MAX_AGE_DAYS = 30; // Remover tokens com mais de 30 dias
+  
+  // Obter tokens existentes
+  const snap = await getDoc(ref);
+  logReads("saveFCMTokenToFirestore", 1);
+  let tokens = snap.exists() ? (snap.data().tokens || []) : [];
+  
+  // Gerar deviceId se não fornecido
+  if (!deviceId) {
+    deviceId = await generateDeviceId();
+  }
+  
+  // 1. Limpar tokens antigos (mais de 30 dias sem atualização)
+  const maxAge = Date.now() - (MAX_AGE_DAYS * 24 * 60 * 60 * 1000);
+  tokens = tokens.filter(t => t.updatedAt > maxAge);
+  
+  // 2. Verificar se token já existe
+  const existingIndex = tokens.findIndex(t => t.token === token);
+  if (existingIndex >= 0) {
+    // Atualizar token existente
+    tokens[existingIndex] = {
+      token,
+      deviceId,
+      updatedAt: Date.now()
+    };
+  } else {
+    // 3. Verificar limite de dispositivos
+    if (tokens.length >= MAX_DEVICES) {
+      // Remover o mais antigo (ordenar por updatedAt)
+      tokens.sort((a, b) => a.updatedAt - b.updatedAt);
+      const removed = tokens.shift(); // Remove o primeiro (mais antigo)
+      console.log(`[FCM] Removed oldest device token (limit: ${MAX_DEVICES}, device: ${removed.deviceId?.substring(0, 8)}...)`);
+    }
+    
+    // Adicionar novo token
+    tokens.push({
+      token,
+      deviceId,
+      updatedAt: Date.now()
+    });
+  }
+  
+  // 4. Remover duplicados (mesmo token em múltiplos dispositivos)
+  const seenTokens = new Set();
+  tokens = tokens.filter(t => {
+    if (seenTokens.has(t.token)) {
+      return false; // Duplicado, remover
+    }
+    seenTokens.add(t.token);
+    return true;
+  });
+  
   return setDoc(ref, { 
-    token: token,
-    updatedAt: Date.now()
+    tokens: tokens,
+    lastUpdated: Date.now()
   }, { merge: true });
 }
 
-export async function getFCMTokenFromFirestore() {
+/**
+ * Obtém todos os tokens FCM do utilizador
+ * @returns {Promise<string[]>} Array de tokens FCM
+ */
+export async function getFCMTokensFromFirestore() {
   try {
     const uid = await getUID();
-    const ref = doc(db, `users/${uid}/meta/fcmToken`);
+    const ref = doc(db, `users/${uid}/meta/fcmTokens`);
     const snap = await getDoc(ref);
-    logReads("getFCMTokenFromFirestore", snap.exists() ? 1 : 0);
-    return snap.exists() ? snap.data().token : null;
+    logReads("getFCMTokensFromFirestore", snap.exists() ? 1 : 0);
+    
+    if (snap.exists()) {
+      const data = snap.data();
+      if (Array.isArray(data.tokens)) {
+        return data.tokens.map(t => t.token).filter(Boolean);
+      }
+    }
+    return [];
   } catch (err) {
-    console.warn("Could not get FCM token from Firestore:", err);
-    return null;
+    console.warn("Could not get FCM tokens from Firestore:", err);
+    return [];
   }
+}
+
+/**
+ * Obtém um único token FCM (compatibilidade com código antigo)
+ * @deprecated Use getFCMTokensFromFirestore() para obter todos os tokens
+ */
+export async function getFCMTokenFromFirestore() {
+  const tokens = await getFCMTokensFromFirestore();
+  return tokens.length > 0 ? tokens[0] : null;
 }

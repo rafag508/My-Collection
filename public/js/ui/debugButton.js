@@ -4,6 +4,7 @@
 import { getFCMToken, initFCM } from "../notifications/fcm.js";
 import { setBadge, clearBadge, isBadgeAPISupported } from "../notifications/badge.js";
 import { getNotifications } from "../modules/notifications.js";
+import { getFCMTokensFromFirestore } from "../firebase/firestore.js";
 
 let debugModalOpen = false;
 
@@ -52,11 +53,12 @@ function createDebugModal() {
 
         <!-- FCM Token -->
         <div class="bg-gray-800 rounded-lg p-4">
-          <h3 class="text-lg font-semibold text-white mb-2">FCM Token</h3>
+          <h3 class="text-lg font-semibold text-white mb-2">FCM Tokens</h3>
           <div id="fcmStatus" class="mb-2">
             <span class="px-2 py-1 rounded text-sm bg-yellow-500 text-white">Loading...</span>
           </div>
-          <div id="fcmToken" class="bg-gray-900 p-2 rounded text-gray-300 text-xs font-mono break-all mt-2"></div>
+          <div id="fcmTokenCount" class="text-gray-300 text-sm mb-2"></div>
+          <div id="fcmTokens" class="space-y-2"></div>
           <button id="refreshFCM" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
             Refresh FCM Token
           </button>
@@ -212,22 +214,52 @@ async function checkServiceWorker() {
 
 async function updateFCMToken() {
   const fcmStatus = document.getElementById('fcmStatus');
-  const fcmTokenEl = document.getElementById('fcmToken');
+  const fcmTokenCount = document.getElementById('fcmTokenCount');
+  const fcmTokens = document.getElementById('fcmTokens');
   
-  if (!fcmStatus || !fcmTokenEl) return;
+  if (!fcmStatus || !fcmTokenCount || !fcmTokens) return;
 
   try {
-    const token = getFCMToken();
-    if (token) {
-      fcmStatus.innerHTML = '<span class="px-2 py-1 rounded text-sm bg-green-500 text-white">Token Available</span>';
-      fcmTokenEl.textContent = token;
+    // Obter token atual (local)
+    const currentToken = getFCMToken();
+    
+    // Obter todos os tokens do Firestore
+    const allTokens = await getFCMTokensFromFirestore();
+    
+    if (allTokens.length > 0) {
+      fcmStatus.innerHTML = `<span class="px-2 py-1 rounded text-sm bg-green-500 text-white">${allTokens.length} Token(s) Available</span>`;
+      fcmTokenCount.textContent = `Total devices: ${allTokens.length} (max: 5)`;
+      
+      // Mostrar todos os tokens
+      fcmTokens.innerHTML = allTokens.map((token, index) => {
+        const isCurrent = token === currentToken;
+        return `
+          <div class="bg-gray-900 p-2 rounded text-gray-300 text-xs font-mono break-all">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-gray-400 text-xs">Device ${index + 1}</span>
+              ${isCurrent ? '<span class="px-2 py-0.5 rounded text-xs bg-blue-500 text-white">Current</span>' : ''}
+            </div>
+            <div class="text-xs">${token}</div>
+          </div>
+        `;
+      }).join('');
+    } else if (currentToken) {
+      fcmStatus.innerHTML = '<span class="px-2 py-1 rounded text-sm bg-yellow-500 text-white">Token Available (Not Saved)</span>';
+      fcmTokenCount.textContent = 'Token exists locally but not in Firestore';
+      fcmTokens.innerHTML = `
+        <div class="bg-gray-900 p-2 rounded text-gray-300 text-xs font-mono break-all">
+          <div class="text-xs">${currentToken}</div>
+        </div>
+      `;
     } else {
       fcmStatus.innerHTML = '<span class="px-2 py-1 rounded text-sm bg-yellow-500 text-white">No Token</span>';
-      fcmTokenEl.textContent = 'FCM token not available. Try initializing FCM.';
+      fcmTokenCount.textContent = 'FCM token not available. Try initializing FCM.';
+      fcmTokens.innerHTML = '';
     }
   } catch (error) {
     fcmStatus.innerHTML = '<span class="px-2 py-1 rounded text-sm bg-red-500 text-white">Error</span>';
-    fcmTokenEl.textContent = `Error: ${error.message}`;
+    fcmTokenCount.textContent = `Error: ${error.message}`;
+    fcmTokens.innerHTML = '';
   }
 }
 
