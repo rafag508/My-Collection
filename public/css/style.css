@@ -450,7 +450,7 @@ body {
   }
 
   /* Container do poster - remover padding, ocupar espaço correto */
-  #notificationsList .bg-gray-800\\/50 {
+  #notificationsList .bg-gray-800\/50 {
     padding: 0 !important;
   }
 
@@ -622,11 +622,11 @@ body {
   }
 
   /* Header da tabela */
-  #statsRoot .grid-cols-\\[1fr_auto\\] {
+  #statsRoot .grid-cols-\[1fr_auto\] {
     font-size: 24px !important;
   }
 
-  #statsRoot .grid-cols-\\[1fr_auto\\] > div {
+  #statsRoot .grid-cols-\[1fr_auto\] > div {
     padding: 16px 0 !important;
   }
 
@@ -664,7 +664,7 @@ body {
     border-radius: 18px !important;
   }
 
-  body:has(#changePasswordForm) main .bg-gray-900\\/70 {
+  body:has(#changePasswordForm) main .bg-gray-900\/70 {
     padding: 36px !important;
     border-radius: 24px !important;
     margin-bottom: 64px !important;
@@ -679,13 +679,13 @@ body {
     padding: 0 !important;
   }
 
-  body:has(.movies-tabs) main .max-w-\\[90rem\\] {
+  body:has(.movies-tabs) main .max-w-\[90rem\] {
     padding: 0 !important;
     max-width: 100% !important;
   }
 
   /* Remover padding horizontal do container em Movies */
-  body:has(.movies-tabs) main .max-w-\\[90rem\\].px-8 {
+  body:has(.movies-tabs) main .max-w-\[90rem\].px-8 {
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
@@ -1154,13 +1154,13 @@ body {
     padding: 0 !important;
   }
 
-  body:has(.series-tabs) main .max-w-\\[90rem\\] {
+  body:has(.series-tabs) main .max-w-\[90rem\] {
     padding: 0 !important;
     max-width: 100% !important;
   }
 
   /* Remover padding horizontal do container em Series */
-  body:has(.series-tabs) main .max-w-\\[90rem\\].px-8 {
+  body:has(.series-tabs) main .max-w-\[90rem\].px-8 {
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
@@ -1741,8 +1741,6 @@ body {
     background: #1a1a2e !important;
   }
 
-}
-
 /* Reorder Modal - Grid Responsivo */
 #reorderMoviesGrid,
 #reorderSeriesGrid {
@@ -2004,7 +2002,6 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
     font-size: 40px !important;
     font-weight: 900 !important;
     -webkit-text-stroke: 1px currentColor !important;
-    text-stroke: 1px currentColor !important;
     margin-left: 18px !important;
   }
 
