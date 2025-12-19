@@ -310,6 +310,34 @@ export async function saveFCMTokenToFirestore(token, deviceId = null) {
   logReads("saveFCMTokenToFirestore", 1);
   let tokens = snap.exists() ? (snap.data().tokens || []) : [];
   
+  // ✅ MIGRAÇÃO: Se não há tokens no novo formato, verificar formato antigo
+  if (tokens.length === 0) {
+    try {
+      const oldRef = doc(db, `users/${uid}/meta/fcmToken`);
+      const oldSnap = await getDoc(oldRef);
+      logReads("saveFCMTokenToFirestore (migration)", oldSnap.exists ? 1 : 0);
+      
+      if (oldSnap.exists) {
+        const oldData = oldSnap.data();
+        const oldToken = oldData.token;
+        if (oldToken) {
+          // Migrar token antigo para novo formato
+          console.log('[FCM] Migrating old token format to new format');
+          tokens = [{
+            token: oldToken,
+            deviceId: 'migrated_' + Date.now(),
+            updatedAt: oldData.updatedAt || Date.now()
+          }];
+          
+          // Apagar documento antigo (opcional, pode manter para backup)
+          // await deleteDoc(oldRef);
+        }
+      }
+    } catch (migrationError) {
+      console.warn('[FCM] Migration check failed:', migrationError);
+    }
+  }
+  
   // Gerar deviceId se não fornecido
   if (!deviceId) {
     deviceId = await generateDeviceId();
@@ -322,12 +350,13 @@ export async function saveFCMTokenToFirestore(token, deviceId = null) {
   // 2. Verificar se token já existe
   const existingIndex = tokens.findIndex(t => t.token === token);
   if (existingIndex >= 0) {
-    // Atualizar token existente
+    // Atualizar token existente (atualizar deviceId e timestamp)
     tokens[existingIndex] = {
       token,
       deviceId,
       updatedAt: Date.now()
     };
+    console.log(`[FCM] Updated existing token (device: ${deviceId.substring(0, 8)}...)`);
   } else {
     // 3. Verificar limite de dispositivos
     if (tokens.length >= MAX_DEVICES) {
@@ -343,6 +372,7 @@ export async function saveFCMTokenToFirestore(token, deviceId = null) {
       deviceId,
       updatedAt: Date.now()
     });
+    console.log(`[FCM] Added new token (device: ${deviceId.substring(0, 8)}...)`);
   }
   
   // 4. Remover duplicados (mesmo token em múltiplos dispositivos)
