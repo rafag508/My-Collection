@@ -91,11 +91,11 @@ function clearState(query) {
 
 function renderMovieCard(movie) {
   return `
-    <div class="flex-shrink-0 w-56 bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:ring-2 hover:ring-blue-500 transition-all duration-200 group cursor-pointer">
+    <div class="flex-shrink-0 w-64 bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:ring-2 hover:ring-blue-500 transition-all duration-200 group cursor-pointer">
       <a href="allmovie.html?id=${movie.id}" class="block">
         <img src="${movie.poster}" 
              data-placeholder="${PLACEHOLDER_IMAGE}"
-             class="w-full h-80 object-cover object-top rounded-t-lg group-hover:opacity-80 transition">
+             class="w-full h-96 object-cover object-top rounded-t-lg group-hover:opacity-80 transition">
         <div class="p-2 text-center">
           <h3 class="font-semibold hover:text-blue-400 line-clamp-2 text-sm">${movie.title}</h3>
           <p class="text-xs text-gray-400">${movie.year}</p>
@@ -107,11 +107,11 @@ function renderMovieCard(movie) {
 
 function renderSeriesCard(show) {
   return `
-    <div class="flex-shrink-0 w-56 bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:ring-2 hover:ring-green-500 transition-all duration-200 group cursor-pointer">
+    <div class="flex-shrink-0 w-64 bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:ring-2 hover:ring-green-500 transition-all duration-200 group cursor-pointer">
       <a href="allserie.html?id=${show.id}" class="block">
         <img src="${show.poster}" 
              data-placeholder="${PLACEHOLDER_IMAGE}"
-             class="w-full h-80 object-cover object-top rounded-t-lg group-hover:opacity-80 transition">
+             class="w-full h-96 object-cover object-top rounded-t-lg group-hover:opacity-80 transition">
         <div class="p-2 text-center">
           <h3 class="font-semibold hover:text-green-400 line-clamp-2 text-sm">${show.title}</h3>
           <p class="text-xs text-gray-400">${show.year}</p>
