@@ -1,9 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
 
+html {
+  background-color: #0b0b0f !important;
+  min-height: 100vh;
+  height: 100%;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background: linear-gradient(180deg, #101624 0%, #0b0b0f 80%);
+  background-color: #0b0b0f; /* Fallback sólido */
+  background-attachment: fixed; /* Garantir que o background não se move */
   color: white;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 /* Corta o texto em 1 linha com compatibilidade total */
@@ -81,6 +92,30 @@ body {
 
 /* Mostrar apenas em modo standalone (app instalada) ou mobile pequeno */
 @media (display-mode: standalone), (max-width: 768px) {
+  /* Garantir backgrounds sólidos para evitar ver páginas anteriores */
+  html {
+    background-color: #0b0b0f !important;
+  }
+  
+  body {
+    background-color: #0b0b0f !important;
+    background: linear-gradient(180deg, #101624 0%, #0b0b0f 80%) !important;
+    background-attachment: fixed !important;
+  }
+  
+  main {
+    background-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Garantir que containers de conteúdo têm background opaco */
+  .app-mode-content {
+    background-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
   /* Esconder navbar desktop e footer */
   header#navbar,
   #navbar,
