@@ -14,6 +14,7 @@ import { isGuestMode, isProtectedPage } from "./modules/guestMode.js";
 import { renderBottomNav } from "./ui/bottomNav.js";
 import { setBadge, initFCM } from "./notifications/index.js";
 import { getNotifications } from "./modules/notifications.js";
+import { initDebugButton } from "./ui/debugButton.js";
 
 // Evita misturar com outras implementações antigas: usamos apenas a modular app
 function getPageName() {
@@ -249,6 +250,7 @@ window.addEventListener("DOMContentLoaded", () => {
   setFavicon();
   renderBottomNav(); // Renderizar bottom navigation para app mode
   initNotifications(); // Inicializar Badge API e FCM
+  initDebugButton(); // Inicializar botão de debug
   bootstrap();
 });
 

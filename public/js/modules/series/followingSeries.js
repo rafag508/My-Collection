@@ -157,6 +157,15 @@ export async function checkSeriesReleases() {
 
     const todayStr = formatDateYYYYMMDD(new Date());
 
+    // Verificar notificações existentes para evitar duplicados
+    const { getNotifications } = await import("../notifications.js");
+    const existingNotifications = await getNotifications();
+    const existingEpisodeKeys = new Set(
+      existingNotifications
+        .filter(n => n.type === "series_episode_release" && n.serieId && n.season && n.episode)
+        .map(n => `${n.serieId}_S${n.season}E${n.episode}`)
+    );
+
     for (const serie of following) {
       const serieId = serie.tmdbId || serie.id;
       if (!serieId) continue;
@@ -180,10 +189,15 @@ export async function checkSeriesReleases() {
       const episodeKey = buildEpisodeKey(nextEpisode);
       if (!episodeKey) continue;
 
-      // Evitar notificação duplicada para o mesmo episódio
-      if (serie.lastEpisodeNotified === episodeKey) continue;
+      // Verificar se já existe notificação local para este episódio
+      // Usa uma chave única: serieId + season + episode
+      const uniqueKey = `${serieId}_${episodeKey}`;
+      if (existingEpisodeKeys.has(uniqueKey)) {
+        continue; // Já existe notificação local, não criar duplicado
+      }
 
-      // Criar notificação específica de estreia de episódio
+      // Criar notificação local (mesmo que lastEpisodeNotified seja igual no Firestore)
+      // Isto garante que sempre tens notificação local quando um episódio sai
       await addNotification({
         type: "series_episode_release",
         serieId: serieId.toString(),
@@ -196,9 +210,12 @@ export async function checkSeriesReleases() {
         timestamp: Date.now()
       });
 
-      // Marcar episódio como notificado (local + remoto)
+      // Marcar episódio como notificado localmente (para evitar criar novamente)
       await markEpisodeReleaseNotifiedLocal(following, serieId, episodeKey);
-      if (!isGuestMode()) {
+      
+      // Só marcar remotamente se ainda não estiver marcado
+      // (evita writes desnecessários se já foi marcado pela função Vercel)
+      if (!isGuestMode() && serie.lastEpisodeNotified !== episodeKey) {
         try {
           await markEpisodeReleaseNotifiedRemote(serieId, episodeKey);
         } catch (err) {

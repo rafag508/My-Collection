@@ -144,19 +144,34 @@ export async function checkMovieReleases() {
 
     const todayStr = formatDateYYYYMMDD(new Date());
 
+    // Verificar notificações existentes para evitar duplicados
+    const { getNotifications } = await import("../notifications.js");
+    const existingNotifications = await getNotifications();
+    const existingMovieIds = new Set(
+      existingNotifications
+        .filter(n => n.type === "movie_release" && n.movieId)
+        .map(n => n.movieId.toString())
+    );
+
     for (const movie of following) {
       const movieId = movie.id || movie.tmdbId;
       if (!movieId) continue;
 
-      const alreadyNotified = movie.releaseNotified;
       const rd = movie.release_date;
-      if (!rd || alreadyNotified) continue;
+      if (!rd) continue;
 
       // Comparar apenas a parte da data YYYY-MM-DD
       const releaseDateStr = typeof rd === "string" ? rd.slice(0, 10) : String(rd);
       if (releaseDateStr !== todayStr) continue;
 
-      // Criar notificação (inclui poster para não depender da cache de filmes)
+      // Verificar se já existe notificação local para este filme
+      // Se já existe, não criar duplicado (mesmo que releaseNotified seja false)
+      if (existingMovieIds.has(movieId.toString())) {
+        continue; // Já existe notificação local, não criar duplicado
+      }
+
+      // Criar notificação local (mesmo que releaseNotified seja true no Firestore)
+      // Isto garante que sempre tens notificação local quando um filme sai
       await addNotification({
         movieId: movieId.toString(),
         movieTitle: movie.title,
@@ -166,9 +181,12 @@ export async function checkMovieReleases() {
         type: "movie_release",
       });
 
-      // Marcar como notificado (local + remoto, se aplicável)
+      // Marcar como notificado localmente (para evitar criar novamente)
       await markReleaseNotifiedLocal(following, movieId);
-      if (!isGuestMode()) {
+      
+      // Só marcar remotamente se ainda não estiver marcado
+      // (evita writes desnecessários se já foi marcado pela função Vercel)
+      if (!isGuestMode() && !movie.releaseNotified) {
         try {
           await markReleaseNotifiedRemote(movieId);
         } catch (err) {
