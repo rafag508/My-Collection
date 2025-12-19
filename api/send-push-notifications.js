@@ -18,6 +18,37 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 export default async function handler(req, res) {
+  // Testar conexão ao Firestore antes de processar
+  try {
+    console.log('[DEBUG] Testing Firestore connection...');
+    console.log('[DEBUG] Firebase Admin initialized:', admin.apps.length > 0);
+    
+    // Tentar ler uma coleção de teste
+    const testSnapshot = await db.collection('users').limit(1).get();
+    console.log(`[DEBUG] Firestore test query: Found ${testSnapshot.size} users (limited to 1)`);
+    
+    // Listar todos os documentos
+    const allUsersSnapshot = await db.collection('users').get();
+    console.log(`[DEBUG] Total users in 'users' collection: ${allUsersSnapshot.size}`);
+    
+    if (allUsersSnapshot.size > 0) {
+      console.log('[DEBUG] User IDs found:');
+      allUsersSnapshot.docs.forEach(doc => {
+        console.log(`[DEBUG]   - ${doc.id}`);
+      });
+    } else {
+      console.log('[DEBUG] WARNING: No users found in collection!');
+      console.log('[DEBUG] This could mean:');
+      console.log('[DEBUG]   1. Collection is empty');
+      console.log('[DEBUG]   2. Wrong database/project');
+      console.log('[DEBUG]   3. Permission issues');
+    }
+  } catch (testError) {
+    console.error('[DEBUG] Firestore connection test FAILED:', testError);
+    console.error('[DEBUG] Error code:', testError.code);
+    console.error('[DEBUG] Error message:', testError.message);
+    console.error('[DEBUG] Full error:', JSON.stringify(testError, Object.getOwnPropertyNames(testError)));
+  }
   // Permitir CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
