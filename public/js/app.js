@@ -193,6 +193,69 @@ new MutationObserver(() => {
   }
 }).observe(document, { subtree: true, childList: true });
 
+// Overlay para ocultar conteúdo durante navegação (apenas em app mode)
+function setupPageTransitionOverlay() {
+  const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone === true ||
+                    window.innerWidth <= 768;
+  
+  if (!isAppMode) return;
+  
+  // Criar overlay se não existir
+  let overlay = document.querySelector('.page-transition-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'page-transition-overlay';
+    document.body.appendChild(overlay);
+  }
+  
+  // Ativar overlay imediatamente no início do carregamento (para páginas que carregam)
+  if (document.readyState === 'loading') {
+    overlay.classList.add('active');
+  }
+  
+  // Ativar overlay quando clicar em links
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (link && link.href && !link.href.startsWith('javascript:') && !link.href.startsWith('#')) {
+      // Verificar se é navegação interna
+      try {
+        const linkUrl = new URL(link.href, window.location.origin);
+        const currentUrl = new URL(window.location.href);
+        if (linkUrl.origin === currentUrl.origin && linkUrl.pathname !== currentUrl.pathname) {
+          overlay.classList.add('active');
+        }
+      } catch (err) {
+        // Se der erro ao criar URL, ativar mesmo assim se não for hash
+        if (!link.href.includes('#')) {
+          overlay.classList.add('active');
+        }
+      }
+    }
+  }, true);
+  
+  // Desativar overlay quando a página carregar completamente
+  const hideOverlay = () => {
+    setTimeout(() => {
+      overlay.classList.remove('active');
+    }, 150); // Pequeno delay para garantir que o conteúdo foi renderizado
+  };
+  
+  if (document.readyState === 'complete') {
+    hideOverlay();
+  } else {
+    window.addEventListener('load', hideOverlay);
+    window.addEventListener('DOMContentLoaded', hideOverlay);
+  }
+}
+
+// Inicializar overlay de transição o mais cedo possível
+if (document.body) {
+  setupPageTransitionOverlay();
+} else {
+  document.addEventListener('DOMContentLoaded', setupPageTransitionOverlay);
+}
+
 // Registrar Service Worker para PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

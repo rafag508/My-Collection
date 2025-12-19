@@ -104,16 +104,74 @@ body {
   }
   
   main {
-    background-color: transparent;
+    background-color: #0b0b0f !important;
     position: relative;
     z-index: 1;
+    min-height: 100vh;
   }
   
   /* Garantir que containers de conteúdo têm background opaco */
   .app-mode-content {
-    background-color: transparent;
+    background-color: #0b0b0f !important;
     position: relative;
     z-index: 1;
+    min-height: calc(100vh - 116px);
+  }
+  
+  /* Garantir que todos os containers principais têm background opaco */
+  section {
+    background-color: transparent;
+    position: relative;
+  }
+  
+  /* Garantir que grids e containers de listas têm background opaco */
+  #moviesGrid,
+  #seriesGrid,
+  #moviesGridApp,
+  #seriesGridApp {
+    background-color: transparent;
+    position: relative;
+  }
+  
+  /* Garantir que elementos com conteúdo dinâmico têm background */
+  #movieInfo,
+  #serieInfo,
+  #seasons,
+  #progressBar {
+    background-color: transparent;
+    position: relative;
+  }
+  
+  /* Overlay temporário para ocultar conteúdo durante navegação */
+  .page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #0b0b0f;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+  }
+  
+  .page-transition-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+  
+  /* Garantir que body e html sempre têm background sólido durante navegação */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #0b0b0f;
+    z-index: -1;
+    pointer-events: none;
   }
 
   /* Esconder navbar desktop e footer */
