@@ -67,7 +67,7 @@ export async function searchMovies(query, page = 1) {
     return {
       results: data.results.map(m => ({
         id: m.id.toString(),
-        title: m.title || "Untitled",
+        title: m.original_title || m.title || "Untitled",
         year: m.release_date ? m.release_date.split("-")[0] : "—",
         poster: m.poster_path
           ? `${IMAGE_BASE}${m.poster_path}`
@@ -98,7 +98,7 @@ export async function getMovieDetails(movieId) {
 
     return {
       id: movieId.toString(),
-      title: data.title || "Untitled",
+      title: data.original_title || data.title || "Untitled",
       year: data.release_date ? data.release_date.split("-")[0] : "—",
       release_date: data.release_date || null,
       // URL de poster em resolução média (compatível com código antigo)
@@ -200,7 +200,7 @@ export async function getPopularMovies(page = 1) {
     return {
       results: data.results.map(m => ({
         id: m.id.toString(),
-        title: m.title || "Untitled",
+        title: m.original_title || m.title || "Untitled",
         year: m.release_date ? m.release_date.split("-")[0] : "—",
         poster: m.poster_path
           ? `${IMAGE_BASE}${m.poster_path}`
@@ -298,7 +298,7 @@ export async function getUpcomingMovies(page = 1, dateFrom = null, dateTo = null
         return {
           results: paginated.map(m => ({
             id: m.id.toString(),
-            title: m.title || "Untitled",
+            title: m.original_title || m.title || "Untitled",
             year: m.release_date ? m.release_date.split("-")[0] : "—",
             poster: m.poster_path
               ? `${IMAGE_BASE}${m.poster_path}`
@@ -364,7 +364,7 @@ export async function getUpcomingMovies(page = 1, dateFrom = null, dateTo = null
     return {
       results: paginated.map(m => ({
         id: m.id.toString(),
-        title: m.title || "Untitled",
+        title: m.original_title || m.title || "Untitled",
         year: m.release_date ? m.release_date.split("-")[0] : "—",
         release_date: m.release_date || null,
         poster: m.poster_path
@@ -438,7 +438,7 @@ export async function discoverMovies(page = 1, filters = {}) {
     return {
       results: data.results.map(m => ({
         id: m.id.toString(),
-        title: m.title || "Untitled",
+        title: m.original_title || m.title || "Untitled",
         year: m.release_date ? m.release_date.split("-")[0] : "—",
         release_date: m.release_date || null,
         poster: m.poster_path
@@ -472,7 +472,7 @@ export async function searchSeries(query, page = 1) {
     return {
       results: data.results.map(s => ({
         id: s.id.toString(),
-        title: s.name || "Untitled",
+        title: s.original_name || s.name || "Untitled",
         year: s.first_air_date ? s.first_air_date.split("-")[0] : "—",
         poster: s.poster_path
           ? `${IMAGE_BASE}${s.poster_path}`
@@ -504,7 +504,7 @@ export async function getSeriesDetails(seriesId) {
 
     return {
       id: seriesId.toString(),
-      title: data.name || "Untitled",
+      title: data.original_name || data.name || "Untitled",
       year: data.first_air_date ? data.first_air_date.split("-")[0] : "—",
       poster: posterPath ? `${IMAGE_BASE}${posterPath}` : "./assets/default.jpg",
       // Paths crus para poder gerar outras resoluções
@@ -638,7 +638,7 @@ export async function getPopularSeries(page = 1) {
     return {
       results: data.results.map((s) => ({
         id: s.id.toString(),
-        title: s.name || "Untitled",
+        title: s.original_name || s.name || "Untitled",
         year: s.first_air_date ? s.first_air_date.split("-")[0] : "—",
         poster: s.poster_path
           ? `${IMAGE_BASE}${s.poster_path}`
@@ -719,7 +719,7 @@ export async function discoverSeries(page = 1, filters = {}) {
     return {
       results: data.results.map((s) => ({
         id: s.id.toString(),
-        title: s.name || "Untitled",
+        title: s.original_name || s.name || "Untitled",
         year: s.first_air_date ? s.first_air_date.split("-")[0] : "—",
         poster: s.poster_path
           ? `${IMAGE_BASE}${s.poster_path}`
