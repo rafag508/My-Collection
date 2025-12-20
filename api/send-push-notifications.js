@@ -112,8 +112,11 @@ export default async function handler(req, res) {
     today.setHours(0, 0, 0, 0);
     const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
 
-    console.log(`[Push Notifications] Checking for releases on ${todayStr}`);
-    console.log(`[DEBUG] Server time: ${today.toISOString()}, Today string: ${todayStr}`);
+    console.log(`[Push Notifications] ========================================`);
+    console.log(`[Push Notifications] Starting push notification check`);
+    console.log(`[Push Notifications] Server time: ${today.toISOString()}`);
+    console.log(`[Push Notifications] Today string: ${todayStr}`);
+    console.log(`[Push Notifications] ========================================`);
 
     // Buscar todos os utilizadores
     const usersSnapshot = await db.collection('users').get();
@@ -131,34 +134,47 @@ export default async function handler(req, res) {
       
       try {
         // Buscar FCM tokens do utilizador (novo formato: array de tokens)
+        console.log(`[DEBUG] User ${uid}: Fetching FCM tokens...`);
         const fcmTokensDoc = await db.doc(`users/${uid}/meta/fcmTokens`).get();
+        console.log(`[DEBUG] User ${uid}: fcmTokens document exists: ${fcmTokensDoc.exists}`);
         
         // Fallback para formato antigo (compatibilidade)
         let fcmTokens = [];
         if (fcmTokensDoc.exists) {
           const tokensData = fcmTokensDoc.data();
+          console.log(`[DEBUG] User ${uid}: fcmTokens document data:`, JSON.stringify(tokensData, null, 2));
           if (Array.isArray(tokensData.tokens)) {
             fcmTokens = tokensData.tokens.map(t => t.token).filter(Boolean);
+            console.log(`[DEBUG] User ${uid}: Extracted ${fcmTokens.length} token(s) from array format`);
+          } else {
+            console.log(`[DEBUG] User ${uid}: tokens field is not an array or missing`);
           }
         } else {
+          console.log(`[DEBUG] User ${uid}: fcmTokens document does not exist, trying old format...`);
           // Tentar formato antigo (fcmToken singular)
           const fcmTokenDocOld = await db.doc(`users/${uid}/meta/fcmToken`).get();
+          console.log(`[DEBUG] User ${uid}: Old fcmToken document exists: ${fcmTokenDocOld.exists}`);
           if (fcmTokenDocOld.exists) {
             const oldToken = fcmTokenDocOld.data().token;
             if (oldToken) {
               fcmTokens = [oldToken];
               console.log(`[DEBUG] User ${uid}: Using old format FCM token (migration needed)`);
+            } else {
+              console.log(`[DEBUG] User ${uid}: Old fcmToken document exists but token field is missing`);
             }
           }
         }
         
         if (fcmTokens.length === 0) {
-          console.log(`[DEBUG] User ${uid}: No FCM tokens found, skipping`);
+          console.log(`[DEBUG] User ${uid}: ❌ No FCM tokens found, skipping user`);
           continue; // Utilizador sem FCM tokens
         }
 
         usersWithFCMToken++;
-        console.log(`[DEBUG] User ${uid}: Found ${fcmTokens.length} FCM token(s)`);
+        console.log(`[DEBUG] User ${uid}: ✅ Found ${fcmTokens.length} FCM token(s)`);
+        fcmTokens.forEach((token, idx) => {
+          console.log(`[DEBUG] User ${uid}: Token ${idx + 1}: ${token.substring(0, 50)}...`);
+        });
 
         // Buscar filmes seguidos pelo utilizador (following_movies, não movies)
         const moviesSnapshot = await db.collection(`users/${uid}/following_movies`).get();
@@ -199,47 +215,84 @@ export default async function handler(req, res) {
 
         console.log(`[DEBUG] User ${uid}: Found ${moviesReleasingToday.length} movies releasing today`);
 
+        // Se não há filmes a sair hoje, logar e continuar
+        if (moviesReleasingToday.length === 0) {
+          console.log(`[DEBUG] User ${uid}: No movies releasing today (all already notified or release_date not today)`);
+          continue; // Passar para próximo utilizador
+        }
+
         // Enviar notificação para cada filme (para todos os tokens)
         for (const movie of moviesReleasingToday) {
-          console.log(`[DEBUG] User ${uid}: Preparing to send notification for movie ${movie.id} (${movie.title}) to ${fcmTokens.length} device(s)`);
+          console.log(`[DEBUG] ========================================`);
+          console.log(`[DEBUG] User ${uid}: Processing movie ${movie.id} (${movie.title})`);
+          console.log(`[DEBUG] User ${uid}: Will send to ${fcmTokens.length} device(s)`);
+          console.log(`[DEBUG] User ${uid}: FCM Tokens:`, fcmTokens.map(t => t.substring(0, 30) + '...'));
           
           const invalidTokens = [];
+          let successCount = 0;
+          let errorCount = 0;
           
           // Enviar para todos os tokens do utilizador
-          for (const fcmToken of fcmTokens) {
+          for (let i = 0; i < fcmTokens.length; i++) {
+            const fcmToken = fcmTokens[i];
+            console.log(`[DEBUG] User ${uid}: Attempting to send to token ${i + 1}/${fcmTokens.length} (${fcmToken.substring(0, 30)}...)`);
+            
             try {
               const message = {
                 notification: {
                   title: '🎬 Movie Released Today!',
                   body: `${movie.title} is now available!`,
-                  icon: '/favicons/apple-touch-icon.png', // Ícone para notificações (quadrado azul com MC)
-                  image: movie.poster || null // Imagem grande do poster (opcional)
+                  icon: '/favicons/apple-touch-icon.png' // Ícone para notificações (quadrado azul com MC)
+                  // Nota: 'image' não é suportado diretamente em notification para tokens de dispositivo
+                  // Usar webpush.notification.image para browsers
                 },
                 data: {
                   type: 'movie_release',
                   movieId: movie.id,
-                  url: `/allmovie.html?id=${movie.id}`
+                  url: `/allmovie.html?id=${movie.id}`,
+                  image: movie.poster || '' // Guardar no data para uso na app (opcional)
+                },
+                // Suporte para web push (browsers) com imagem
+                webpush: {
+                  notification: {
+                    title: '🎬 Movie Released Today!',
+                    body: `${movie.title} is now available!`,
+                    icon: '/favicons/apple-touch-icon.png',
+                    badge: '/favicons/favicon-32x32.png',
+                    image: movie.poster || null // Imagem grande do poster (apenas para browsers)
+                  }
                 },
                 token: fcmToken
               };
 
-              await admin.messaging().send(message);
+              console.log(`[DEBUG] User ${uid}: Sending FCM message for movie ${movie.id}...`);
+              const result = await admin.messaging().send(message);
+              console.log(`[DEBUG] User ${uid}: FCM send result:`, result);
+              
               notificationsSent++;
-              console.log(`[Push Notifications] Sent notification to ${uid} (device: ${fcmToken.substring(0, 20)}...) for movie: ${movie.title}`);
+              successCount++;
+              console.log(`[Push Notifications] ✅ Sent notification to ${uid} (device: ${fcmToken.substring(0, 20)}...) for movie: ${movie.title}`);
             } catch (sendError) {
-              console.error(`[Push Notifications] Error sending to token ${fcmToken.substring(0, 20)}...:`, sendError.message);
+              errorCount++;
+              console.error(`[Push Notifications] ❌ Error sending to token ${fcmToken.substring(0, 20)}...:`, sendError);
+              console.error(`[Push Notifications] Error code:`, sendError.code);
+              console.error(`[Push Notifications] Error message:`, sendError.message);
+              console.error(`[Push Notifications] Full error:`, JSON.stringify(sendError, Object.getOwnPropertyNames(sendError)));
               
               // Se token inválido, marcar para remoção
               if (sendError.code === 'messaging/invalid-registration-token' || 
                   sendError.code === 'messaging/registration-token-not-registered' ||
                   sendError.code === 'messaging/invalid-argument') {
                 invalidTokens.push(fcmToken);
-                console.log(`[Push Notifications] Marking token as invalid for removal: ${fcmToken.substring(0, 20)}...`);
+                console.log(`[Push Notifications] ⚠️ Marking token as invalid for removal: ${fcmToken.substring(0, 20)}...`);
               } else {
                 errors.push({ uid, movieId: movie.id, token: fcmToken.substring(0, 20) + '...', error: sendError.message });
+                console.log(`[Push Notifications] ⚠️ Other error (not invalid token), keeping token:`, sendError.code);
               }
             }
           }
+          
+          console.log(`[DEBUG] User ${uid}: Movie ${movie.id} summary - Success: ${successCount}, Errors: ${errorCount}, Invalid tokens: ${invalidTokens.length}`);
           
           // Remover tokens inválidos do Firestore
           if (invalidTokens.length > 0) {
@@ -303,13 +356,20 @@ export default async function handler(req, res) {
       }
     }
 
-    // Log resumo final
-    console.log(`[DEBUG] Summary:`);
-    console.log(`[DEBUG]   - Total users: ${usersSnapshot.size}`);
-    console.log(`[DEBUG]   - Users with FCM token: ${usersWithFCMToken}`);
-    console.log(`[DEBUG]   - Users with movies: ${usersWithMovies}`);
-    console.log(`[DEBUG]   - Total movies checked: ${totalMoviesChecked}`);
-    console.log(`[DEBUG]   - Notifications sent: ${notificationsSent}`);
+          // Log resumo final
+          console.log(`[Push Notifications] ========================================`);
+          console.log(`[Push Notifications] SUMMARY`);
+          console.log(`[Push Notifications] ========================================`);
+          console.log(`[Push Notifications] Total users processed: ${usersSnapshot.size}`);
+          console.log(`[Push Notifications] Users with FCM tokens: ${usersWithFCMToken}`);
+          console.log(`[Push Notifications] Users with movies: ${usersWithMovies}`);
+          console.log(`[Push Notifications] Total movies checked: ${totalMoviesChecked}`);
+          console.log(`[Push Notifications] Notifications sent: ${notificationsSent}`);
+          console.log(`[Push Notifications] Errors: ${errors.length}`);
+          if (errors.length > 0) {
+            console.log(`[Push Notifications] Error details:`, JSON.stringify(errors, null, 2));
+          }
+          console.log(`[Push Notifications] ========================================`);
 
     const response = {
       success: true,
