@@ -287,9 +287,10 @@ export async function getUpcomingMovies(page = 1, dateFrom = null, dateTo = null
           // Remover filmes com release_date inválida
           if (isNaN(Date.parse(m.release_date))) return false;
           // ✅ REMOVER FILMES JÁ LANÇADOS (release_date < hoje)
-          const releaseDate = new Date(m.release_date);
-          releaseDate.setHours(0, 0, 0, 0);
-          if (releaseDate < today) return false; // Filme já lançado, remover
+          // Usar comparação de strings YYYY-MM-DD para evitar problemas de timezone
+          const releaseDateStr = m.release_date.slice(0, 10); // YYYY-MM-DD
+          const todayStr = today.toISOString().slice(0, 10); // YYYY-MM-DD
+          if (releaseDateStr < todayStr) return false; // Filme já lançado, remover
           // Remover documentários (99) e TV Movies (10770)
           if (Array.isArray(m.genre_ids) && m.genre_ids.some(id => id === 99 || id === 10770)) {
             return false;
@@ -369,9 +370,10 @@ export async function getUpcomingMovies(page = 1, dateFrom = null, dateTo = null
       if (isNaN(Date.parse(m.release_date))) return false;
       // ✅ REMOVER FILMES JÁ LANÇADOS (release_date < hoje)
       // Mesmo que a API já filtre, garantir que não passam filmes já lançados
-      const releaseDate = new Date(m.release_date);
-      releaseDate.setHours(0, 0, 0, 0);
-      if (releaseDate < todayDate) return false; // Filme já lançado, remover
+      // Usar comparação de strings YYYY-MM-DD para evitar problemas de timezone
+      const releaseDateStr = m.release_date.slice(0, 10); // YYYY-MM-DD
+      const todayStr = todayDate.toISOString().slice(0, 10); // YYYY-MM-DD
+      if (releaseDateStr < todayStr) return false; // Filme já lançado, remover
       // Remover documentários (99) e TV Movies (10770)
       if (Array.isArray(m.genre_ids) && m.genre_ids.some(id => id === 99 || id === 10770)) {
         return false;
