@@ -275,6 +275,10 @@ export async function getUpcomingMovies(page = 1, dateFrom = null, dateTo = null
         }
 
         // --- FILTRAGEM semelhante ao TMDB ---
+        // Calcular data de hoje (sem horas) para comparação
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
         pageResults = pageResults.filter(m => {
           // Remover filmes sem poster
           if (!m.poster_path) return false;
@@ -282,6 +286,10 @@ export async function getUpcomingMovies(page = 1, dateFrom = null, dateTo = null
           if (!m.release_date) return false;
           // Remover filmes com release_date inválida
           if (isNaN(Date.parse(m.release_date))) return false;
+          // ✅ REMOVER FILMES JÁ LANÇADOS (release_date < hoje)
+          const releaseDate = new Date(m.release_date);
+          releaseDate.setHours(0, 0, 0, 0);
+          if (releaseDate < today) return false; // Filme já lançado, remover
           // Remover documentários (99) e TV Movies (10770)
           if (Array.isArray(m.genre_ids) && m.genre_ids.some(id => id === 99 || id === 10770)) {
             return false;
@@ -348,6 +356,10 @@ export async function getUpcomingMovies(page = 1, dateFrom = null, dateTo = null
     if (!discoverData.results) return { results: [], totalPages: 0 };
 
     // --- FILTRAGEM semelhante ao TMDB ---
+    // Calcular data de hoje (sem horas) para comparação
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+    
     let filteredResults = discoverData.results.filter(m => {
       // Remover filmes sem poster
       if (!m.poster_path) return false;
@@ -355,6 +367,11 @@ export async function getUpcomingMovies(page = 1, dateFrom = null, dateTo = null
       if (!m.release_date) return false;
       // Remover filmes com release_date inválida
       if (isNaN(Date.parse(m.release_date))) return false;
+      // ✅ REMOVER FILMES JÁ LANÇADOS (release_date < hoje)
+      // Mesmo que a API já filtre, garantir que não passam filmes já lançados
+      const releaseDate = new Date(m.release_date);
+      releaseDate.setHours(0, 0, 0, 0);
+      if (releaseDate < todayDate) return false; // Filme já lançado, remover
       // Remover documentários (99) e TV Movies (10770)
       if (Array.isArray(m.genre_ids) && m.genre_ids.some(id => id === 99 || id === 10770)) {
         return false;
