@@ -109,7 +109,11 @@ async function requestPermission() {
  * Mostra uma notificação quando a app está aberta
  */
 function showNotification(payload) {
-  const { title, body, icon, image } = payload.notification || {};
+  // ✅ Usar data se notification não existir (para tokens de dispositivo que usam apenas data)
+  const title = payload.data?.title || payload.notification?.title;
+  const body = payload.data?.body || payload.notification?.body;
+  const icon = payload.data?.icon || payload.notification?.icon;
+  const image = payload.data?.image || payload.notification?.image;
   
   if (title && body) {
     new Notification(title, {

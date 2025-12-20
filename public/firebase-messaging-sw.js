@@ -21,15 +21,18 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage(async (payload) => {
   console.log('Background message received:', payload);
   
-  const notificationTitle = payload.notification?.title || 'My Collection';
+  // ✅ Usar data se notification não existir (para tokens de dispositivo que usam apenas data)
+  const notificationTitle = payload.data?.title || payload.notification?.title || 'My Collection';
+  const notificationBody = payload.data?.body || payload.notification?.body || 'You have a new notification';
+  
   const notificationOptions = {
-    body: payload.notification?.body || 'You have a new notification',
-    // ✅ Usar icon do data se não existir em notification (para funcionar com tokens de dispositivo)
+    body: notificationBody,
+    // ✅ Priorizar icon do data (para tokens de dispositivo), depois notification, depois padrão
     icon: payload.data?.icon || payload.notification?.icon || '/favicons/apple-touch-icon.png', // Ícone padrão (quadrado azul com MC)
     badge: '/favicons/favicon-32x32.png', // Badge pequeno
     image: payload.data?.image || payload.notification?.image || null, // Imagem grande (poster do filme)
     tag: 'my-collection-notification',
-    data: payload.data
+    data: payload.data || payload.notification?.data || {}
   };
 
   // Atualizar badge quando recebe notificação (mesmo com app fechada)
