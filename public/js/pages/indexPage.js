@@ -458,6 +458,11 @@ function setupHomeSearch() {
   const searchInput = document.getElementById("search");
   if (!searchInput) return;
 
+  // Redirecionar para search.html ao clicar na search bar
+  searchInput.addEventListener("click", () => {
+    window.location.href = "search.html";
+  });
+
   // Pesquisa em tempo real enquanto escreve (com debounce)
   searchInput.addEventListener("input", (e) => {
     const query = e.target.value.trim();
