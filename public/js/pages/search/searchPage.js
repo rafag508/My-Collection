@@ -468,6 +468,15 @@ export async function initSearchPage() {
       desktopLayout.style.display = 'block';
     }
     
+    // Desktop: focar na search bar da navbar quando a página carrega
+    const navbarSearchInput = document.getElementById("search");
+    if (navbarSearchInput) {
+      setTimeout(() => {
+        navbarSearchInput.focus();
+        console.log("[Search Page] Focused navbar search input (desktop mode)");
+      }, 100);
+    }
+    
     // Desktop: código original exatamente como estava
     const query = getQueryFromURL();
     const queryDisplay = document.getElementById("searchQuery");

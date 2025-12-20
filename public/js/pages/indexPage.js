@@ -456,63 +456,125 @@ async function performSearchApp(query) {
 
 function setupHomeSearch() {
   const searchInput = document.getElementById("search");
-  if (!searchInput) return;
+  if (!searchInput) {
+    console.log("[Home Search] Search input not found");
+    return;
+  }
 
-  let shouldRedirect = true;
-  let redirectTimeout = null;
+  // Detectar se é app mode (mobile)
+  const isAppMode = window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone === true ||
+                    window.innerWidth <= 768;
+  
+  console.log("[Home Search] Setup - isAppMode:", isAppMode, "width:", window.innerWidth);
 
-  // Redirecionar para search.html ao focar na search bar (se não começar a escrever)
-  searchInput.addEventListener("focus", () => {
-    shouldRedirect = true;
-    // Se não começar a escrever em 300ms, redirecionar
-    redirectTimeout = setTimeout(() => {
-      if (shouldRedirect) {
-        window.location.href = "search.html";
-      }
-    }, 300);
-  });
-
-  // Pesquisa em tempo real enquanto escreve (com debounce)
-  searchInput.addEventListener("input", (e) => {
-    // Cancelar redirecionamento se começar a escrever
-    shouldRedirect = false;
-    if (redirectTimeout) {
-      clearTimeout(redirectTimeout);
-      redirectTimeout = null;
-    }
-
-    const query = e.target.value.trim();
-    
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
-    }
-
-    if (!query) {
-      const searchResultsContainer = document.getElementById("searchResults");
-      const upcomingContainer = document.getElementById("upcoming");
-      if (searchResultsContainer) {
-        searchResultsContainer.innerHTML = "";
-        searchResultsContainer.style.display = "none";
-      }
-      if (upcomingContainer) upcomingContainer.style.display = "";
-      return;
-    }
-
-    // Debounce: esperar 500ms após parar de escrever
-    searchTimeout = setTimeout(async () => {
-      await performSearchApp(query);
-    }, 500);
-  });
-
-  // Manter comportamento original do Enter (redirecionar para search.html)
-  searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      if (searchTimeout) clearTimeout(searchTimeout);
+  if (isAppMode) {
+    // MOBILE/APP MODE: Pesquisa inline na home (não redirecionar)
+    // Pesquisa em tempo real enquanto escreve (com debounce)
+    searchInput.addEventListener("input", (e) => {
       const query = e.target.value.trim();
-      if (query) {
-        window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+      
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
       }
-    }
-  });
+
+      if (!query) {
+        const searchResultsContainer = document.getElementById("searchResults");
+        const upcomingContainer = document.getElementById("upcoming");
+        if (searchResultsContainer) {
+          searchResultsContainer.innerHTML = "";
+          searchResultsContainer.style.display = "none";
+        }
+        if (upcomingContainer) upcomingContainer.style.display = "";
+        return;
+      }
+
+      // Debounce: esperar 500ms após parar de escrever
+      searchTimeout = setTimeout(async () => {
+        await performSearchApp(query);
+      }, 500);
+    });
+
+    // Enter também faz pesquisa inline
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        if (searchTimeout) clearTimeout(searchTimeout);
+        const query = e.target.value.trim();
+        if (query) {
+          performSearchApp(query);
+        }
+      }
+    });
+  } else {
+    // DESKTOP: Redirecionar para search.html
+    console.log("[Home Search] Desktop mode: enabling redirect to search.html");
+    
+    let shouldRedirect = true;
+    let redirectTimeout = null;
+
+    // Redirecionar para search.html ao focar na search bar (se não começar a escrever)
+    searchInput.addEventListener("focus", () => {
+      console.log("[Home Search] Focus event - setting up redirect");
+      shouldRedirect = true;
+      // Se não começar a escrever em 300ms, redirecionar
+      redirectTimeout = setTimeout(() => {
+        if (shouldRedirect) {
+          console.log("[Home Search] Redirecting to search.html");
+          window.location.href = "search.html";
+        }
+      }, 300);
+    });
+
+    // Pesquisa em tempo real enquanto escreve (com debounce) - mas ainda redireciona no focus
+    searchInput.addEventListener("input", (e) => {
+      // Cancelar redirecionamento se começar a escrever
+      shouldRedirect = false;
+      if (redirectTimeout) {
+        clearTimeout(redirectTimeout);
+        redirectTimeout = null;
+        console.log("[Home Search] Input detected - cancelled redirect, performing inline search");
+      }
+
+      const query = e.target.value.trim();
+      console.log("[Home Search] Input event - query:", query);
+      
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+
+      if (!query) {
+        const searchResultsContainer = document.getElementById("searchResults");
+        const upcomingContainer = document.getElementById("upcoming");
+        if (searchResultsContainer) {
+          searchResultsContainer.innerHTML = "";
+          searchResultsContainer.style.display = "none";
+        }
+        if (upcomingContainer) upcomingContainer.style.display = "";
+        return;
+      }
+
+      // Debounce: esperar 500ms após parar de escrever
+      searchTimeout = setTimeout(async () => {
+        console.log("[Home Search] Performing inline search for:", query);
+        await performSearchApp(query);
+      }, 500);
+    });
+
+    // Enter redireciona para search.html com a query
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        if (searchTimeout) clearTimeout(searchTimeout);
+        if (redirectTimeout) clearTimeout(redirectTimeout);
+        const query = e.target.value.trim();
+        if (query) {
+          console.log("[Home Search] Enter pressed - redirecting to search.html with query:", query);
+          window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+        } else {
+          console.log("[Home Search] Enter pressed - redirecting to search.html");
+          window.location.href = "search.html";
+        }
+      }
+    });
+  }
 }
 
