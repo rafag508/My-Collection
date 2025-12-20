@@ -413,6 +413,11 @@ export async function initSearchPage() {
       return;
     }
 
+    // Focar automaticamente no input quando a página carrega
+    setTimeout(() => {
+      searchInput.focus();
+    }, 100);
+
     const query = getQueryFromURL();
     if (query) {
       searchInput.value = query;

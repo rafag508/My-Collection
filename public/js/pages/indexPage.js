@@ -458,13 +458,29 @@ function setupHomeSearch() {
   const searchInput = document.getElementById("search");
   if (!searchInput) return;
 
-  // Redirecionar para search.html ao clicar na search bar
-  searchInput.addEventListener("click", () => {
-    window.location.href = "search.html";
+  let shouldRedirect = true;
+  let redirectTimeout = null;
+
+  // Redirecionar para search.html ao focar na search bar (se não começar a escrever)
+  searchInput.addEventListener("focus", () => {
+    shouldRedirect = true;
+    // Se não começar a escrever em 300ms, redirecionar
+    redirectTimeout = setTimeout(() => {
+      if (shouldRedirect) {
+        window.location.href = "search.html";
+      }
+    }, 300);
   });
 
   // Pesquisa em tempo real enquanto escreve (com debounce)
   searchInput.addEventListener("input", (e) => {
+    // Cancelar redirecionamento se começar a escrever
+    shouldRedirect = false;
+    if (redirectTimeout) {
+      clearTimeout(redirectTimeout);
+      redirectTimeout = null;
+    }
+
     const query = e.target.value.trim();
     
     if (searchTimeout) {
