@@ -265,6 +265,12 @@ async function renderSerieInfo() {
             ${fullyWatched ? `❌ ${translate("unmark")}` : `✔️ ${translate("markAsViewed")}`}
           </button>
           ` : ""}
+          ${!fromAllSeries && serie.status === "On Display" ? `
+          <button id="followToggleBtn"
+            class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg font-semibold text-xl">
+            ${isFollowingSerie ? translate("unfollow") : translate("follow")}
+          </button>
+          ` : ""}
           ${serie.rating
             ? `<span class="w-16 h-16 rounded-full bg-transparent border-2 border-green-900 flex items-center justify-center text-green-400 font-bold text-xl">
                 ${serie.rating.toFixed(1)}
