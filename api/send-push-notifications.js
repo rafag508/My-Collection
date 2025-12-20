@@ -250,7 +250,8 @@ export default async function handler(req, res) {
                   type: 'movie_release',
                   movieId: movie.id,
                   url: `/allmovie.html?id=${movie.id}`,
-                  image: movie.poster || '' // Guardar no data para uso na app (opcional)
+                  image: movie.poster || '', // Guardar no data para uso na app (opcional)
+                  icon: '/favicons/apple-touch-icon.png' // ✅ Adicionar icon no data para o Service Worker usar
                 },
                 // Suporte para web push (browsers) com ícone e imagem
                 webpush: {
@@ -269,7 +270,6 @@ export default async function handler(req, res) {
               const result = await admin.messaging().send(message);
               console.log(`[DEBUG] User ${uid}: FCM send result:`, result);
               
-              notificationsSent++;
               successCount++;
               console.log(`[Push Notifications] ✅ Sent notification to ${uid} (device: ${fcmToken.substring(0, 20)}...) for movie: ${movie.title}`);
             } catch (sendError) {
@@ -290,6 +290,12 @@ export default async function handler(req, res) {
                 console.log(`[Push Notifications] ⚠️ Other error (not invalid token), keeping token:`, sendError.code);
               }
             }
+          }
+          
+          // ✅ CONTAR: Incrementar apenas uma vez por filme (se pelo menos 1 token teve sucesso)
+          if (successCount > 0) {
+            notificationsSent++; // ✅ Contar 1 notificação por filme, não por token
+            console.log(`[Push Notifications] ✅ Sent notification for movie: ${movie.title} to ${successCount} device(s)`);
           }
           
           console.log(`[DEBUG] User ${uid}: Movie ${movie.id} summary - Success: ${successCount}, Errors: ${errorCount}, Invalid tokens: ${invalidTokens.length}`);

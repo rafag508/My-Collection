@@ -24,9 +24,10 @@ messaging.onBackgroundMessage(async (payload) => {
   const notificationTitle = payload.notification?.title || 'My Collection';
   const notificationOptions = {
     body: payload.notification?.body || 'You have a new notification',
-    icon: payload.notification?.icon || '/favicons/apple-touch-icon.png', // Ícone padrão (quadrado azul com MC)
+    // ✅ Usar icon do data se não existir em notification (para funcionar com tokens de dispositivo)
+    icon: payload.data?.icon || payload.notification?.icon || '/favicons/apple-touch-icon.png', // Ícone padrão (quadrado azul com MC)
     badge: '/favicons/favicon-32x32.png', // Badge pequeno
-    image: payload.notification?.image || null, // Imagem grande (poster do filme)
+    image: payload.data?.image || payload.notification?.image || null, // Imagem grande (poster do filme)
     tag: 'my-collection-notification',
     data: payload.data
   };
