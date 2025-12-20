@@ -239,12 +239,12 @@ export default async function handler(req, res) {
             
             try {
               const message = {
+                // Para tokens de dispositivo (Android/iOS), notification só suporta title e body
                 notification: {
                   title: '🎬 Movie Released Today!',
-                  body: `${movie.title} is now available!`,
-                  icon: '/favicons/apple-touch-icon.png' // Ícone para notificações (quadrado azul com MC)
-                  // Nota: 'image' não é suportado diretamente em notification para tokens de dispositivo
-                  // Usar webpush.notification.image para browsers
+                  body: `${movie.title} is now available!`
+                  // Nota: 'icon' e 'image' NÃO são suportados em notification para tokens de dispositivo
+                  // Usar webpush.notification para browsers
                 },
                 data: {
                   type: 'movie_release',
@@ -252,12 +252,12 @@ export default async function handler(req, res) {
                   url: `/allmovie.html?id=${movie.id}`,
                   image: movie.poster || '' // Guardar no data para uso na app (opcional)
                 },
-                // Suporte para web push (browsers) com imagem
+                // Suporte para web push (browsers) com ícone e imagem
                 webpush: {
                   notification: {
                     title: '🎬 Movie Released Today!',
                     body: `${movie.title} is now available!`,
-                    icon: '/favicons/apple-touch-icon.png',
+                    icon: '/favicons/apple-touch-icon.png', // Ícone para browsers
                     badge: '/favicons/favicon-32x32.png',
                     image: movie.poster || null // Imagem grande do poster (apenas para browsers)
                   }
