@@ -164,14 +164,20 @@ export async function checkMovieReleases() {
       const releaseDateStr = typeof rd === "string" ? rd.slice(0, 10) : String(rd);
       if (releaseDateStr !== todayStr) continue;
 
+      // ✅ VERIFICAR PRIMEIRO se já foi notificado (releaseNotified = true)
+      // Se já foi notificado, não criar notificação novamente, mesmo que não exista notificação local
+      // (o utilizador pode ter apagado manualmente com "Clear All")
+      if (movie.releaseNotified) {
+        continue; // Já foi notificado, não criar novamente
+      }
+
       // Verificar se já existe notificação local para este filme
-      // Se já existe, não criar duplicado (mesmo que releaseNotified seja false)
+      // Se já existe, não criar duplicado
       if (existingMovieIds.has(movieId.toString())) {
         continue; // Já existe notificação local, não criar duplicado
       }
 
-      // Criar notificação local (mesmo que releaseNotified seja true no Firestore)
-      // Isto garante que sempre tens notificação local quando um filme sai
+      // Criar notificação local (apenas se releaseNotified = false e não existe notificação local)
       await addNotification({
         movieId: movieId.toString(),
         movieTitle: movie.title,

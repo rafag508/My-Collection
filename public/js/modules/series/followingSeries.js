@@ -189,6 +189,13 @@ export async function checkSeriesReleases() {
       const episodeKey = buildEpisodeKey(nextEpisode);
       if (!episodeKey) continue;
 
+      // ✅ VERIFICAR PRIMEIRO se já foi notificado (lastEpisodeNotified = episodeKey)
+      // Se já foi notificado, não criar notificação novamente, mesmo que não exista notificação local
+      // (o utilizador pode ter apagado manualmente com "Clear All")
+      if (serie.lastEpisodeNotified === episodeKey) {
+        continue; // Já foi notificado, não criar novamente
+      }
+
       // Verificar se já existe notificação local para este episódio
       // Usa uma chave única: serieId + season + episode
       const uniqueKey = `${serieId}_${episodeKey}`;
@@ -196,8 +203,7 @@ export async function checkSeriesReleases() {
         continue; // Já existe notificação local, não criar duplicado
       }
 
-      // Criar notificação local (mesmo que lastEpisodeNotified seja igual no Firestore)
-      // Isto garante que sempre tens notificação local quando um episódio sai
+      // Criar notificação local (apenas se lastEpisodeNotified ≠ episodeKey e não existe notificação local)
       await addNotification({
         type: "series_episode_release",
         serieId: serieId.toString(),
