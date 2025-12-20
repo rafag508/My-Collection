@@ -57,8 +57,11 @@ export async function initFCM() {
     
     // Escutar mensagens quando a app está aberta
     onMessage(messaging, (payload) => {
-      console.log('Message received:', payload);
-      showNotification(payload);
+      console.log('Message received (app open):', payload);
+      // ❌ REMOVIDO: showNotification(payload);
+      // ✅ Deixar o Service Worker criar a notificação (mesmo quando app está aberta)
+      // O Service Worker processa mensagens mesmo quando a app está aberta
+      // Isto evita duplicação de notificações
     });
     
     return true;

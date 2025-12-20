@@ -5,6 +5,20 @@
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
 
+// ✅ Instalar Service Worker (mantém ativo)
+self.addEventListener('install', (event) => {
+  console.log('[FCM Service Worker] Installing...');
+  // Força ativação imediata
+  self.skipWaiting();
+});
+
+// ✅ Ativar Service Worker (mantém ativo)
+self.addEventListener('activate', (event) => {
+  console.log('[FCM Service Worker] Activating...');
+  // Assume controle imediato de todas as páginas
+  event.waitUntil(self.clients.claim());
+});
+
 const firebaseConfig = {
   apiKey: "AIzaSyCEC0LA90DIsZIAXdfbqhFgnI9_h_upKjE",
   authDomain: "my-collection-c8bf6.firebaseapp.com",
