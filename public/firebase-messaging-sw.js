@@ -35,6 +35,23 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage(async (payload) => {
   console.log('Background message received:', payload);
   
+  // ✅ Criar tag único baseado no tipo e ID para evitar duplicados
+  const movieId = payload.data?.movieId || payload.data?.serieId || 'unknown';
+  const type = payload.data?.type || 'unknown';
+  const uniqueTag = `my-collection-${type}-${movieId}`;
+  
+  // ✅ Verificar se já existe notificação com este tag (evitar duplicados)
+  try {
+    const existingNotifications = await self.registration.getNotifications({ tag: uniqueTag });
+    if (existingNotifications.length > 0) {
+      console.log('[FCM Service Worker] Notification already exists with tag:', uniqueTag, '- skipping duplicate');
+      return; // Já existe, não criar duplicado
+    }
+  } catch (err) {
+    console.warn('[FCM Service Worker] Error checking existing notifications:', err);
+    // Continuar mesmo se houver erro ao verificar
+  }
+  
   // ✅ Usar data se notification não existir (para tokens de dispositivo que usam apenas data)
   const notificationTitle = payload.data?.title || payload.notification?.title || 'My Collection';
   const notificationBody = payload.data?.body || payload.notification?.body || 'You have a new notification';
@@ -45,7 +62,7 @@ messaging.onBackgroundMessage(async (payload) => {
     icon: payload.data?.icon || payload.notification?.icon || '/favicons/apple-touch-icon.png', // Ícone padrão (quadrado azul com MC)
     badge: '/favicons/favicon-32x32.png', // Badge pequeno
     image: payload.data?.image || payload.notification?.image || null, // Imagem grande (poster do filme)
-    tag: 'my-collection-notification',
+    tag: uniqueTag, // ✅ Usar tag único para evitar duplicados
     data: payload.data || payload.notification?.data || {}
   };
 
