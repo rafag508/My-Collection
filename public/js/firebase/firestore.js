@@ -322,7 +322,6 @@ export async function saveFCMTokenToFirestore(token, deviceId = null) {
         const oldToken = oldData.token;
         if (oldToken) {
           // Migrar token antigo para novo formato
-          console.log('[FCM] Migrating old token format to new format');
           tokens = [{
             token: oldToken,
             deviceId: 'migrated_' + Date.now(),
@@ -334,7 +333,7 @@ export async function saveFCMTokenToFirestore(token, deviceId = null) {
         }
       }
     } catch (migrationError) {
-      console.warn('[FCM] Migration check failed:', migrationError);
+      // Migration check failed
     }
   }
   
@@ -356,14 +355,12 @@ export async function saveFCMTokenToFirestore(token, deviceId = null) {
       deviceId,
       updatedAt: Date.now()
     };
-    console.log(`[FCM] Updated existing token (device: ${deviceId.substring(0, 8)}...)`);
   } else {
     // 3. Verificar limite de dispositivos
     if (tokens.length >= MAX_DEVICES) {
       // Remover o mais antigo (ordenar por updatedAt)
       tokens.sort((a, b) => a.updatedAt - b.updatedAt);
-      const removed = tokens.shift(); // Remove o primeiro (mais antigo)
-      console.log(`[FCM] Removed oldest device token (limit: ${MAX_DEVICES}, device: ${removed.deviceId?.substring(0, 8)}...)`);
+      tokens.shift(); // Remove o primeiro (mais antigo)
     }
     
     // Adicionar novo token
@@ -372,7 +369,6 @@ export async function saveFCMTokenToFirestore(token, deviceId = null) {
       deviceId,
       updatedAt: Date.now()
     });
-    console.log(`[FCM] Added new token (device: ${deviceId.substring(0, 8)}...)`);
   }
   
   // 4. Remover duplicados (mesmo token em múltiplos dispositivos)

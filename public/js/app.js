@@ -14,7 +14,6 @@ import { isGuestMode, isProtectedPage } from "./modules/guestMode.js";
 import { renderBottomNav } from "./ui/bottomNav.js";
 import { setBadge, initFCM } from "./notifications/index.js";
 import { getNotifications } from "./modules/notifications.js";
-import { initDebugButton } from "./ui/debugButton.js";
 
 // Evita misturar com outras implementações antigas: usamos apenas a modular app
 function getPageName() {
@@ -200,14 +199,12 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/pwa/service-worker.js')
       .then((registration) => {
-        console.log('[Service Worker] Registered successfully:', registration.scope);
-        
         // Verificar atualizações periodicamente
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('[Service Worker] New version available');
+              // Nova versão disponível
             }
           });
         });
@@ -250,7 +247,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   setFavicon();
   renderBottomNav(); // Renderizar bottom navigation para app mode
   initNotifications(); // Inicializar Badge API e FCM
-  initDebugButton(); // Inicializar botão de debug
   
   // Verificar lançamentos de filmes e séries em todas as páginas
   // Executar após um pequeno delay para garantir que tudo está carregado

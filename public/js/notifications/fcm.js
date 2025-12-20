@@ -57,7 +57,6 @@ export async function initFCM() {
     
     // Escutar mensagens quando a app está aberta
     onMessage(messaging, (payload) => {
-      console.log('Message received (app open):', payload);
       // ❌ REMOVIDO: showNotification(payload);
       // ✅ Deixar o Service Worker criar a notificação (mesmo quando app está aberta)
       // O Service Worker processa mensagens mesmo quando a app está aberta
@@ -88,16 +87,13 @@ async function requestPermission() {
           // Verificar se não está em modo convidado antes de guardar
           const { isGuestMode } = await import("../modules/guestMode.js");
           if (isGuestMode()) {
-            console.warn('[FCM] Guest mode - token not saved to Firestore');
             return;
           }
           
           const deviceId = await generateDeviceId();
           await saveFCMTokenToFirestore(fcmToken, deviceId);
-          console.log(`[FCM] Token saved to Firestore (device: ${deviceId.substring(0, 8)}...)`);
         } catch (err) {
-          console.error('[FCM] Failed to save FCM token to Firestore:', err);
-          console.error('[FCM] Error details:', err.message, err.stack);
+          // Failed to save FCM token to Firestore
         }
       }
     } else {
