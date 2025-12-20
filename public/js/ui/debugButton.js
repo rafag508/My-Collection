@@ -151,15 +151,15 @@ function toggleDebugModal() {
   if (debugModalOpen) {
     modal.classList.remove('hidden');
     updateAllDebugInfo();
-    // Atualizar a cada 3 segundos enquanto aberto
+    // Atualizar apenas notificações a cada 5 segundos (FCM token não muda frequentemente)
     const intervalId = setInterval(() => {
       if (!debugModalOpen) {
         clearInterval(intervalId);
         return;
       }
-      updateFCMToken();
+      // Só atualizar contagem de notificações (FCM token não precisa de atualização constante)
       updateNotificationsCount();
-    }, 3000);
+    }, 5000);
     modal.dataset.intervalId = intervalId;
   } else {
     modal.classList.add('hidden');

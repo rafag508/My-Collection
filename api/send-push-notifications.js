@@ -249,9 +249,25 @@ export default async function handler(req, res) {
               if (tokensSnap.exists) {
                 const tokensData = tokensSnap.data();
                 if (Array.isArray(tokensData.tokens)) {
-                  const validTokens = tokensData.tokens.filter(t => !invalidTokens.includes(t.token));
-                  await tokensRef.update({ tokens: validTokens });
-                  console.log(`[Push Notifications] Removed ${invalidTokens.length} invalid token(s) for user ${uid}`);
+                  console.log(`[DEBUG] Before cleanup: ${tokensData.tokens.length} token(s)`);
+                  console.log(`[DEBUG] Invalid tokens to remove: ${invalidTokens.length}`);
+                  
+                  const validTokens = tokensData.tokens.filter(t => {
+                    const isInvalid = invalidTokens.includes(t.token);
+                    if (isInvalid) {
+                      console.log(`[DEBUG] Removing invalid token: ${t.token.substring(0, 20)}... (device: ${t.deviceId?.substring(0, 8)}...)`);
+                    }
+                    return !isInvalid;
+                  });
+                  
+                  // Só atualizar se houver tokens válidos (não apagar todos)
+                  if (validTokens.length > 0) {
+                    await tokensRef.update({ tokens: validTokens });
+                    console.log(`[Push Notifications] Removed ${invalidTokens.length} invalid token(s) for user ${uid}. Remaining: ${validTokens.length}`);
+                  } else {
+                    console.warn(`[Push Notifications] WARNING: All tokens would be removed for user ${uid}. Keeping original tokens to prevent data loss.`);
+                    // Não remover todos os tokens - pode ser um erro temporário
+                  }
                 }
               }
             } catch (cleanupError) {
