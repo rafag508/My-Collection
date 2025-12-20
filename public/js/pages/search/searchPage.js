@@ -475,6 +475,67 @@ export async function initSearchPage() {
         navbarSearchInput.focus();
         console.log("[Search Page] Focused navbar search input (desktop mode)");
       }, 100);
+
+      // Preencher o input com a query da URL se existir
+      const queryFromURL = getQueryFromURL();
+      if (queryFromURL) {
+        navbarSearchInput.value = queryFromURL;
+      }
+
+      // Listener para pesquisa em tempo real enquanto escreve (com debounce)
+      let desktopSearchTimeout = null;
+      navbarSearchInput.addEventListener("input", (e) => {
+        const query = e.target.value.trim();
+        console.log("[Search Page] Desktop input event - query:", query);
+        
+        if (desktopSearchTimeout) {
+          clearTimeout(desktopSearchTimeout);
+        }
+
+        if (!query) {
+          // Se a query estiver vazia, limpar resultados
+          const queryDisplay = document.getElementById("searchQuery");
+          if (queryDisplay) {
+            queryDisplay.textContent = "No query";
+          }
+          const moviesGrid = document.getElementById("moviesGrid");
+          const seriesGrid = document.getElementById("seriesGrid");
+          if (moviesGrid) moviesGrid.innerHTML = `<p class="text-gray-400">Please provide a search query.</p>`;
+          if (seriesGrid) seriesGrid.innerHTML = `<p class="text-gray-400">Please provide a search query.</p>`;
+          window.history.replaceState({}, '', 'search.html');
+          return;
+        }
+
+        // Debounce: esperar 500ms após parar de escrever
+        desktopSearchTimeout = setTimeout(async () => {
+          console.log("[Search Page] Desktop performing search for:", query);
+          window.history.replaceState({}, '', `search.html?q=${encodeURIComponent(query)}`);
+          const queryDisplay = document.getElementById("searchQuery");
+          if (queryDisplay) {
+            queryDisplay.textContent = query;
+          }
+          const isNewSearch = currentQuery !== query;
+          await performSearch(query, isNewSearch);
+        }, 500);
+      });
+
+      // Permitir pesquisa imediata ao pressionar Enter
+      navbarSearchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          if (desktopSearchTimeout) clearTimeout(desktopSearchTimeout);
+          const query = e.target.value.trim();
+          if (query) {
+            console.log("[Search Page] Desktop Enter pressed - performing search for:", query);
+            window.history.replaceState({}, '', `search.html?q=${encodeURIComponent(query)}`);
+            const queryDisplay = document.getElementById("searchQuery");
+            if (queryDisplay) {
+              queryDisplay.textContent = query;
+            }
+            const isNewSearch = currentQuery !== query;
+            performSearch(query, isNewSearch);
+          }
+        }
+      });
     }
     
     // Desktop: código original exatamente como estava
