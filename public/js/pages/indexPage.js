@@ -1,8 +1,8 @@
 import { renderNavbar } from "../ui/navbar.js";
 import { renderFooter } from "../ui/footer.js";
 import { renderHero } from "../ui/hero.js";
-import { checkMovieReleases, getFollowingMovies } from "../modules/movies/followingMovies.js";
-import { getFollowingSeries, checkSeriesReleases } from "../modules/series/followingSeries.js";
+import { getFollowingMovies } from "../modules/movies/followingMovies.js";
+import { getFollowingSeries } from "../modules/series/followingSeries.js";
 import { TMDB_IMAGE_BASE, getMovieDetails, getSeriesDetails, searchMovies, searchSeries } from "../modules/tmdbApi.js";
 import { t as translate } from "../modules/idioma.js";
 
@@ -300,14 +300,6 @@ async function renderUpcomingHero() {
 export function initIndexPage() {
   renderNavbar();
   renderHero();
-
-  checkMovieReleases().catch(err =>
-    console.warn("Home: checkMovieReleases failed:", err)
-  );
-
-  checkSeriesReleases().catch(err =>
-    console.warn("Home: checkSeriesReleases failed:", err)
-  );
 
   renderUpcomingHero();
 
