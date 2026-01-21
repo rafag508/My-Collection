@@ -2275,5 +2275,221 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   }
 }
 
+/* ============================================
+   FORÇAR TODOS OS ESTILOS MÓVEIS QUANDO .pwa-mode ESTÁ PRESENTE
+   (Independentemente do tamanho do ecrã)
+   ============================================ */
+
+/* Navbar e Footer */
+.pwa-mode header#navbar,
+.pwa-mode #navbar,
+.pwa-mode footer#footer,
+.pwa-mode footer {
+  display: none !important;
+}
+
+.pwa-mode .bottom-nav {
+  display: flex !important;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 110px !important;
+  background: rgba(17, 24, 39, 0.98) !important;
+  backdrop-filter: blur(10px) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  justify-content: space-around !important;
+  align-items: center !important;
+  z-index: 1000 !important;
+  padding-bottom: env(safe-area-inset-bottom, 0) !important;
+}
+
+.pwa-mode body {
+  padding-bottom: 126px !important;
+  padding-top: env(safe-area-inset-top, 0) !important;
+}
+
+/* Hero Section */
+.pwa-mode #hero {
+  padding: 24px !important;
+  padding-top: 40px !important;
+}
+
+.pwa-mode #hero > div {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+}
+
+.pwa-mode #hero .lg\\:col-span-7 {
+  width: 100% !important;
+  text-align: center !important;
+  order: 1 !important;
+}
+
+.pwa-mode #hero h1 {
+  font-size: 42px !important;
+  line-height: 1.2 !important;
+  margin-bottom: 20px !important;
+}
+
+.pwa-mode #hero p {
+  font-size: 22px !important;
+  max-width: 100% !important;
+  margin: 0 auto 28px auto !important;
+}
+
+.pwa-mode #hero .flex.gap-3 {
+  flex-direction: row !important;
+  gap: 16px !important;
+  justify-content: center !important;
+}
+
+.pwa-mode #hero a {
+  font-size: 22px !important;
+  padding: 18px 28px !important;
+  border-radius: 18px !important;
+}
+
+/* Upcoming Hero */
+.pwa-mode #upcoming {
+  margin-top: 24px !important;
+  padding: 0 16px !important;
+}
+
+.pwa-mode #upcoming > div {
+  aspect-ratio: auto !important;
+  max-height: none !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background: #1a1a2e !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  margin: 0 auto !important;
+  max-width: 85% !important;
+}
+
+.pwa-mode #upcoming .relative.z-10 h2 {
+  font-size: 32px !important;
+  margin-bottom: 12px !important;
+}
+
+.pwa-mode #upcoming .relative.z-10 p,
+.pwa-mode #upcoming .hero-date-episode {
+  font-size: 28px !important;
+  color: #d1d5db !important;
+}
+
+.pwa-mode #upcoming [data-hero-more] {
+  margin-top: 16px !important;
+  background: #22c55e !important;
+  border: none !important;
+  padding: 14px 32px !important;
+  font-size: 20px !important;
+  border-radius: 10px !important;
+}
+
+/* Notifications Page */
+.pwa-mode #notificationsList h2 {
+  font-size: 36px !important;
+}
+
+.pwa-mode #notificationsList p {
+  font-size: 24px !important;
+}
+
+.pwa-mode #notificationsList .text-base {
+  font-size: 24px !important;
+}
+
+.pwa-mode #notificationsList .text-lg {
+  font-size: 28px !important;
+}
+
+.pwa-mode main h1.text-2xl {
+  font-size: 48px !important;
+}
+
+.pwa-mode #clearNotificationsBtn {
+  font-size: 22px !important;
+  padding: 18px 28px !important;
+  border-radius: 16px !important;
+}
+
+/* Stats Page */
+.pwa-mode #statsRoot h1 {
+  font-size: 40px !important;
+}
+
+.pwa-mode #statsRoot h3,
+.pwa-mode #statsRoot .text-xl {
+  font-size: 28px !important;
+}
+
+.pwa-mode #statsRoot p,
+.pwa-mode #statsRoot span {
+  font-size: 22px !important;
+}
+
+.pwa-mode #statsRoot .text-4xl,
+.pwa-mode #statsRoot .text-3xl {
+  font-size: 48px !important;
+}
+
+.pwa-mode #statsRoot .text-2xl {
+  font-size: 36px !important;
+}
+
+.pwa-mode #statsRoot .text-lg {
+  font-size: 26px !important;
+}
+
+.pwa-mode #statsRoot .text-sm {
+  font-size: 20px !important;
+}
+
+/* Movies/Series Pages */
+.pwa-mode .movies-tabs {
+  display: flex !important;
+  width: 100% !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
+  margin-bottom: 24px !important;
+  padding: 0 16px !important;
+  margin-top: 16px !important;
+}
+
+.pwa-mode .movies-tab {
+  flex: 1 !important;
+  text-align: center !important;
+  padding: 16px 0 !important;
+  font-size: 26px !important;
+  font-weight: 600 !important;
+}
+
+/* Settings Page */
+.pwa-mode body:has(#changePasswordForm) main h1.text-3xl {
+  font-size: 48px !important;
+}
+
+.pwa-mode body:has(#changePasswordForm) main h2.text-xl {
+  font-size: 48px !important;
+}
+
+.pwa-mode body:has(#changePasswordForm) main label {
+  font-size: 30px !important;
+}
+
+.pwa-mode body:has(#changePasswordForm) main select,
+.pwa-mode body:has(#changePasswordForm) main input {
+  font-size: 30px !important;
+  padding: 18px !important;
+}
+
+.pwa-mode body:has(#changePasswordForm) main button {
+  font-size: 32px !important;
+  padding: 22px !important;
+}
+
 }
 
