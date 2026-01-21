@@ -31,7 +31,75 @@ function detectStandaloneMode() {
     document.documentElement.classList.add('pwa-mode');
     document.body.classList.add('pwa-mode');
     console.log('[PWA] Standalone mode detected - mobile styles will apply');
+    // Aplicar estilos móveis imediatamente
+    applyPwaMobileStyles();
   }
+}
+
+// Aplicar estilos móveis inline quando em modo PWA (sobrepõe Tailwind)
+function applyPwaMobileStyles() {
+  if (!document.documentElement.classList.contains('pwa-mode')) {
+    return; // Só aplicar se estiver em modo PWA
+  }
+
+  // Função auxiliar para aplicar estilos após um delay (garantir que DOM está pronto)
+  const applyStyles = () => {
+    // Hero section - aplicar estilos móveis
+    const heroH1 = document.querySelector('#hero h1');
+    if (heroH1) {
+      heroH1.style.fontSize = '42px';
+      heroH1.style.lineHeight = '1.2';
+      heroH1.style.marginBottom = '20px';
+    }
+
+    const heroP = document.querySelector('#hero p');
+    if (heroP) {
+      heroP.style.fontSize = '22px';
+      heroP.style.maxWidth = '100%';
+      heroP.style.margin = '0 auto 28px auto';
+    }
+
+    const heroLinks = document.querySelectorAll('#hero a');
+    heroLinks.forEach(link => {
+      link.style.fontSize = '22px';
+      link.style.padding = '18px 28px';
+      link.style.borderRadius = '18px';
+    });
+
+    // Hero container
+    const hero = document.getElementById('hero');
+    if (hero) {
+      hero.style.padding = '24px';
+      hero.style.paddingTop = '40px';
+    }
+
+    const heroDiv = document.querySelector('#hero > div');
+    if (heroDiv) {
+      heroDiv.style.display = 'flex';
+      heroDiv.style.flexDirection = 'column';
+      heroDiv.style.width = '100%';
+    }
+
+    const heroContentDiv = document.querySelector('#hero .lg\\:col-span-7');
+    if (heroContentDiv) {
+      heroContentDiv.style.width = '100%';
+      heroContentDiv.style.textAlign = 'center';
+      heroContentDiv.style.order = '1';
+    }
+
+    const heroButtonsDiv = document.querySelector('#hero .flex.gap-3');
+    if (heroButtonsDiv) {
+      heroButtonsDiv.style.flexDirection = 'row';
+      heroButtonsDiv.style.gap = '16px';
+      heroButtonsDiv.style.justifyContent = 'center';
+    }
+  };
+
+  // Aplicar imediatamente e também após delays (para garantir que funciona mesmo se elementos são carregados depois)
+  applyStyles();
+  setTimeout(applyStyles, 100);
+  setTimeout(applyStyles, 500);
+  setTimeout(applyStyles, 1000);
 }
 
 // Detectar imediatamente (antes de tudo carregar)
@@ -44,6 +112,34 @@ if (document.readyState === 'loading') {
 // Também verificar periodicamente (fallback caso a detecção inicial falhe)
 setTimeout(detectStandaloneMode, 100);
 setTimeout(detectStandaloneMode, 500);
+
+// Aplicar estilos quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.documentElement.classList.contains('pwa-mode')) {
+    applyPwaMobileStyles();
+  }
+});
+
+// Aplicar quando elementos forem adicionados dinamicamente (como hero)
+let pwaStyleObserver = null;
+if (typeof MutationObserver !== 'undefined') {
+  pwaStyleObserver = new MutationObserver(() => {
+    if (document.documentElement.classList.contains('pwa-mode')) {
+      applyPwaMobileStyles();
+    }
+  });
+  
+  // Começar a observar quando o body estiver disponível
+  if (document.body) {
+    pwaStyleObserver.observe(document.body, { childList: true, subtree: true });
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      if (document.body && pwaStyleObserver) {
+        pwaStyleObserver.observe(document.body, { childList: true, subtree: true });
+      }
+    });
+  }
+}
 
 // Evita misturar com outras implementações antigas: usamos apenas a modular app
 function getPageName() {

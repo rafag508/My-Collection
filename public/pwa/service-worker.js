@@ -1,7 +1,7 @@
 // Service Worker para PWA
 // Cacheia apenas assets estáticos, NUNCA dados do Firestore
 
-const CACHE_NAME = 'my-collection-v3';
+const CACHE_NAME = 'my-collection-v4';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
