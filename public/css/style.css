@@ -86,8 +86,8 @@ body {
   display: none;
 }
 
-/* Mostrar apenas em modo standalone (app instalada) E mobile pequeno, OU apenas mobile pequeno */
-@media (display-mode: standalone) and (max-width: 768px), (max-width: 768px) {
+/* Mostrar apenas em modo standalone (app instalada) ou mobile pequeno */
+@media (display-mode: standalone), (max-width: 768px) {
   /* Esconder navbar desktop e footer */
   header#navbar,
   #navbar,
@@ -1780,7 +1780,7 @@ body {
   grid-template-columns: repeat(6, 1fr) !important;
 }
 
-@media (max-width: 768px), (display-mode: standalone) and (max-width: 768px) {
+@media (max-width: 768px), (display-mode: standalone) {
   #reorderMoviesGrid,
   #reorderSeriesGrid {
     grid-template-columns: repeat(4, 1fr) !important;
@@ -1812,7 +1812,7 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   fill: none !important;
 }
 
-@media (display-mode: standalone) and (max-width: 768px), (max-width: 768px) {
+@media (display-mode: standalone), (max-width: 768px) {
   /* Reduzir max-width do container principal */
   body[data-page="movie"] main,
   body[data-page="serie"] main,
