@@ -86,8 +86,8 @@ body {
   display: none;
 }
 
-/* Mostrar apenas em modo standalone (app instalada) ou mobile pequeno */
-@media (display-mode: standalone), (max-width: 768px) {
+/* Mostrar apenas em modo standalone (app instalada) E mobile pequeno, OU apenas mobile pequeno */
+@media (display-mode: standalone) and (max-width: 768px), (max-width: 768px) {
   /* Esconder navbar desktop e footer */
   header#navbar,
   #navbar,
@@ -1780,7 +1780,7 @@ body {
   grid-template-columns: repeat(6, 1fr) !important;
 }
 
-@media (max-width: 768px), (display-mode: standalone) {
+@media (max-width: 768px), (display-mode: standalone) and (max-width: 768px) {
   #reorderMoviesGrid,
   #reorderSeriesGrid {
     grid-template-columns: repeat(4, 1fr) !important;
@@ -1812,7 +1812,7 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   fill: none !important;
 }
 
-@media (display-mode: standalone), (max-width: 768px) {
+@media (display-mode: standalone) and (max-width: 768px), (max-width: 768px) {
   /* Reduzir max-width do container principal */
   body[data-page="movie"] main,
   body[data-page="serie"] main,
@@ -2184,32 +2184,6 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   /* Garantir que temporadas aparecem após o conteúdo em app mode */
   body[data-page="serie"] main:has(.app-mode-content) #seasons {
     margin-top: 0 !important;
-  }
-}
-
-/* Limitar tamanhos em ecrãs grandes mesmo em modo standalone */
-@media (display-mode: standalone) and (min-width: 769px) {
-  #hero h1 {
-    font-size: 32px !important; /* Reduzir de 42px */
-  }
-
-  #hero p {
-    font-size: 16px !important; /* Reduzir de 22px */
-  }
-
-  #hero a {
-    font-size: 16px !important; /* Reduzir de 22px */
-    padding: 12px 20px !important; /* Reduzir padding proporcionalmente */
-  }
-
-  /* Limitar tamanhos de fonte globais em ecrãs grandes */
-  .bottom-nav-item {
-    font-size: 12px !important; /* Reduzir de 14px */
-  }
-
-  .bottom-nav-icon {
-    width: 32px !important; /* Reduzir de 40px */
-    height: 32px !important;
   }
 }
 
