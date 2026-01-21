@@ -87,7 +87,10 @@ body {
 }
 
 /* Mostrar apenas em modo standalone (app instalada) ou mobile pequeno */
-@media (display-mode: standalone), (max-width: 768px) {
+@media (display-mode: standalone), 
+       (display-mode: fullscreen),
+       (display-mode: minimal-ui),
+       (max-width: 768px) {
   /* Esconder navbar desktop e footer */
   header#navbar,
   #navbar,
@@ -1780,7 +1783,10 @@ body {
   grid-template-columns: repeat(6, 1fr) !important;
 }
 
-@media (display-mode: standalone), (max-width: 768px) {
+@media (display-mode: standalone), 
+       (display-mode: fullscreen),
+       (display-mode: minimal-ui),
+       (max-width: 768px) {
   #reorderMoviesGrid,
   #reorderSeriesGrid {
     grid-template-columns: repeat(4, 1fr) !important;
@@ -1812,7 +1818,10 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   fill: none !important;
 }
 
-@media (display-mode: standalone), (max-width: 768px) {
+@media (display-mode: standalone), 
+       (display-mode: fullscreen),
+       (display-mode: minimal-ui),
+       (max-width: 768px) {
   /* Reduzir max-width do container principal */
   body[data-page="movie"] main,
   body[data-page="serie"] main,
@@ -2184,6 +2193,85 @@ body[data-page="allserie"] #favoriteToggleBtn[data-favorite="false"] svg path {
   /* Garantir que temporadas aparecem após o conteúdo em app mode */
   body[data-page="serie"] main:has(.app-mode-content) #seasons {
     margin-top: 0 !important;
+  }
+}
+
+/* ============================================
+   FORÇAR ESTILOS MÓVEIS EM MODO PWA (Fallback JavaScript)
+   ============================================
+   Quando a classe .pwa-mode está presente (adicionada via JavaScript),
+   garante que todos os estilos móveis aplicam mesmo em ecrãs grandes.
+   Isto resolve o problema de detecção de display-mode: standalone
+   em alguns dispositivos (ex: OnePlus Nord 5).
+   ============================================ */
+
+/* Aplicar estilos móveis quando .pwa-mode está presente */
+.pwa-mode header#navbar,
+.pwa-mode #navbar,
+.pwa-mode footer#footer,
+.pwa-mode footer {
+  display: none !important;
+}
+
+.pwa-mode .bottom-nav {
+  display: flex !important;
+}
+
+/* Hero - App Style quando .pwa-mode está presente */
+.pwa-mode #hero {
+  padding: 24px !important;
+  padding-top: 40px !important;
+}
+
+.pwa-mode #hero > div {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+}
+
+.pwa-mode #hero .lg\\:col-span-7 {
+  width: 100% !important;
+  text-align: center !important;
+  order: 1 !important;
+}
+
+.pwa-mode #hero h1 {
+  font-size: 42px !important;
+  line-height: 1.2 !important;
+  margin-bottom: 20px !important;
+}
+
+.pwa-mode #hero p {
+  font-size: 22px !important;
+  max-width: 100% !important;
+  margin: 0 auto 28px auto !important;
+}
+
+.pwa-mode #hero .flex.gap-3 {
+  flex-direction: row !important;
+  gap: 16px !important;
+  justify-content: center !important;
+}
+
+.pwa-mode #hero a {
+  font-size: 22px !important;
+  padding: 18px 28px !important;
+  border-radius: 18px !important;
+}
+
+/* Garantir que em ecrãs grandes com .pwa-mode, os estilos móveis ainda aplicam */
+@media (min-width: 769px) {
+  .pwa-mode #hero h1 {
+    font-size: 42px !important;
+  }
+  
+  .pwa-mode #hero p {
+    font-size: 22px !important;
+  }
+  
+  .pwa-mode #hero a {
+    font-size: 22px !important;
+    padding: 18px 28px !important;
   }
 }
 

@@ -15,6 +15,36 @@ import { renderBottomNav } from "./ui/bottomNav.js";
 import { setBadge, initFCM } from "./notifications/index.js";
 import { getNotifications } from "./modules/notifications.js";
 
+// Detectar modo standalone (PWA) e adicionar classe ao HTML/body
+// Isto garante que estilos móveis aplicam mesmo em ecrãs grandes quando em modo PWA
+function detectStandaloneMode() {
+  // Múltiplas formas de detetar modo standalone para máxima compatibilidade
+  const isStandalone = 
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.matchMedia('(display-mode: fullscreen)').matches ||
+    window.matchMedia('(display-mode: minimal-ui)').matches ||
+    window.navigator.standalone === true ||
+    document.referrer.includes('android-app://') ||
+    (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+  
+  if (isStandalone) {
+    document.documentElement.classList.add('pwa-mode');
+    document.body.classList.add('pwa-mode');
+    console.log('[PWA] Standalone mode detected - mobile styles will apply');
+  }
+}
+
+// Detectar imediatamente (antes de tudo carregar)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', detectStandaloneMode);
+} else {
+  detectStandaloneMode();
+}
+
+// Também verificar periodicamente (fallback caso a detecção inicial falhe)
+setTimeout(detectStandaloneMode, 100);
+setTimeout(detectStandaloneMode, 500);
+
 // Evita misturar com outras implementações antigas: usamos apenas a modular app
 function getPageName() {
   const file = window.location.pathname.split("/").pop() || "index.html";
