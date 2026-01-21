@@ -100,7 +100,7 @@ const reorderModal = new ReorderModal({
          style="height: ${cardHeight}px;">
       <img src="${serie.poster}" 
            data-placeholder="${PLACEHOLDER_IMAGE}"
-           alt="${serie.title || ""}" style="width:100%; height:100%; object-fit:fill; border-radius:8px;">
+           alt="${serie.title || ""}" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
     </div>
   `,
   onSave: async (orderedItems) => {
