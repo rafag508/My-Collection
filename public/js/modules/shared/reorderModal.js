@@ -93,24 +93,21 @@ export class ReorderModal {
     const grid = document.getElementById(this.gridId);
     if (!grid) return;
 
+    const CARD_HEIGHT = 140;
     const GAP = 16;
     const VISIBLE_ROWS = 4;
     
     grid.style.display = "grid";
-    // Não definir gridTemplateColumns inline - deixar o CSS controlar (6 colunas desktop, 4 mobile)
-    // Não definir gridAutoRows - usar aspect-ratio nos cards
+    grid.style.gridTemplateColumns = "repeat(6, 1fr)";
+    grid.style.gridAutoRows = `${CARD_HEIGHT}px`;
     grid.style.gap = `${GAP}px`;
     grid.style.padding = "8px";
-    // Calcular maxHeight baseado no aspect-ratio 2/3 e largura estimada
-    // Assumindo 6 colunas no desktop, cada card terá ~1/6 da largura
-    // Para uma altura aproximada de 140px com aspect-ratio 2/3, precisamos calcular
-    const estimatedCardHeight = 140; // Altura aproximada para cálculo
-    const maxHeight = (VISIBLE_ROWS * estimatedCardHeight) + ((VISIBLE_ROWS - 1) * GAP) + 16;
+    const maxHeight = (VISIBLE_ROWS * CARD_HEIGHT) + ((VISIBLE_ROWS - 1) * GAP) + 16;
     grid.style.maxHeight = `${maxHeight}px`;
     grid.style.overflowY = "auto";
     grid.style.minHeight = "0";
 
-    grid.innerHTML = this.items.map(item => this.renderItem(item)).join("");
+    grid.innerHTML = this.items.map(item => this.renderItem(item, CARD_HEIGHT)).join("");
 
     // Adicionar handlers de erro para imagens
     if (this.placeholderImage) {

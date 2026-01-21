@@ -108,9 +108,9 @@ const reorderModal = new ReorderModal({
   translate,
   renderItem: (movie, cardHeight) => `
     <div data-id="${movie.id}"
-         class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:ring-2 hover:ring-blue-500 transition-all duration-200 group cursor-move"
+         class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:ring-2 hover:ring-blue-500 transition-all duration-200 group cursor-move flex items-center justify-center"
          draggable="true"
-         style="width: 100%; aspect-ratio: 2/3;">
+         style="height: ${cardHeight}px;">
       <img src="${movie.poster}" 
            data-placeholder="${PLACEHOLDER_IMAGE}"
            alt="${movie.title || ""}" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
