@@ -1665,6 +1665,58 @@ body {
   }
 
   /* Carrossel estilo poster na home - App Mode */
+  #hero h1 {
+    font-size: 32px !important; /* Reduzir de 42px */
+  }
+
+  #hero p {
+    font-size: 16px !important; /* Reduzir de 22px */
+  }
+
+  #hero a {
+    font-size: 16px !important; /* Reduzir de 22px */
+    padding: 12px 20px !important; /* Reduzir padding proporcionalmente */
+  }
+
+  /* Limitar tamanhos de fonte globais em ecrãs grandes */
+  .bottom-nav-item {
+    font-size: 12px !important; /* Reduzir de 14px */
+  }
+
+  .bottom-nav-icon {
+    width: 32px !important; /* Reduzir de 40px */
+    height: 32px !important;
+  }
+}
+
+/* Limitar tamanhos em ecrãs grandes mesmo em modo standalone */
+@media (display-mode: standalone) and (min-width: 769px) {
+  #hero h1 {
+    font-size: 32px !important; /* Reduzir de 42px */
+  }
+
+  #hero p {
+    font-size: 16px !important; /* Reduzir de 22px */
+  }
+
+  #hero a {
+    font-size: 16px !important; /* Reduzir de 22px */
+    padding: 12px 20px !important; /* Reduzir padding proporcionalmente */
+  }
+
+  /* Limitar tamanhos de fonte globais em ecrãs grandes */
+  .bottom-nav-item {
+    font-size: 12px !important; /* Reduzir de 14px */
+  }
+
+  .bottom-nav-icon {
+    width: 32px !important; /* Reduzir de 40px */
+    height: 32px !important;
+  }
+}
+
+@media (display-mode: standalone), (max-width: 768px) {
+  /* Carrossel estilo poster na home - App Mode */
   #upcoming {
     margin-top: 24px !important;
     padding: 0 16px !important;
