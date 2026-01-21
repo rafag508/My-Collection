@@ -1,7 +1,7 @@
 // Service Worker para PWA
 // Cacheia apenas assets estáticos, NUNCA dados do Firestore
 
-const CACHE_NAME = 'my-collection-v1';
+const CACHE_NAME = 'my-collection-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -97,25 +97,24 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // Para assets estáticos: cache-first strategy
+  // Network-first strategy para CSS/JS (verifica servidor primeiro, cache como fallback)
+  // Isto garante que atualizações de CSS/JS sejam sempre verificadas primeiro
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        // Tem no cache → retorna do cache
-        return response;
+    fetch(event.request).then((response) => {
+      // Verificar se é um asset estático que deve ser cacheado
+      if (response && response.status === 200 && response.type === 'basic') {
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseToCache);
+        });
       }
-      
-      // Não tem no cache → busca do servidor
-      return fetch(event.request).then((response) => {
-        // Se a resposta é válida, guarda no cache
-        if (response && response.status === 200 && response.type === 'basic') {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
+      return response;
+    }).catch(() => {
+      // Se a rede falhar, tentar cache como fallback
+      return caches.match(event.request).then((response) => {
+        if (response) {
+          return response;
         }
-        return response;
-      }).catch(() => {
         // Se falhar e for HTML, retorna index.html (para SPA)
         const acceptHeader = event.request.headers.get('accept');
         if (acceptHeader && acceptHeader.includes('text/html')) {

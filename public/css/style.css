@@ -1780,7 +1780,7 @@ body {
   grid-template-columns: repeat(6, 1fr) !important;
 }
 
-@media (max-width: 768px), (display-mode: standalone) {
+@media (display-mode: standalone), (max-width: 768px) {
   #reorderMoviesGrid,
   #reorderSeriesGrid {
     grid-template-columns: repeat(4, 1fr) !important;
