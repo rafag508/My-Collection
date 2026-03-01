@@ -78,7 +78,7 @@ export async function initSeriePage() {
       if (tmdbData) {
         // Adicionar a série à coleção (formato igual ao addSeriesPage.js)
         const newSerie = {
-          id: `s${Date.now()}`,
+          id: serieId.toString(),
           tmdbId: serieId.toString(), // Guardar explicitamente o ID do TMDB
           title: tmdbData.title,
           year: tmdbData.year,

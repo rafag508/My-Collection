@@ -261,7 +261,7 @@ async function handleAddToCollection() {
     // Se a série ainda não está na coleção, adicionar
     if (!isInCollection && serie) {
       const newSerie = {
-        id: `s${Date.now()}`,
+        id: serie.tmdbId || serieId.toString(),
         tmdbId: serie.tmdbId || serieId.toString(),
         title: serie.title,
         year: serie.year,
